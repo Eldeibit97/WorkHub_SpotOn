@@ -1,0 +1,165 @@
+.confirmation-container {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.back-btn, .reserve-again-btn {
+  background: linear-gradient(90deg, #a855f7 0%, #d946ef 100%);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.back-btn:hover, .reserve-again-btn:hover {
+  transform: scale(1.05);
+}
+
+.confirmation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.confirmation-title {
+  font-size: 36px;
+  font-weight: 600;
+  margin: 30px 0;
+  color: white;
+}
+
+.success-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  position: relative;
+  color: white;
+}
+
+.success-icon::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+  opacity: 0.3;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.1; }
+}
+
+.confirmation-message {
+  font-size: 18px;
+  margin: 20px 0;
+  color: #ccc;
+}
+
+.confirmation-date {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 20px 0;
+  color: white;
+}
+
+.details-card {
+  background: rgba(20, 10, 40, 0.5);
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 30px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detail-item {
+  text-align: left;
+}
+
+.detail-label {
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.detail-value {
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.map-preview {
+  text-align: center;
+}
+
+.open-maps-btn {
+  background: linear-gradient(90deg, #a855f7 0%, #d946ef 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.open-maps-btn:hover {
+  transform: scale(1.05);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.modify-btn, .cancel-btn {
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  border-radius: 12px;
+  padding: 15px 40px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.modify-btn:hover, .cancel-btn:hover {
+  background: rgba(168, 85, 247, 0.3);
+}
+
+@media (max-width: 768px) {
+  .confirmation-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .details-card {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .modify-btn, .cancel-btn {
+    width: 100%;
+  }
+}
