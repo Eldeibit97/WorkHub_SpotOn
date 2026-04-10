@@ -70,63 +70,6 @@ const CrearReservacion = () => {
  
   return (
     <div className="reservation-container">
-      <style>{`
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
- 
-        body {
-          margin: 0;
-          padding: 0;
-        }
- 
-        .reservation-container {
-          background: linear-gradient(135deg, #0f1419 0%, #1a0b2e 50%, #2d1b4e 100%);
-          min-height: 100vh;
-          color: white;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          padding: 20px;
-        }
- 
-        .nav-tabs-custom {
-          border: none;
-          display: flex;
-          gap: 20px;
-          margin-bottom: 30px;
-          justify-content: center;
-        }
- 
-        .nav-link {
-          background: transparent;
-          border: none;
-          color: #666;
-          font-size: 24px;
-          font-weight: 500;
-          padding: 10px 20px;
-          transition: all 0.3s;
-          cursor: pointer;
-        }
- 
-        .nav-link.active {
-          color: white;
-          border-bottom: 2px solid #a855f7;
-        }
- 
-        .nav-link:hover {
-          color: #999;
-        }
- 
-        .time-display {
-          font-size: 32px;
-          margin-bottom: 30px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-      `}</style>
- 
       {currentScreen === 'reservation' && (
         <div className="nav-tabs-custom">
           <div 
@@ -143,18 +86,6 @@ const CrearReservacion = () => {
           </div>
         </div>
       )}
- 
-      <div className="time-display">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-          <path d="M12 6v6l4 2" strokeWidth="2"/>
-        </svg>
-        {new Date().toLocaleTimeString('en-US', { 
-          hour: '2-digit', 
-          minute: '2-digit',
-          hour12: false 
-        })}
-      </div>
  
       {renderScreen()}
     </div>

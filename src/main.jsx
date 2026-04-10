@@ -7,6 +7,6 @@ import CaruselMapas from './components/creacion/CaruselMapas.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <CaruselMapas />
+    <CrearReservacion />
   </StrictMode>,
 )

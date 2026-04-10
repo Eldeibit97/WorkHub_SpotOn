@@ -8,12 +8,11 @@ const Confirmacion = ({ onBack, onReserveAgain, reservationData, type }) => {
         <button className="back-btn" onClick={onBack}>
           ← Back Home
         </button>
+        <h1 className="confirmation-title">Reservation Confirmed</h1>
         <button className="reserve-again-btn" onClick={onReserveAgain}>
-          Reserve {type === 'parking' ? 'Parking' : 'Workplace'} →
+          Reserve {type === 'parking' ? 'Workplace' : 'Parking'} →
         </button>
       </div>
- 
-      <h1 className="confirmation-title">Reservation Confirmed</h1>
  
       <div className="success-icon">
         ✓
