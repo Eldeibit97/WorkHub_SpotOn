@@ -12,9 +12,12 @@ const EstacionamientoForms = ({ onConfirm, reservationData, setReservationData }
     setReservationData({ ...reservationData, level: e.target.value });
   };
 
+  const handleEmailChange = (e) => {
+    setReservationData({ ...reservationData, email: e.target.value });
+  };
+
   return (
     <>
-      <TimerDisplay></TimerDisplay>
       <div className="main-grid">
         <div className="parking-map-container">
           <div className="placeholder-text">
@@ -40,7 +43,16 @@ const EstacionamientoForms = ({ onConfirm, reservationData, setReservationData }
             <option>3rd Floor</option>
             <option>4th Floor</option>
           </select>
-
+          <div className="email-container">
+            <input
+              type="email"
+              className="email-input"
+              value={reservationData.email}
+              onChange={handleEmailChange}
+              placeholder="Email address"
+            />
+            <button className="add-guest-btn" title="Add guest">+</button>
+          </div>
           <button className="confirm-btn" onClick={onConfirm}>
             Confirm Reservation
           </button>

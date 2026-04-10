@@ -27,7 +27,6 @@ const OficinasForms = ({ onConfirm, reservationData, setReservationData }) => {
 
   return (
     <>
-      <TimerDisplay></TimerDisplay>
       <div className="main-grid">
         <div className="parking-map-container">
           {/* Aquí puedes agregar tu visualización de workspace */}

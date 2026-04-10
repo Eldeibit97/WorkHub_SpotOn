@@ -31,23 +31,26 @@ const Confirmacion = ({ onBack, onReserveAgain, reservationData, type }) => {
       </p>
  
       <div className="details-card">
-        <div style={{gridColumn: '1 / -1'}}>
-          <div className="detail-item">
-            <div className="detail-label">{type === 'parking' ? 'Parking Lot' : 'Location'}</div>
-            <div className="detail-value">
-              {type === 'parking' ? reservationData.parkingLot : reservationData.location}
-            </div>
+        <div className="detail-item">
+          <div className="detail-label">Booker</div>
+          <div className="detail-value">{reservationData.email}</div>
+        </div>
+
+        <div className="detail-item">
+          <div className="detail-label">Reservation ID</div>
+          <div className="detail-value">{reservationData.reservationId}</div>
+        </div>
+
+        <div className="detail-item">
+          <div className="detail-label">{type === 'parking' ? 'Parking Lot' : 'Location'}</div>
+          <div className="detail-value">
+            {type === 'parking' ? reservationData.parkingLot : reservationData.location}
           </div>
         </div>
  
         <div className="detail-item">
           <div className="detail-label">Level</div>
           <div className="detail-value">{type === 'parking' ? reservationData.level : reservationData.floor}</div>
-        </div>
- 
-        <div className="detail-item">
-          <div className="detail-label">Reservation ID</div>
-          <div className="detail-value">{reservationData.reservationId}</div>
         </div>
  
         {type === 'parking' && (

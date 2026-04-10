@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/crear_reservacion.css';
+import TimerDisplay from './TimerDisplay';
 import EstacionamientoForms from './EstacionamientoForms';
 import OficinasForms from './OficinasForms';
 import Confirmacion from './Confirmacion';
@@ -27,7 +28,7 @@ const CrearReservacion = () => {
     endTime: '13:00',
     floor: '3rd floor',
     location: 'SIERRA MADRE - ICSJ-3040',
-    email: 'pedrosanchez@gmail.com',
+    email: '',
     parkingLot: 'South Parking Lot',
     level: '2nd Floor',
     reservationId: 'PK-23941'
@@ -86,7 +87,7 @@ const CrearReservacion = () => {
           </div>
         </div>
       )}
- 
+      <TimerDisplay></TimerDisplay>
       {renderScreen()}
     </div>
   );
