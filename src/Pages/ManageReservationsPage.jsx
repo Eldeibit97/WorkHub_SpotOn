@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import ReservationList from '../components/ReservationList.jsx';
-import CancellationModal from '../components/CancellationModal.jsx';
-import '../components/styles/styles.css';
+import ReservationList from '../components/cancelacion/ReservationList.jsx';
+import CancellationModal from '../components/cancelacion/CancellationModal.jsx';
+import '../components/cancelacion/styles/styles.css';
 
 const initialReservations = [
   {
