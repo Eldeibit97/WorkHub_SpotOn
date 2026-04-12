@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import '../../styles/confirmacion.css';
 
 const Confirmacion = () => {
@@ -19,13 +19,13 @@ const Confirmacion = () => {
     <div className='reservation-container'>
       <div className="confirmation-container">
         <div className="confirmation-header">
-          <button className="back-btn">
+          <Link to='/' className="back-btn">
             ← Back Home
-          </button>
+          </Link>
           <h1 className="confirmation-title">Reservation Confirmed</h1>
-          <button className="reserve-again-btn">
+          <Link to='/reservar' className="reserve-again-btn">
             Reserve {reservationData.type === 'parking' ? 'Workplace' : 'Parking'} →
-          </button>
+          </Link>
         </div>
 
         <div className="success-icon">
@@ -90,7 +90,7 @@ const Confirmacion = () => {
 
         <div className="action-buttons">
           <button className="modify-btn">Modify reservation</button>
-          <button className="cancel-btn">Cancel reservation</button>
+          <Link to='/cancelar' className="cancel-btn">Cancel reservation</Link>
         </div>
       </div>
     </div>

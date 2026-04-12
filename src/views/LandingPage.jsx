@@ -21,7 +21,7 @@ export default function LandingPage() {
     <div className="landing">
       <header className="landing-header">
         <AccentureLogo />
-        <Link to="/home" className="landing-cta-header">
+        <Link to="/reservar" className="landing-cta-header">
           Get Started <span aria-hidden="true">&rarr;</span>
         </Link>
       </header>
@@ -40,7 +40,7 @@ export default function LandingPage() {
             <br />
             No calls, no emails, no guessing. Just show up and work.
           </p>
-          <Link to="/home" className="landing-cta-main">
+          <Link to="/reservar" className="landing-cta-main">
             Reserve Now <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
@@ -62,7 +62,7 @@ export default function LandingPage() {
             eliminating conflicts and wasted time every morning.
           </p>
           <div className="platform-buttons">
-            <Link to="/home" className="btn-filled">Reserve Now</Link>
+            <Link to="/reservar" className="btn-filled">Reserve Now</Link>
             <a href="#platform-ring" className="btn-outlined">Learn More</a>
           </div>
 
@@ -135,7 +135,7 @@ export default function LandingPage() {
         <div className="section-inner">
           <div className="footer-cta">
             <p className="footer-cta-text">Ready to reclaim your morning?</p>
-            <Link to="/home" className="landing-cta-main">
+            <Link to="/reservar" className="landing-cta-main">
               Get Started <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
