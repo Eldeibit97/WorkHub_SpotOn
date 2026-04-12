@@ -1,0 +1,243 @@
+/* Variables de color actualizadas para reflejar el neón rosado/morado */
+:root {
+  --bg-dark: #0a0510; /* Casi negro con un pequeñísimo tinte morado */
+  --bg-card: #140b1f; /* Fondo de tarjeta morado muy oscuro */
+  --border-color: #3b1d5c; /* Borde morado visible */
+  
+  /* Tonos principales de los mockups */
+  --accent-pink: #df46f7; /* Rosado neón / Magenta */
+  --accent-purple: #9b2df2; /* Morado vibrante */
+  
+  /* Degradado característico de los botones en el mockup */
+  --brand-gradient: linear-gradient(90deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+  
+  --text-main: #ffffff;
+  --text-muted: #a09ba6;
+}
+
+/* Contenedor principal con el resplandor morado/rosado de fondo */
+.manage-page-container {
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  /* Simulamos el brillo de fondo que se ve en los diseños */
+  background-image: 
+    radial-gradient(circle at 85% 30%, rgba(155, 45, 242, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 10% 80%, rgba(223, 70, 247, 0.1) 0%, transparent 40%);
+  color: var(--text-main);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  padding: 40px 20px;
+}
+
+/* Header */
+.brand-header {
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+  text-align: center;
+}
+
+.brand-logo {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Letra '>' con el degradado rosado/morado típico de Accenture en este mockup */
+.brand-logo::after {
+  content: '>';
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 2px;
+  font-weight: 900;
+}
+
+.page-title {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+}
+
+/* Lista y Tarjetas */
+.main-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.reservation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reservation-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.3s ease;
+}
+
+.reservation-card:hover {
+  border-color: var(--accent-purple);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(59, 29, 92, 0.5); /* Línea divisoria sutil */
+  padding-bottom: 12px;
+}
+
+.badge {
+  background: rgba(223, 70, 247, 0.15); /* Fondo rosado translúcido */
+  color: var(--accent-pink);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(223, 70, 247, 0.3);
+}
+
+.type-label {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.detail-row {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.detail-row strong {
+  color: var(--text-muted);
+  display: inline-block;
+  width: 90px;
+}
+
+/* El texto destacado ahora usa el rosado */
+.highlight-text {
+  color: var(--accent-pink);
+}
+
+/* Botones de la tarjeta */
+.card-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-cancel-outline {
+  background: transparent;
+  color: var(--accent-pink);
+  border: 1px solid var(--accent-pink);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-cancel-outline:hover {
+  background: rgba(223, 70, 247, 0.1);
+  box-shadow: 0 0 15px rgba(223, 70, 247, 0.2);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 2, 10, 0.8); /* Fondo más oscuro para resaltar el modal */
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  border: 1px solid var(--accent-purple); /* Borde que resalta en morado */
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 15px 50px rgba(155, 45, 242, 0.2); /* Resplandor morado detrás del modal */
+}
+
+.modal-title {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+.modal-warning {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-reservation-summary {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.modal-reservation-summary p {
+  margin: 6px 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-secondary:hover {
+  color: white;
+  border-color: var(--text-muted);
+}
+
+/* Botón principal usando el degradado del mockup */
+.btn-primary-danger {
+  background: var(--brand-gradient);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-danger:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(223, 70, 247, 0.4); /* Resplandor rosado al pasar el mouse */
+}

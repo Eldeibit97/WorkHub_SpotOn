@@ -1,11 +1,10 @@
+import ManageReservationsPage from "./Pages/ManageReservationsPage.jsx";
 import { useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './AppRoutes'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <BrowserRouter>
       <AppRoutes />
@@ -13,4 +12,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
