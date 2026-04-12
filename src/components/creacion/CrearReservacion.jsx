@@ -36,13 +36,13 @@ const CrearReservacion = () => {
     <div className="reservation-container">
       <div className="nav-tabs-custom">
         <div
-          className={`nav-link ${activeTab === 'parking' ? 'active' : ''}`}
+          className={`nav-link-sections ${activeTab === 'parking' ? 'active' : ''}`}
           onClick={() => setActiveTab('parking')}
         >
           Parking
         </div>
         <div
-          className={`nav-link ${activeTab === 'workplace' ? 'active' : ''}`}
+          className={`nav-link-sections ${activeTab === 'workplace' ? 'active' : ''}`}
           onClick={() => setActiveTab('workplace')}
         >
           Workplace

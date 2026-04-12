@@ -25,7 +25,7 @@ body {
   justify-content: center;
 }
 
-.nav-link {
+.nav-link-sections {
   background: transparent;
   border: none;
   color: #666;
@@ -36,12 +36,12 @@ body {
   cursor: pointer;
 }
 
-.nav-link.active {
+.nav-link-sections.active {
   color: white;
   border-bottom: 2px solid #a855f7;
 }
 
-.nav-link:hover {
+.nav-link-sections:hover {
   color: #999;
 }
 

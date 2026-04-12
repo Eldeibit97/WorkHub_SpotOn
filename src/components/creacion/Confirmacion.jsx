@@ -11,7 +11,6 @@ const Confirmacion = () => {
 
   useEffect(() => {
     if (!reservationData) {
-      alert('Error: No hay datos de reserva o se intento acceder a la pantalla de confirmacion de manera incorrecta');
       navigate('/');
     }
   }, [reservationData, navigate]);

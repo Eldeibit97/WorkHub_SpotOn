@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import '../../styles/estacionamiento_forms.css';
+import CaruselMapas from './CaruselMapas';
 import DateSelector from './DateSelector';
 
 const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
@@ -25,9 +26,7 @@ const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
     <>
       <div className="main-grid">
         <div className="parking-map-container">
-          <div className="placeholder-text">
-            Parking visualization area
-          </div>
+          <CaruselMapas></CaruselMapas>
         </div>
 
         <div className="reservation-panel">
