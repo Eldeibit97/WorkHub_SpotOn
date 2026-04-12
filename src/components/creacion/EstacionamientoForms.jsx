@@ -1,19 +1,24 @@
 import React from 'react'
+import { useState } from 'react';
 import '../../styles/estacionamiento_forms.css';
-import TimerDisplay from './TimerDisplay';
 import DateSelector from './DateSelector';
 
-const EstacionamientoForms = ({ onConfirm, reservationData, setReservationData }) => {
+const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
+  const [reservationData, setReservationData] = useState({
+    date: currentDate,
+    email: '',
+    parkingLot: 'South Parking Lot',
+    level: '2nd Level',
+    type: 'parking', 
+    reservationId: 'PK-23941'
+  });
+
   const handleDateChange = (newDate) => {
     setReservationData({ ...reservationData, date: newDate });
   };
 
-  const handleFloorChange = (e) => {
-    setReservationData({ ...reservationData, level: e.target.value });
-  };
-
-  const handleEmailChange = (e) => {
-    setReservationData({ ...reservationData, email: e.target.value });
+  const handleChange = (e) => {
+    setReservationData({ ...reservationData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -37,23 +42,24 @@ const EstacionamientoForms = ({ onConfirm, reservationData, setReservationData }
             {reservationData.parkingLot}
           </div>
 
-          <select className="floor-dropdown" value={reservationData.level} onChange={handleFloorChange}>
-            <option>1st Floor</option>
-            <option>2nd Floor</option>
-            <option>3rd Floor</option>
-            <option>4th Floor</option>
+          <select className="level-dropdown" name='level' value={reservationData.level} onChange={handleChange}>
+            <option>1st Level</option>
+            <option>2nd Level</option>
+            <option>3rd Level</option>
+            <option>4th Level</option>
           </select>
           <div className="email-container">
             <input
               type="email"
+              name = 'email'
               className="email-input"
               value={reservationData.email}
-              onChange={handleEmailChange}
+              onChange={handleChange}
               placeholder="Email address"
             />
             <button className="add-guest-btn" title="Add guest">+</button>
           </div>
-          <button className="confirm-btn" onClick={onConfirm}>
+          <button className="confirm-btn" onClick={() => onConfirm(reservationData)}>
             Confirm Reservation
           </button>
         </div>

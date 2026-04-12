@@ -1,10 +1,21 @@
 import React from 'react';
+import { useState } from 'react';
 import '../../styles/oficinas_forms.css';
-import TimerDisplay from './TimerDisplay';
 import DateSelector from './DateSelector';
 import TimeSelector from './TimeSelector';
 
-const OficinasForms = ({ onConfirm, reservationData, setReservationData }) => {
+const OficinasForms = ( {currentDate, onConfirm} ) => {
+  const [reservationData, setReservationData] = useState({
+    date: currentDate,
+    startTime: '08:00',
+    endTime: '13:00',
+    floor: '3rd floor',
+    location: 'SIERRA MADRE - ICSJ-3040',
+    email: '',
+    type: 'workplace',
+    reservationId: 'PK-23941'
+  });
+
   const handleDateChange = (newDate) => {
     setReservationData({ ...reservationData, date: newDate });
   };
@@ -17,12 +28,8 @@ const OficinasForms = ({ onConfirm, reservationData, setReservationData }) => {
     });
   };
 
-  const handleFloorChange = (e) => {
-    setReservationData({ ...reservationData, floor: e.target.value });
-  };
-
-  const handleEmailChange = (e) => {
-    setReservationData({ ...reservationData, email: e.target.value });
+  const handleChange = (e) => {
+    setReservationData({ ...reservationData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -49,7 +56,7 @@ const OficinasForms = ({ onConfirm, reservationData, setReservationData }) => {
             onTimeChange={handleTimeChange}
           />
 
-          <select className="floor-dropdown" value={reservationData.floor} onChange={handleFloorChange}>
+          <select className="floor-dropdown" name='floor' value={reservationData.floor} onChange={handleChange}>
             <option>1st floor</option>
             <option>2nd floor</option>
             <option>3rd floor</option>
@@ -63,15 +70,16 @@ const OficinasForms = ({ onConfirm, reservationData, setReservationData }) => {
           <div className="email-container">
             <input
               type="email"
+              name='email'
               className="email-input"
               value={reservationData.email}
-              onChange={handleEmailChange}
+              onChange={handleChange}
               placeholder="Email address"
             />
             <button className="add-guest-btn" title="Add guest">+</button>
           </div>
 
-          <button className="confirm-btn" onClick={onConfirm}>
+          <button className="confirm-btn" onClick={() => onConfirm(reservationData)}>
             Confirm Reservation
           </button>
         </div>
