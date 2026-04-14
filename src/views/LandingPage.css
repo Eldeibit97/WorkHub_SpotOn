@@ -1,7 +1,42 @@
+/* Design tokens for landing only — merge removed global :root vars from index.css */
 .landing {
+  --acn-purple: #A100FF;
+  --acn-purple-light: #C084FC;
+  --acn-magenta: #D946EF;
+  --acn-gradient: linear-gradient(135deg, #A100FF, #D946EF);
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-card: #161616;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --border-card: rgba(168, 85, 247, 0.22);
+  --border-card-hover: rgba(168, 85, 247, 0.45);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --max-width: 1200px;
+  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-fast: 0.15s var(--ease-out);
+  --transition-normal: 0.25s var(--ease-out);
+  --shadow-purple: 0 4px 24px rgba(161, 0, 255, 0.35);
+  --shadow-purple-lg: 0 8px 40px rgba(161, 0, 255, 0.4);
+
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* React Router <Link> renders <a> — avoid global underline / wrong colors */
+.landing .landing-cta-header,
+.landing .landing-cta-main,
+.landing .btn-filled {
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.landing .btn-outlined {
+  text-decoration: none;
+  color: var(--text-primary);
 }
 
 /* ── Header ── */
@@ -53,6 +88,16 @@
   position: relative;
 }
 
+.landing-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 75% 45%, rgba(161, 0, 255, 0.1) 0%, transparent 55%),
+    radial-gradient(ellipse at 25% 70%, rgba(100, 0, 180, 0.06) 0%, transparent 45%);
+}
+
 /* ── Content (left side) ── */
 .landing-content {
   position: relative;
@@ -75,10 +120,23 @@
   animation: fadeIn 1s var(--ease-out) 0.3s both;
 }
 
-.landing-building {
+.landing-building-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   min-height: 480px;
+  object-fit: cover;
+  object-position: left 50% center;
+}
+
+.landing-building {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  pointer-events: none;
   background:
     linear-gradient(
       90deg,
@@ -92,8 +150,7 @@
       transparent 30%,
       transparent 70%,
       rgba(10, 10, 10, 0.5) 100%
-    ),
-    url('/torresmoradas.png') left 50% center / cover no-repeat;
+    );
 }
 
 .landing-title {
@@ -121,7 +178,7 @@
 .title-morning {
   font-size: clamp(3rem, 6vw, 4.75rem);
   font-weight: 400;
-  color: var(--text-primary);
+  color: var(--acn-purple-light);
   font-style: italic;
   letter-spacing: -0.01em;
   margin-top: 0.1em;
@@ -278,7 +335,7 @@
 .ring-col-heading {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--acn-purple-light);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.25rem;
@@ -342,26 +399,26 @@
 .ring-border-outer {
   width: 100%;
   height: 100%;
-  border: 1px solid rgba(161, 0, 255, 0.15);
+  border: 1.5px solid rgba(161, 0, 255, 0.28);
   animation: ringRotate 60s linear infinite;
-  background: radial-gradient(circle, rgba(161, 0, 255, 0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(161, 0, 255, 0.06) 0%, transparent 70%);
 }
 
 .ring-border-middle {
   width: 72%;
   height: 72%;
-  border: 1px solid rgba(161, 0, 255, 0.25);
+  border: 1.5px solid rgba(161, 0, 255, 0.38);
   animation: ringRotateReverse 45s linear infinite;
-  background: radial-gradient(circle, rgba(161, 0, 255, 0.06) 0%, transparent 70%);
-  box-shadow: 0 0 60px rgba(161, 0, 255, 0.08), inset 0 0 40px rgba(161, 0, 255, 0.04);
+  background: radial-gradient(circle, rgba(161, 0, 255, 0.1) 0%, transparent 70%);
+  box-shadow: 0 0 60px rgba(161, 0, 255, 0.12), inset 0 0 40px rgba(161, 0, 255, 0.06);
 }
 
 .ring-border-inner {
   width: 44%;
   height: 44%;
-  border: 1px solid rgba(161, 0, 255, 0.35);
+  border: 1.5px solid rgba(161, 0, 255, 0.48);
   animation: ringRotate 30s linear infinite;
-  background: radial-gradient(circle, rgba(161, 0, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(161, 0, 255, 0.14) 0%, transparent 70%);
 }
 
 /* Shared orbit wrapper */
@@ -406,9 +463,10 @@
 .ring-label {
   display: block;
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--acn-purple-light);
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: #e9d5ff;
+  text-shadow: 0 0 12px rgba(161, 0, 255, 0.45);
+  letter-spacing: 0.06em;
   white-space: nowrap;
   transform: translate(-50%, -50%);
   animation: ringRotateReverse 35s linear infinite;
@@ -434,6 +492,26 @@
 @keyframes ringRotateReverse {
   from { transform: rotate(0deg); }
   to { transform: rotate(-360deg); }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Footer ── */
@@ -500,7 +578,7 @@
 .footer-col-title {
   font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: var(--acn-purple-light);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 0.25rem;
@@ -581,6 +659,14 @@
     height: 220px;
     margin: 0 auto;
     order: -1;
+  }
+
+  .dot-pos {
+    transform: rotate(var(--angle)) translateY(-110px);
+  }
+
+  .label-pos {
+    transform: rotate(var(--angle)) translateY(-79px) rotate(calc(-1 * var(--angle)));
   }
 
   .platform-buttons {

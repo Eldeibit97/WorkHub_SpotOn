@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import AccentureLogo from '../components/AccentureLogo'
+import torresHero from '../assets/torresmoradas3.png'
+import accGtLogo from '../assets/Acc_GT_Solid_P1_RGB.png'
 import './LandingPage.css'
 
 const leftItems = [
@@ -46,6 +48,12 @@ export default function LandingPage() {
         </div>
 
         <div className="landing-visual">
+          <img
+            src={torresHero}
+            alt=""
+            className="landing-building-img"
+            aria-hidden
+          />
           <div className="landing-building" />
         </div>
       </main>
@@ -107,7 +115,7 @@ export default function LandingPage() {
               </div>
 
               <img
-                src="/Acc_GT_Solid_P1_RGB.png"
+                src={accGtLogo}
                 alt="Accenture"
                 className="ring-logo"
               />
