@@ -10,11 +10,22 @@
   background: rgba(0, 0, 0, 0.3);
   border: 2px solid rgba(168, 85, 247, 0.4);
   border-radius: 20px;
-  padding: 30px;
   min-height: 400px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.parking-map-container--carousel {
+  min-height: 420px;
+}
+
+.parking-map-container--carousel .mapa-carusel {
+  flex: 1;
+  align-self: stretch;
 }
 
 .placeholder-text {
@@ -36,7 +47,7 @@
   font-size: 20px;
 }
 
-.floor-dropdown {
+.level-dropdown {
   background: rgba(30, 20, 50, 0.8);
   border: 1px solid rgba(168, 85, 247, 0.3);
   border-radius: 8px;
@@ -48,7 +59,7 @@
   font-size: 16px;
 }
 
-.floor-dropdown:focus {
+.level-dropdown:focus {
   outline: none;
   border-color: rgba(168, 85, 247, 0.6);
 }

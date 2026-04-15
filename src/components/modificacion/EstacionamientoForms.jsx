@@ -1,49 +1,69 @@
 import React from 'react'
+import { useState } from 'react';
 import '../../styles/estacionamiento_forms.css';
+import CaruselMapas from './CaruselMapas';
 import DateSelector from './DateSelector';
- 
-const EstacionamientoForms = ({ onConfirm, reservationData, setReservationData }) => {
+
+const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
+  const [reservationData, setReservationData] = useState({
+    date: currentDate,
+    email: '',
+    parkingLot: 'South Parking Lot',
+    level: '2nd Level',
+    type: 'parking', 
+    reservationId: 'PK-23941'
+  });
+
   const handleDateChange = (newDate) => {
     setReservationData({ ...reservationData, date: newDate });
   };
- 
-  const handleFloorChange = (e) => {
-    setReservationData({ ...reservationData, level: e.target.value });
+
+  const handleChange = (e) => {
+    setReservationData({ ...reservationData, [e.target.name]: e.target.value });
   };
- 
+
   return (
-    <div className="main-grid">
-      <div className="parking-map-container">
-        {/* Aquí puedes agregar tu visualización de estacionamiento */}
-        <div className="placeholder-text">
-          Parking visualization area
+    <>
+      <div className="main-grid">
+        <div className="parking-map-container parking-map-container--carousel">
+          <CaruselMapas></CaruselMapas>
+        </div>
+
+        <div className="reservation-panel">
+          <h3>New Reservation</h3>
+
+          <DateSelector
+            selectedDate={reservationData.date}
+            onDateChange={handleDateChange}
+          />
+
+          <div className="location-display">
+            {reservationData.parkingLot}
+          </div>
+
+          <select className="level-dropdown" name='level' value={reservationData.level} onChange={handleChange}>
+            <option>1st Level</option>
+            <option>2nd Level</option>
+            <option>3rd Level</option>
+            <option>4th Level</option>
+          </select>
+          <div className="email-container">
+            <input
+              type="email"
+              name = 'email'
+              className="email-input"
+              value={reservationData.email}
+              onChange={handleChange}
+              placeholder="Email address"
+            />
+            <button className="add-guest-btn" title="Add guest">+</button>
+          </div>
+          <button className="confirm-btn" onClick={() => onConfirm(reservationData)}>
+            Confirm Reservation
+          </button>
         </div>
       </div>
- 
-      <div className="reservation-panel">
-        <h3>New Reservation</h3>
-        
-        <DateSelector 
-          selectedDate={reservationData.date}
-          onDateChange={handleDateChange}
-        />
- 
-        <div className="location-display">
-          {reservationData.parkingLot}
-        </div>
- 
-        <select className="floor-dropdown" value={reservationData.level} onChange={handleFloorChange}>
-          <option>1st Floor</option>
-          <option>2nd Floor</option>
-          <option>3rd Floor</option>
-          <option>4th Floor</option>
-        </select>
- 
-        <button className="confirm-btn" onClick={onConfirm}>
-          Confirm Reservation
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
 

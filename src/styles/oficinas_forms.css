@@ -10,11 +10,22 @@
   background: rgba(0, 0, 0, 0.3);
   border: 2px solid rgba(168, 85, 247, 0.4);
   border-radius: 20px;
-  padding: 30px;
+  padding: 1rem;
   min-height: 400px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.parking-map-container--carousel {
+  min-height: 420px;
+}
+
+.parking-map-container--carousel .mapa-carusel {
+  flex: 1;
+  align-self: stretch;
 }
 
 .placeholder-text {
