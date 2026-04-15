@@ -3,18 +3,21 @@ import { useState, useEffect } from 'react';
 
 const TimerDisplay = () => {
   const [segundos, setSegundos] = useState(300); // 5 minutos = 300 segundos
-  const [activo, setActivo] = useState(false);
+  const [activo, setActivo] = useState(true);
 
   useEffect(() => {
-    let intervalo = null;
-    setActivo(true)
-    if (activo && segundos > 0) {
-      intervalo = setInterval(() => {
-        setSegundos(segundos => segundos - 1);
-      }, 1000);
-    } else if (segundos === 0) {
-      setActivo(false);
+    if (!activo || segundos <= 0) {
+      return undefined;
     }
+    const intervalo = setInterval(() => {
+      setSegundos((segundosActual) => {
+        if (segundosActual <= 1) {
+          setActivo(false);
+          return 0;
+        }
+        return segundosActual - 1;
+      });
+    }, 1000);
 
     return () => clearInterval(intervalo);
   }, [activo, segundos]);

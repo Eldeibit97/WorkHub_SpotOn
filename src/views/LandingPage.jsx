@@ -23,9 +23,14 @@ export default function LandingPage() {
     <div className="landing">
       <header className="landing-header">
         <AccentureLogo />
-        <Link to="/reservar" className="landing-cta-header">
-          Get Started <span aria-hidden="true">&rarr;</span>
-        </Link>
+        <div className="landing-header-actions">
+          <Link to="/login" className="landing-signin-link">
+            Sign In
+          </Link>
+          <Link to="/reservar" className="landing-cta-header">
+            Get Started <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
       </header>
 
       <div className="landing-divider" />

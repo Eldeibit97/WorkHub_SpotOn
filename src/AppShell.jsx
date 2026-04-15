@@ -1,4 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import './styles/AppShell.css'
 import Header from './components/Header'
 import Home from './views/Home'
 import Parking from './views/Parking'

@@ -29,6 +29,7 @@
 /* React Router <Link> renders <a> — avoid global underline / wrong colors */
 .landing .landing-cta-header,
 .landing .landing-cta-main,
+.landing .landing-signin-link,
 .landing .btn-filled {
   text-decoration: none;
   color: var(--text-primary);
@@ -47,6 +48,24 @@
   padding: 1.25rem 2.5rem;
   position: relative;
   z-index: 10;
+}
+
+.landing-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.landing-signin-link {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0.5rem 0.25rem;
+  transition: color var(--transition-fast);
+}
+
+.landing-signin-link:hover {
+  color: var(--text-primary);
 }
 
 .landing-cta-header {

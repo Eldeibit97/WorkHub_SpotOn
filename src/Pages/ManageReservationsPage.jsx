@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import ReservationList from '../components/cancelacion/ReservationList.jsx';
 import CancellationModal from '../components/cancelacion/CancellationModal.jsx';
 import '../components/cancelacion/styles/styles.css';
@@ -46,6 +47,14 @@ export default function ManageReservationsPage() {
 
   return (
     <div className="manage-page-container">
+      <nav className="manage-top-nav" aria-label="Navegación">
+        <Link to="/home" className="manage-nav-link">
+          ← Volver al inicio
+        </Link>
+        <Link to="/my-reservations" className="manage-nav-link manage-nav-link-secondary">
+          Mis reservas
+        </Link>
+      </nav>
       <header className="brand-header">
         <h1 className="brand-logo">accenture</h1>
         <h2 className="page-title">Cancelar Reservaciones Activas</h2>

@@ -2,6 +2,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  color: var(--black);
 }
 
 .view-title {
@@ -127,7 +128,7 @@
   background: var(--white);
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(168, 85, 247, 0.2);
   animation: slideUp 0.3s var(--ease-out);
 }
 
