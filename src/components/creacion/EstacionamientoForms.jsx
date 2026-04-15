@@ -25,7 +25,7 @@ const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
   return (
     <>
       <div className="main-grid">
-        <div className="parking-map-container">
+        <div className="parking-map-container parking-map-container--carousel">
           <CaruselMapas></CaruselMapas>
         </div>
 

@@ -2,6 +2,7 @@
   max-width: 900px;
   margin: 0 auto;
   padding: 3rem 2rem 4rem;
+  color: var(--black);
 }
 
 .hero {
@@ -44,7 +45,7 @@
   font-family: inherit;
   background: var(--white);
   box-shadow: var(--shadow-md);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(168, 85, 247, 0.18);
   transition: all 0.3s var(--ease-out);
 }
 

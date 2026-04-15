@@ -11,22 +11,31 @@ const Confirmacion = () => {
 
   useEffect(() => {
     if (!reservationData) {
-      navigate('/');
+      navigate('/home');
     }
   }, [reservationData, navigate]);
+
+  if (!reservationData) {
+    return null;
+  }
 
   return (
     <div className='reservation-container'>
       <div className="confirmation-container">
         <div className="confirmation-header">
-          <Link to='/' className="back-btn">
+          <Link to='/home' className="back-btn">
             ← Back Home
           </Link>
-          <h1 className="confirmation-title">Reservation Confirmed</h1>
-          <Link to='/reservar' className="reserve-again-btn">
-            Reserve {reservationData.type === 'parking' ? 'Workplace' : 'Parking'} →
-          </Link>
+          <div className="confirmation-header-actions">
+            <Link to='/reservar' className="back-to-reserve-link">
+              ← Volver a reservar
+            </Link>
+            <Link to='/reservar' className="reserve-again-btn">
+              Reserve {reservationData.type === 'parking' ? 'Workplace' : 'Parking'} →
+            </Link>
+          </div>
         </div>
+        <h1 className="confirmation-title">Reservation Confirmed</h1>
 
         <div className="success-icon">
           ✓

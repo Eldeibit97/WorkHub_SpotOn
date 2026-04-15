@@ -13,23 +13,23 @@ const CaruselMapas = () => {
     <>
       <Carousel interval={null} className='mapa-carusel'>
         <Carousel.Item>
-          <svg className='mapa-carusel-item'>
-            <image className = 'mapas-svg' href={Piso3} />
+          <svg className='mapa-carusel-item' viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Plano piso 3">
+            <image className="mapas-svg" href={Piso3} width="800" height="600" preserveAspectRatio="xMidYMid meet" />
           </svg>
         </Carousel.Item>
         <Carousel.Item>
-          <svg className='mapa-carusel-item'>
-            <image className = 'mapas-svg' href={Piso9} />
+          <svg className='mapa-carusel-item' viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Plano piso 9">
+            <image className="mapas-svg" href={Piso9} width="800" height="600" preserveAspectRatio="xMidYMid meet" />
           </svg>
         </Carousel.Item>
         <Carousel.Item>
-          <svg className='mapa-carusel-item'>
-            <image className = 'mapas-svg' href={PisoMZ} />
+          <svg className='mapa-carusel-item' viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Plano mezzanine">
+            <image className="mapas-svg" href={PisoMZ} width="800" height="600" preserveAspectRatio="xMidYMid meet" />
           </svg>
         </Carousel.Item>
         <Carousel.Item>
-          <svg className='mapa-carusel-item'>
-            <image className = 'mapas-svg' href={PisoPB} />
+          <svg className='mapa-carusel-item' viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Plano planta baja">
+            <image className="mapas-svg" href={PisoPB} width="800" height="600" preserveAspectRatio="xMidYMid meet" />
           </svg>
         </Carousel.Item>
       </Carousel>

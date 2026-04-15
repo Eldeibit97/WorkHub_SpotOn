@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import '../../styles/oficinas_forms.css';
+import CaruselMapas from './CaruselMapas';
 import DateSelector from './DateSelector';
 import TimeSelector from './TimeSelector';
 
@@ -35,11 +36,8 @@ const OficinasForms = ( {currentDate, onConfirm} ) => {
   return (
     <>
       <div className="main-grid">
-        <div className="parking-map-container">
-          {/* Aquí puedes agregar tu visualización de workspace */}
-          <div className="placeholder-text">
-            Workspace layout will appear here
-          </div>
+        <div className="parking-map-container parking-map-container--carousel">
+          <CaruselMapas />
         </div>
 
         <div className="reservation-panel">

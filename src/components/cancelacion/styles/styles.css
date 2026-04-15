@@ -1,18 +1,41 @@
-/* Variables de color actualizadas para reflejar el neón rosado/morado */
-:root {
-  --bg-dark: #0a0510; /* Casi negro con un pequeñísimo tinte morado */
-  --bg-card: #140b1f; /* Fondo de tarjeta morado muy oscuro */
-  --border-color: #3b1d5c; /* Borde morado visible */
-  
-  /* Tonos principales de los mockups */
-  --accent-pink: #df46f7; /* Rosado neón / Magenta */
-  --accent-purple: #9b2df2; /* Morado vibrante */
-  
-  /* Degradado característico de los botones en el mockup */
-  --brand-gradient: linear-gradient(90deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
-  
-  --text-main: #ffffff;
-  --text-muted: #a09ba6;
+@import '../../../styles/reservation-theme.css';
+
+.manage-top-nav {
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.manage-nav-link {
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: rgba(155, 45, 242, 0.08);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.manage-nav-link:hover {
+  background: rgba(155, 45, 242, 0.18);
+  border-color: var(--accent-purple);
+}
+
+.manage-nav-link-secondary {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #a09ba6;
+}
+
+.manage-nav-link-secondary:hover {
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Contenedor principal con el resplandor morado/rosado de fondo */
