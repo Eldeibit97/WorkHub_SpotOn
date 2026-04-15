@@ -1,361 +1,189 @@
-/* Sign In — columna imagen | columna login; solo el borde de unión (lado izq. del panel) redondeado */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import '../styles/reservation-theme.css';
 
-@keyframes signinLeftReveal {
+/* Un ciclo = exactamente un período (dash + gap) para que el loop infinito no salte */
+@keyframes circuit-flow {
   from {
-    opacity: 0;
-    transform: scale(1.02);
-    filter: brightness(1.08);
+    stroke-dashoffset: 0;
   }
   to {
-    opacity: 1;
-    transform: scale(1);
-    filter: brightness(1);
+    stroke-dashoffset: -12;
   }
 }
 
-@keyframes signinRightReveal {
+@keyframes signinCardIn {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateY(16px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes signinFadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 .signin-page {
+  position: relative;
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
   min-height: 100dvh;
-  height: 100vh;
-  height: 100dvh;
+  width: 100%;
   margin: 0;
-  padding: 0;
-  overflow: hidden;
+  padding: clamp(1rem, 4vw, 2rem);
   box-sizing: border-box;
-  background: #090811;
+  background: #0a0a0f;
   font-family: 'Inter', system-ui, sans-serif;
   color: #fff;
+  overflow: auto;
 }
 
-/* ── Izquierda: imagen sin redondeo propio; se extiende debajo del panel derecho ── */
-.signin-left {
-  position: relative;
-  flex: 1 1 50%;
-  min-width: 0;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  align-items: stretch;
-  overflow: hidden;
-  /* Sin border-radius: el panel derecho encima cubre el borde con su propio redondeo */
-  animation: signinLeftReveal 0.82s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.signin-left-img {
+/* ── Circuito PCB ── */
+.signin-circuits {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 45% center;
-  display: block;
   z-index: 0;
-}
-
-.signin-left-gradient {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(210, 169, 228, 0.38) 0%,
-    rgba(95, 37, 159, 0.28) 50%,
-    rgba(95, 37, 159, 0.42) 100%
-  );
-}
-
-.signin-hero-tagline {
-  position: relative;
-  z-index: 2;
-  justify-self: center;
-  margin: clamp(14px, 2.8vh, 28px) 1rem 0;
-  max-width: 240px;
-  text-align: center;
-  font-size: 12px;
-  line-height: 15px;
-  font-weight: 400;
-  color: #ffffff;
-  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  animation: signinFadeInUp 0.55s ease-out 0.18s forwards;
-}
-
-.signin-hero-booking-block {
-  position: relative;
-  z-index: 2;
-  justify-self: start;
-  align-self: center;
-  width: min(144px, 42vw);
-  margin-left: clamp(16px, 4vw, 44px);
-  margin-bottom: clamp(24px, 5vh, 52px);
-  opacity: 0;
-  animation: signinFadeInUp 0.58s ease-out 0.3s forwards;
-}
-
-.signin-ellipse {
-  position: absolute;
-  border-radius: 50%;
-  box-sizing: border-box;
-  border: 1px solid rgba(172, 172, 172, 0.33);
   pointer-events: none;
 }
 
-.signin-ellipse--outer {
-  width: 100px;
-  height: 100px;
-  left: 21px;
-  top: 0;
+.signin-circuit-track {
+  fill: none;
+  stroke: rgba(167, 69, 255, 0.28);
+  stroke-width: 0.12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.signin-ellipse--inner {
-  width: 63px;
-  height: 59px;
-  left: 40px;
-  top: 21px;
+.signin-circuit-pulse {
+  fill: none;
+  stroke: rgba(196, 117, 255, 0.95);
+  stroke-width: 0.18;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* período 12 (2 + 10): el offset debe moverse en múltiplos de 12 para bucle sin discontinuidad */
+  stroke-dasharray: 2 10;
+  stroke-dashoffset: 0;
+  animation: circuit-flow 4s linear infinite;
 }
 
-.signin-hero-title {
-  position: relative;
-  margin: 0;
-  font-size: clamp(28px, 4.2vw, 36px);
-  line-height: 1.22;
-  font-weight: 700;
-  text-align: left;
-  color: #ffffff;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
-}
-
-/* ── Derecha: panel oscuro; redondeo solo en el borde que une con la imagen (arriba-izq y abajo-izq) ── */
-.signin-right {
-  position: relative;
-  flex: 1 1 50%;
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  background: #090811;
-  border-radius: 40px 0 0 40px;
-  overflow: hidden;
-  padding: clamp(24px, 4vh, 40px) clamp(22px, 4.5vw, 56px) clamp(28px, 5vh, 48px)
-    clamp(20px, 3.5vw, 40px);
-  /* Margen negativo a la izquierda para solapar el borde del panel izquierdo
-     y eliminar el hueco negro que genera el border-radius */
-  margin-left: -40px;
-  z-index: 1;
-  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.25);
-  animation: signinRightReveal 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
-}
-
-.signin-right-glow {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.signin-right-glow--tl {
-  top: -15%;
-  left: -20%;
-  width: min(90%, 420px);
-  height: min(55%, 320px);
-  background: radial-gradient(
-    ellipse at 40% 35%,
-    rgba(107, 31, 181, 0.35) 0%,
-    rgba(8, 8, 16, 0) 68%
-  );
-}
-
-.signin-right-glow--br {
-  bottom: -18%;
-  right: -22%;
-  width: min(75%, 380px);
-  height: min(50%, 300px);
-  background: radial-gradient(
-    ellipse at 60% 60%,
-    rgba(107, 31, 181, 0.32) 0%,
-    rgba(8, 8, 16, 0) 70%
-  );
-}
-
-.signin-card-header {
+/* ── Tarjeta central ── */
+.signin-form-card {
   position: relative;
   z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-shrink: 0;
-  opacity: 0;
-  animation: signinFadeInUp 0.48s ease-out 0.24s forwards;
-}
-
-.signin-card-logo {
-  width: min(131px, 38vw);
-  height: auto;
-  max-height: 35px;
-  object-fit: contain;
-  object-position: left center;
-  display: block;
-}
-
-.signin-signup-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  text-decoration: none;
-  color: #ffffff;
-  font-size: 10px;
-  line-height: 12px;
-  font-weight: 400;
-  flex-shrink: 0;
-}
-
-.signin-signup-icon-wrap {
-  position: relative;
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-}
-
-.signin-signup-ring-outer {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid #ffffff;
-  border-radius: 50%;
-  box-sizing: border-box;
-}
-
-.signin-signup-ring-inner {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid #ffffff;
-  border-radius: 50%;
-  box-sizing: border-box;
-}
-
-.signin-signup-icon {
-  position: relative;
-  z-index: 1;
-  width: 12px;
-  height: 12px;
-}
-
-.signin-form {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
   width: 100%;
-  max-width: 320px;
-  margin: 0 auto;
-  padding: clamp(12px, 3vh, 28px) 0;
+  max-width: 420px;
+  padding: clamp(1.75rem, 4vw, 2.25rem) clamp(1.5rem, 4vw, 2rem) clamp(1.75rem, 4vw, 2rem);
+  border-radius: 28px;
+  background: linear-gradient(165deg, #16141f 0%, #12101a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 24px 64px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(95, 37, 159, 0.08);
+  animation: signinCardIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.signin-form-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.signin-brand-logo {
+  width: min(140px, 42vw);
+  height: auto;
+  max-height: 40px;
+  object-fit: contain;
+  display: block;
 }
 
 .signin-form-title {
-  width: 100%;
-  margin: 0 0 clamp(12px, 2vh, 18px);
-  font-size: clamp(28px, 4vw, 36px);
-  line-height: 44px;
-  font-weight: 500;
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 4vw, 1.875rem);
+  font-weight: 600;
   text-align: center;
-  color: #ffffff;
-  opacity: 0;
-  animation: signinFadeInUp 0.48s ease-out 0.36s forwards;
+  letter-spacing: -0.02em;
+}
+
+.signin-subtitle {
+  margin: 0 0 1.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #a1a1aa;
+  text-align: center;
+}
+
+.signin-subtitle-link {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signin-subtitle-link:hover {
+  text-decoration: underline;
+}
+
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
 }
 
 .signin-field {
   display: block;
-  width: 100%;
-  max-width: 288px;
-  margin: 0 0 10px;
-  opacity: 0;
-  animation: signinFadeInUp 0.42s ease-out 0.46s forwards;
+  margin: 0;
 }
 
-.signin-field + .signin-field {
-  animation-delay: 0.58s;
+.signin-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0 0.9rem 0 0.85rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.signin-input-wrap:focus-within {
+  border-color: rgba(192, 132, 252, 0.55);
+  box-shadow: 0 0 0 2px rgba(161, 0, 255, 0.15);
+}
+
+.signin-field-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  color: #a1a1aa;
 }
 
 .signin-input {
-  box-sizing: border-box;
-  width: 100%;
-  height: 42px;
-  padding: 0 18px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 300;
-  color: #ffffff;
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 0.25rem 0 0;
+  border: none;
   background: transparent;
-  border: 1px solid #ffffff;
-  border-radius: 24px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  color: #fff;
   outline: none;
 }
 
 .signin-input::placeholder {
-  color: rgba(255, 255, 255, 0.72);
-  font-weight: 300;
-}
-
-.signin-input:focus {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+  color: #71717a;
 }
 
 .signin-forgot {
   align-self: flex-start;
-  width: 100%;
-  max-width: 288px;
-  margin: 6px 0 clamp(18px, 3vh, 28px);
-  padding-left: 18px;
-  font-size: 12px;
-  line-height: 12px;
-  font-weight: 700;
-  color: #ffffff;
+  margin-top: 0.15rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e4e4e7;
   text-decoration: none;
-  opacity: 0;
-  animation: signinFadeInUp 0.4s ease-out 0.7s forwards;
 }
 
 .signin-forgot:hover {
@@ -363,31 +191,33 @@
 }
 
 .signin-submit {
-  box-sizing: border-box;
+  margin-top: 0.35rem;
   width: 100%;
-  max-width: 288px;
-  height: 42px;
-  padding: 0;
+  height: 48px;
+  border: none;
+  border-radius: 14px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 700;
-  color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.19);
-  border-radius: 24px;
+  color: #fff;
   cursor: pointer;
-  background: linear-gradient(90deg, #5f259f 0%, #b478ce 100%);
+  background: var(--res-gradient-btn, linear-gradient(90deg, #5f259f 0%, #b478ce 100%));
+  box-shadow: 0 4px 20px rgba(95, 37, 159, 0.45);
   transition: filter 0.2s, transform 0.15s;
-  opacity: 0;
-  animation: signinFadeInUp 0.45s ease-out 0.82s forwards;
 }
 
 .signin-submit:hover {
-  filter: brightness(1.06);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.signin-submit:active {
+  transform: translateY(0);
 }
 
 .signin-submit:focus-visible {
-  outline: 2px solid #d2a9e4;
-  outline-offset: 2px;
+  outline: 2px solid #c084fc;
+  outline-offset: 3px;
 }
 
 .visually-hidden {
@@ -403,46 +233,22 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .signin-left,
-  .signin-right,
-  .signin-hero-tagline,
-  .signin-hero-booking-block,
-  .signin-card-header,
-  .signin-form-title,
-  .signin-field,
-  .signin-forgot,
-  .signin-submit {
+  .signin-circuit-pulse {
     animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
+    stroke-dasharray: none;
+    opacity: 0.4;
+  }
+
+  .signin-form-card {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
   }
 }
 
-@media (max-width: 720px) {
-  .signin-page {
-    flex-direction: column;
-    height: auto;
-    min-height: 100dvh;
-    overflow-y: auto;
-  }
-
-  .signin-left {
-    flex: 0 0 auto;
-    min-height: min(42vh, 320px);
-    /* en móvil no hay solapamiento, resetear */
-  }
-
-  .signin-right {
-    flex: 1 1 auto;
-    min-height: min(52vh, 480px);
-    border-radius: 40px 40px 0 0;
-    margin-left: 0;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
-  }
-
-  .signin-form {
-    justify-content: flex-start;
-    padding-bottom: 2rem;
+@media (max-width: 480px) {
+  .signin-form-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 22px;
   }
 }

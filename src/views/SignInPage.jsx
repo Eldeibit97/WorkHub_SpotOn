@@ -1,19 +1,78 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import torresLogin from '../assets/torresmoradas-login.png'
+import { Link, useNavigate } from 'react-router-dom'
 import accGtLogo from '../assets/Acc_GT_Solid_P1_RGB.png'
 import './SignInPage.css'
 
-function SignUpIcon() {
+function MailIcon() {
   return (
-    <svg className="signin-signup-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.5" />
+    <svg className="signin-field-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M6 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"
+        d="M4 7h16v10H4V7zm0 0l8 6 8-6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function LockIcon() {
+  return (
+    <svg className="signin-field-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M8 11V8a4 4 0 0 1 8 0v3"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
+    </svg>
+  )
+}
+
+function SignInCircuitBg() {
+  const lines = [
+    {
+      id: 'tl',
+      d: 'M 0 5 L 18 5 L 26 5.5 L 34 12 L 34 30 L 41 38',
+      delay: '0s',
+    },
+    {
+      id: 'tr',
+      d: 'M 100 5 L 82 5 L 74 5.5 L 66 12 L 66 30 L 59 38',
+      delay: '0.45s',
+    },
+    {
+      id: 'bl',
+      d: 'M 0 95 L 18 95 L 26 94.5 L 34 88 L 34 70 L 41 62',
+      delay: '0.9s',
+    },
+    {
+      id: 'br',
+      d: 'M 100 95 L 82 95 L 74 94.5 L 66 88 L 66 70 L 59 62',
+      delay: '1.35s',
+    },
+  ]
+
+  return (
+    <svg
+      className="signin-circuits"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      {lines.map(({ id, d, delay }) => (
+        <g key={id} className={`signin-circuit-group signin-circuit-group--${id}`}>
+          <path className="signin-circuit-track" d={d} pathLength="100" />
+          <path
+            className="signin-circuit-pulse"
+            d={d}
+            pathLength="100"
+            style={{ animationDelay: delay }}
+          />
+        </g>
+      ))}
     </svg>
   )
 }
@@ -30,81 +89,55 @@ export default function SignInPage() {
 
   return (
     <div className="signin-page">
-      <section className="signin-left" aria-label="WorkHub ATC">
-        <img
-          src={torresLogin}
-          alt=""
-          className="signin-left-img"
-        />
-        <div className="signin-left-gradient" aria-hidden="true" />
-        <p className="signin-hero-tagline">Reserve spaces and parking at the ATC</p>
-        <div className="signin-hero-booking-block">
-          <span className="signin-ellipse signin-ellipse--outer" aria-hidden="true" />
-          <span className="signin-ellipse signin-ellipse--inner" aria-hidden="true" />
-          <h1 className="signin-hero-title">
-            Quick
-            <br />
-            Booking
-          </h1>
+      <SignInCircuitBg />
+
+      <div className="signin-form-card">
+        <div className="signin-form-brand">
+          <img src={accGtLogo} alt="Accenture" className="signin-brand-logo" />
         </div>
-      </section>
 
-      <section className="signin-right" aria-label="Sign in form">
-        <div className="signin-right-glow signin-right-glow--tl" aria-hidden="true" />
-        <div className="signin-right-glow signin-right-glow--br" aria-hidden="true" />
-
-        <header className="signin-card-header">
-          <img src={accGtLogo} alt="Accenture" className="signin-card-logo" />
-          <a
-            href="#"
-            className="signin-signup-link"
-            onClick={(e) => {
-              e.preventDefault()
-            }}
-          >
-            <span className="signin-signup-icon-wrap" aria-hidden="true">
-              <span className="signin-signup-ring-outer" />
-              <span className="signin-signup-ring-inner" />
-              <SignUpIcon />
-            </span>
-            Sign Up
-          </a>
-        </header>
+        <h1 className="signin-form-title">Sign In</h1>
+        <p className="signin-subtitle">
+          Don&apos;t have an account yet?{' '}
+          <Link to="/" className="signin-subtitle-link">
+            Sign up
+          </Link>
+        </p>
 
         <form className="signin-form" onSubmit={handleSubmit}>
-          <h2 className="signin-form-title">Sign In</h2>
-
           <label className="signin-field">
             <span className="visually-hidden">Email or Username</span>
-            <input
-              type="text"
-              name="email"
-              autoComplete="username"
-              className="signin-input"
-              placeholder="Email or Username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <span className="signin-input-wrap">
+              <MailIcon />
+              <input
+                type="text"
+                name="email"
+                autoComplete="username"
+                className="signin-input"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </span>
           </label>
 
           <label className="signin-field">
             <span className="visually-hidden">Password</span>
-            <input
-              type="password"
-              name="password"
-              autoComplete="current-password"
-              className="signin-input"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <span className="signin-input-wrap">
+              <LockIcon />
+              <input
+                type="password"
+                name="password"
+                autoComplete="current-password"
+                className="signin-input"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </span>
           </label>
 
-          <a
-            href="#"
-            className="signin-forgot"
-            onClick={(e) => e.preventDefault()}
-          >
+          <a href="#" className="signin-forgot" onClick={(e) => e.preventDefault()}>
             Forgot Password?
           </a>
 
@@ -112,7 +145,7 @@ export default function SignInPage() {
             Sign In
           </button>
         </form>
-      </section>
+      </div>
     </div>
   )
 }
