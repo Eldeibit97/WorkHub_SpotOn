@@ -91,3 +91,38 @@ body {
   align-items: center;
   gap: 10px;
 }
+
+.page-header {
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+  padding: 36px 40px 24px;
+  margin-bottom: 40px;
+}
+
+.page-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+
+.edit-page-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 40px 60px;
+}
+
+.edit-page-content .reservation-panel {
+  width: 100%;
+}

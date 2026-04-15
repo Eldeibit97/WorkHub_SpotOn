@@ -5,6 +5,13 @@
   box-sizing: border-box;
 }
 
+#root {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Aplicamos el fondo a toda la página directamente */
 body, html, #root {
   width: 100%;
