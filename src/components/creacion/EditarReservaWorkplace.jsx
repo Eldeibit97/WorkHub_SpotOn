@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import '../../styles/crear_reservacion.css';
-import EstacionamientoForms from './EstacionamientoForms';
-import OficinasForms from './OficinasForms';
+import '../../styles/oficinas_forms.css';
 import DateSelector from './DateSelector';
 import TimeSelector from './TimeSelector';
-import Confirmacion from './Confirmacion';
  
 const EditarReservaWorkplace = () => {
-  const [activeTab, setActiveTab] = useState('parking');
-  const [currentScreen, setCurrentScreen] = useState('reservation');
-  
+  const [saved, setSaved] = useState(false);
+
   const getCurrentDate = () => {
     const today = new Date();
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -56,83 +53,78 @@ const EditarReservaWorkplace = () => {
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
-
-  // const hasChanges = 
-  //   reservationData.date !== originalData.date ||
-  //   reservationData.startTime !== originalData.startTime ||
-  //   reservationData.endTime !== originalData.endTime ||
-  //   reservationData.floor !== originalData.floor ||
-  //   reservationData.email !== originalData.email;
  
   return (
-    
-    <div className="main-grid">
-      <div className="parking-map-container">
-        <div className="placeholder-text">
-          Workspace layout will appear here
+    <div className="reservation-container">
+      <header className="page-header">
+        <div className="page-header-content">
+          <h1 className="page-title">Modify Reservation</h1>
+          <p className="page-subtitle">Update the details of your existing booking</p>
         </div>
-      </div>
-      <div className="reservation-panel">
+      </header>
 
-        <div className="reservation-panel-header">
-          <span className="reservation-id-badge">WP-48231</span>
-          <h3>Edit Reservation</h3>
-        </div>
+      <div className="edit-page-content">
+        <div className="reservation-panel">
 
-        {/* {saved && (
-          <div className="save-success-banner">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            Changes saved successfully
+          <div className="reservation-panel-header">
+            <span className="reservation-id-badge">WP-48231</span>
+            <h3>Edit Reservation</h3>
           </div>
-        )} */}
 
-        <DateSelector
-          selectedDate={reservationData.date}
-          onDateChange={handleDateChange}
-        />
+          {saved && (
+            <div className="save-success-banner">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Changes saved successfully
+            </div>
+          )}
 
-        <TimeSelector
-          startTime={reservationData.startTime}
-          endTime={reservationData.endTime}
-          onTimeChange={handleTimeChange}
-        />
-
-        <select
-          className="floor-dropdown"
-          value={reservationData.floor}
-          onChange={handleFloorChange}
-        >
-          <option>1st floor</option>
-          <option>2nd floor</option>
-          <option>3rd floor</option>
-          <option>4th floor</option>
-        </select>
-
-        <div className="location-display">
-          {reservationData.location}
-        </div>
-
-        <div className="email-container">
-          <input
-            type="email"
-            className="email-input"
-            value={reservationData.email}
-            onChange={handleEmailChange}
-            placeholder="Email address"
+          <DateSelector
+            selectedDate={reservationData.date}
+            onDateChange={handleDateChange}
           />
-          <button className="add-guest-btn" title="Add guest">+</button>
+
+          <TimeSelector
+            startTime={reservationData.startTime}
+            endTime={reservationData.endTime}
+            onTimeChange={handleTimeChange}
+          />
+
+          <select
+            className="floor-dropdown"
+            value={reservationData.floor}
+            onChange={handleFloorChange}
+          >
+            <option>1st floor</option>
+            <option>2nd floor</option>
+            <option>3rd floor</option>
+            <option>4th floor</option>
+          </select>
+
+          <div className="location-display">
+            {reservationData.location}
+          </div>
+
+          <div className="email-container">
+            <input
+              type="email"
+              className="email-input"
+              value={reservationData.email}
+              onChange={handleEmailChange}
+              placeholder="Email address"
+            />
+            <button className="add-guest-btn" title="Add guest">+</button>
+          </div>
+
+          <button
+            className="confirm-btn"
+            onClick={handleSave}
+          >
+            Save Changes
+          </button>
+
         </div>
-
-        <button
-          className="confirm-btn"
-          onClick={handleSave}
-          // disabled={!hasChanges}
-        >
-          Save Changes
-        </button>
-
       </div>
     </div>
   );
