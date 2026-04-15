@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import '../../styles/estacionamiento_forms.css';
 import CaruselMapas from './CaruselMapas';
-import DateSelector from './DateSelector';
+import DateSelector from '../modificacion/DateSelector';
 
 const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
   const [reservationData, setReservationData] = useState({

@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import '../../styles/oficinas_forms.css';
 import CaruselMapas from './CaruselMapas';
-import DateSelector from './DateSelector';
+import DateSelector from '../modificacion/DateSelector';
 import TimeSelector from './TimeSelector';
 
 const OficinasForms = ( {currentDate, onConfirm} ) => {
