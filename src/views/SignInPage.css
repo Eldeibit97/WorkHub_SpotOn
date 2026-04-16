@@ -190,6 +190,17 @@
   text-decoration: underline;
 }
 
+.signin-form-error {
+  margin: 0 0 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.35);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
 .signin-submit {
   margin-top: 0.35rem;
   width: 100%;
@@ -218,6 +229,13 @@
 .signin-submit:focus-visible {
   outline: 2px solid #c084fc;
   outline-offset: 3px;
+}
+
+.signin-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+  filter: none;
+  transform: none;
 }
 
 .visually-hidden {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import accGtLogo from '../assets/Acc_GT_Solid_P1_RGB.png'
+import { loginRequest } from '../api/auth'
 import './SignInPage.css'
 
 function MailIcon() {
@@ -81,10 +82,21 @@ export default function SignInPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    navigate('/home')
+    setError('')
+    setSubmitting(true)
+    try {
+      await loginRequest({ email, password })
+      navigate('/home')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo iniciar sesión.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -105,6 +117,11 @@ export default function SignInPage() {
         </p>
 
         <form className="signin-form" onSubmit={handleSubmit}>
+          {error ? (
+            <p className="signin-form-error" role="alert">
+              {error}
+            </p>
+          ) : null}
           <label className="signin-field">
             <span className="visually-hidden">Email or Username</span>
             <span className="signin-input-wrap">
@@ -141,8 +158,8 @@ export default function SignInPage() {
             Forgot Password?
           </a>
 
-          <button type="submit" className="signin-submit">
-            Sign In
+          <button type="submit" className="signin-submit" disabled={submitting}>
+            {submitting ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
       </div>
