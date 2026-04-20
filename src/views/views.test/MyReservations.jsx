@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getReservations, saveReservations } from '../lib/constants'
+import { getReservations, saveReservations } from '../../lib/constants'
 import './MyReservations.css'
 
 export default function MyReservations({ onNavigate }) {

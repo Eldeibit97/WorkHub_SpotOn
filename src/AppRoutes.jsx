@@ -1,11 +1,10 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import CrearReservacion from './components/creacion/CrearReservacion'
+import CrearReservacion from './views/CrearReservacion'
 import Confirmacion from './components/creacion/Confirmacion'
 import LandingPage from './views/LandingPage'
 import SignInPage from './views/SignInPage'
-import AppShell from './AppShell'
-import ManageReservationsPage from './Pages/ManageReservationsPage'
+import ManageReservationsPage from './views/ManageReservationsPage'
 
 const AppRoutes = () => {
   return (
@@ -15,7 +14,7 @@ const AppRoutes = () => {
       <Route path="/reservar" element={<CrearReservacion />} />
       <Route path="/confirmacion" element={<Confirmacion />} />
       <Route path="/cancelar" element={<ManageReservationsPage />} />
-      <Route path="/*" element={<AppShell />} />
+      <Route path="/*" element={<LandingPage />} />
     </Routes>
   )
 }

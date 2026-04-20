@@ -1,10 +1,10 @@
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import './styles/AppShell.css'
 import Header from './components/Header'
-import Home from './views/Home'
-import Parking from './views/Parking'
-import Offices from './views/Offices'
-import MyReservations from './views/MyReservations'
+import Home from './views/views.test/Home'
+import Parking from './views/views.test/Parking'
+import Offices from './views/views.test/Offices'
+import MyReservations from './views/views.test/MyReservations'
 
 export default function AppShell() {
   const navigate = useNavigate()

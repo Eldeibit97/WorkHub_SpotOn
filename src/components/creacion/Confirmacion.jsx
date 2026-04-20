@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import '../../styles/confirmacion.css';
+import './confirmacion.css';
 
 const Confirmacion = () => {
   const navigate = useNavigate();
