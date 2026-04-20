@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/date_selector.css';
+import './date_selector.css';
  
 const DateSelector = ({ selectedDate, onDateChange }) => {
   const [showCalendar, setShowCalendar] = useState(false);

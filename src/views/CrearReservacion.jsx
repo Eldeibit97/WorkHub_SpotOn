@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AccentureLogo from '../AccentureLogo';
-import '../../styles/crear_reservacion.css';
-import TimerDisplay from './TimerDisplay';
-import EstacionamientoForms from './EstacionamientoForms';
-import OficinasForms from './OficinasForms';
+import AccentureLogo from '../components/AccentureLogo';
+import './crear_reservacion.css';
+import TimerDisplay from '../components/creacion/TimerDisplay';
+import EstacionamientoForms from '../components/creacion/EstacionamientoForms';
+import OficinasForms from '../components/creacion/OficinasForms';
 
 const CrearReservacion = () => {
   const navigate = useNavigate();

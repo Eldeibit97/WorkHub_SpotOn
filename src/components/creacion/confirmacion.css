@@ -1,4 +1,4 @@
-@import './reservation-theme.css';
+@import '../../styles/reservation-theme.css';
 
 .confirmation-container {
   text-align: center;

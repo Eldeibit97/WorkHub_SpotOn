@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../styles/sugerencias.css'
+import './sugerencias.css'
 
 const Sugerencias = () => {
   const getCurrentDate = () => {

@@ -6,6 +6,6 @@ import Sugerencias from './components/sugerencias/Sugerencias.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Sugerencias />
+    <App />
   </StrictMode>,
 )
