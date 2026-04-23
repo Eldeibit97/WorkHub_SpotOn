@@ -27,9 +27,6 @@ const Confirmacion = () => {
             ← Back Home
           </Link>
           <div className="confirmation-header-actions">
-            <Link to='/reservar' className="back-to-reserve-link">
-              ← Volver a reservar
-            </Link>
             <Link to='/reservar' className="reserve-again-btn">
               Reserve {reservationData.type === 'parking' ? 'Workplace' : 'Parking'} →
             </Link>
