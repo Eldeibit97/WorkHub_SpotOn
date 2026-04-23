@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import accGtLogo from '../assets/Acc_GT_Solid_P1_RGB.png'
 import { loginRequest } from '../api/auth'
+import { useAuth } from '../context/AuthContext'
 import './SignInPage.css'
 
 function MailIcon() {
@@ -80,6 +81,7 @@ function SignInCircuitBg() {
 
 export default function SignInPage() {
   const navigate = useNavigate()
+  const { signIn } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -90,8 +92,14 @@ export default function SignInPage() {
     setError('')
     setSubmitting(true)
     try {
-      await loginRequest({ email, password })
-      navigate('/home')
+      const data = await loginRequest({ email, password })
+      signIn(data)
+      if (data.user.rol === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/reservar')
+      }
+        
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo iniciar sesión.')
     } finally {
