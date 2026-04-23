@@ -91,7 +91,7 @@ export default function SignInPage() {
     setSubmitting(true)
     try {
       await loginRequest({ email, password })
-      navigate('/home')
+      navigate('/reservar')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo iniciar sesión.')
     } finally {
