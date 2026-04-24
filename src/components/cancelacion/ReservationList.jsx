@@ -1,8 +1,7 @@
 import React from 'react';
 import ReservationCard from './ReservationCard';
 
-export default function ReservationList({ reservations, onCancelRequest }) {
-  // Manejo de estado vacío (cuando ya cancelaste todo)
+export default function ReservationList({ reservations, onCancelRequest, onCheckIn, onCheckOut, loadingId }) {
   if (reservations.length === 0) {
     return (
       <div className="empty-state">
@@ -18,6 +17,9 @@ export default function ReservationList({ reservations, onCancelRequest }) {
           key={reservation.id} 
           reservation={reservation} 
           onCancelRequest={() => onCancelRequest(reservation)} 
+          onCheckIn={() => onCheckIn(reservation.id)}
+          onCheckOut={() => onCheckOut(reservation.id)}
+          isLoading={loadingId === reservation.id}
         />
       ))}
     </div>
