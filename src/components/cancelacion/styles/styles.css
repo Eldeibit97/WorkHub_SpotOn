@@ -122,13 +122,12 @@
 }
 
 .badge {
-  background: rgba(223, 70, 247, 0.15); /* Fondo rosado translúcido */
-  color: var(--accent-pink);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid rgba(223, 70, 247, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .type-label {
@@ -161,8 +160,8 @@
 
 .btn-cancel-outline {
   background: transparent;
-  color: var(--accent-pink);
-  border: 1px solid var(--accent-pink);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
@@ -171,8 +170,8 @@
 }
 
 .btn-cancel-outline:hover {
-  background: rgba(223, 70, 247, 0.1);
-  box-shadow: 0 0 15px rgba(223, 70, 247, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-muted);
 }
 
 /* Modal */
@@ -263,4 +262,62 @@
   opacity: 0.9;
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(223, 70, 247, 0.4); /* Resplandor rosado al pasar el mouse */
+}
+
+/* Separación entre los dos botones */
+.card-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px; 
+}
+
+/* Estilo para el botón de Modificar (Link) */
+.btn-modify-outline {
+  background: transparent;
+  color: var(--accent-pink);
+  border: 1px solid var(--accent-pink);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-decoration: none; /* Quita el subrayado del Link */
+  display: flex;
+  align-items: center;
+}
+
+.btn-modify-outline:hover {
+  background: rgba(223, 70, 247, 0.1);
+  box-shadow: 0 0 15px rgba(223, 70, 247, 0.2);
+}
+
+/* Indicadores de Estatus (Today, Upcoming, Past) */
+.status-indicator {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-today {
+  background-color: rgba(46, 213, 115, 0.15);
+  color: #2ed573; /* Verde */
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+.status-upcoming {
+  background-color: rgba(255, 164, 2, 0.15);
+  color: #ffa502; /* Naranja */
+  border: 1px solid rgba(255, 164, 2, 0.3);
+}
+
+.status-past {
+  background-color: rgba(164, 176, 190, 0.15);
+  color: #a4b0be; /* Gris */
+  border: 1px solid rgba(164, 176, 190, 0.3);
 }

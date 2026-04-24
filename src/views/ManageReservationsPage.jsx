@@ -6,9 +6,10 @@ import '../components/cancelacion/styles/styles.css';
 
 const initialReservations = [
   {
-    id: 1,
+    id: 1, 
     type: 'Workplace',
     date: 'lunes, 09 de marzo de 2026',
+    isoDate: '2026-03-09T08:00:00',
     time: '08:00 → 13:00',
     location: '3rd Floor',
     details: 'SIERRA MADRE - ICSJ-3040'
@@ -16,10 +17,20 @@ const initialReservations = [
   {
     id: 2,
     type: 'Parking',
-    date: 'lunes, 09 de marzo de 2026',
+    date: 'jueves, 23 de abril de 2026', 
+    isoDate: '2026-04-23T08:00:00',
     time: '08:00 → 13:00',
     location: 'South Parking Lot',
     details: '2nd Floor'
+  },
+  {
+    id: 3,
+    type: 'Workplace',
+    date: 'viernes, 24 de abril de 2026',
+    isoDate: '2026-04-24T08:00:00',
+    time: '08:00 → 13:00',
+    location: '4th Floor',
+    details: 'SIERRA MADRE - ICSJ-4050'
   }
 ];
 
@@ -35,13 +46,33 @@ export default function ManageReservationsPage() {
     setSelectedReservation(null);
   };
 
-  const handleConfirmCancellation = () => {
-    if (selectedReservation) {
-      const updatedReservations = reservations.filter(
-        (res) => res.id !== selectedReservation.id
-      );
-      setReservations(updatedReservations);
-      handleCloseModal();
+  const handleConfirmCancellation = async () => {
+    if (!selectedReservation) return;
+
+    try {
+      
+      const response = await fetch(`http://localhost:3000/reservas/reserva/${selectedReservation.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const updatedReservations = reservations.filter(
+          (res) => res.id !== selectedReservation.id
+        );
+        setReservations(updatedReservations);
+        handleCloseModal();
+        console.log("Reservación eliminada con éxito de la base de datos.");
+      } else {
+        alert("Error al cancelar: " + (data.message || data.error));
+      }
+    } catch (error) {
+      console.error("Error al conectar con el servidor:", error);
+      alert("No se pudo conectar con el servidor. Revisa que tu backend esté encendido.");
     }
   };
 
@@ -56,9 +87,8 @@ export default function ManageReservationsPage() {
         </Link>
       </nav>
       <header className="brand-header">
-        <h1 className="brand-logo">accenture</h1>
-        <h2 className="page-title">Cancelar Reservaciones Activas</h2>
-        <p className="page-subtitle">Gestiona tus espacios de trabajo y estacionamiento en el ATC.</p>
+        <h2 className="page-title">Mis Reservaciones</h2>
+        <p className="page-subtitle">Gestiona tus espacios de trabajo y estacionamiento.</p>
       </header>
 
       <main className="main-content">
