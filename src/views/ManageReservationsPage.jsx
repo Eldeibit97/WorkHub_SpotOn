@@ -56,9 +56,8 @@ export default function ManageReservationsPage() {
         </Link>
       </nav>
       <header className="brand-header">
-        <h1 className="brand-logo">accenture</h1>
-        <h2 className="page-title">Cancelar Reservaciones Activas</h2>
-        <p className="page-subtitle">Gestiona tus espacios de trabajo y estacionamiento en el ATC.</p>
+        <h2 className="page-title">Mis Reservaciones Activas</h2>
+        <p className="page-subtitle">Gestiona tus espacios de trabajo y estacionamiento.</p>
       </header>
 
       <main className="main-content">
