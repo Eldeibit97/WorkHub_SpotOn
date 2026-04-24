@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './time_selector.css';
  
-const TimeSelector = ({ startTime, endTime, onTimeChange }) => {
+const TimeSelector = ({ horaInicio, horaSalida, onTimeChange }) => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
  
@@ -20,12 +20,12 @@ const TimeSelector = ({ startTime, endTime, onTimeChange }) => {
   const timeSlots = generateTimeSlots();
  
   const handleStartTimeChange = (time) => {
-    onTimeChange(time, endTime);
+    onTimeChange(time, horaSalida);
     setShowStartPicker(false);
   };
  
   const handleEndTimeChange = (time) => {
-    onTimeChange(startTime, time);
+    onTimeChange(horaInicio, time);
     setShowEndPicker(false);
   };
  
@@ -35,7 +35,7 @@ const TimeSelector = ({ startTime, endTime, onTimeChange }) => {
         <input 
           type="text" 
           className="time-input" 
-          value={startTime}
+          value={horaInicio}
           onClick={() => setShowStartPicker(!showStartPicker)}
           readOnly
         />
@@ -44,7 +44,7 @@ const TimeSelector = ({ startTime, endTime, onTimeChange }) => {
             {timeSlots.map((time) => (
               <div
                 key={time}
-                className={`time-option ${startTime === time ? 'selected' : ''}`}
+                className={`time-option ${horaInicio === time ? 'selected' : ''}`}
                 onClick={() => handleStartTimeChange(time)}
               >
                 {time}
@@ -60,7 +60,7 @@ const TimeSelector = ({ startTime, endTime, onTimeChange }) => {
         <input 
           type="text" 
           className="time-input" 
-          value={endTime}
+          value={horaSalida}
           onClick={() => setShowEndPicker(!showEndPicker)}
           readOnly
         />
@@ -69,7 +69,7 @@ const TimeSelector = ({ startTime, endTime, onTimeChange }) => {
             {timeSlots.map((time) => (
               <div
                 key={time}
-                className={`time-option ${endTime === time ? 'selected' : ''}`}
+                className={`time-option ${horaSalida === time ? 'selected' : ''}`}
                 onClick={() => handleEndTimeChange(time)}
               >
                 {time}

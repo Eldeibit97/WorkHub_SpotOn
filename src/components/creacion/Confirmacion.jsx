@@ -19,6 +19,19 @@ const Confirmacion = () => {
     return null;
   }
 
+  const formatDate = () => {
+    const dateObj = new Date(reservationData.fechaReserva);
+
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+
+    const dayName = days[dateObj.getDay()];
+    const monthName = months[dateObj.getMonth()];
+    const day = dateObj.getDate();
+
+    return `${dayName}, ${monthName} ${day}`;
+  }
+
   return (
     <div className='reservation-container'>
       <div className="confirmation-container">
@@ -28,7 +41,7 @@ const Confirmacion = () => {
           </Link>
           <div className="confirmation-header-actions">
             <Link to='/reservar' className="reserve-again-btn">
-              Reserve {reservationData.type === 'parking' ? 'Workplace' : 'Parking'} →
+              Reserve {reservationData.tipoReserva === 'ESTACIONAMIENTO' ? 'Workplace' : 'Parking'} →
             </Link>
           </div>
         </div>
@@ -39,41 +52,35 @@ const Confirmacion = () => {
         </div>
 
         <p className="confirmation-message">
-          Your {reservationData.type === 'parking' ? 'parking spot' : 'workspace'} has been successfully reserved.
+          Your {reservationData.tipoReserva === 'ESTACIONAMIENTO' ? 'parking spot' : 'workspace'} has been successfully reserved.
         </p>
 
-        <p className="confirmation-date">
-          {reservationData.date.split(',')[0].charAt(0).toUpperCase() +
-            reservationData.date.split(',')[0].slice(1) +
-            ', ' +
-            reservationData.date.split(',')[1].trim().split(' ')[0] + ' ' +
-            reservationData.date.split(',')[1].trim().split(' ')[1]}
-        </p>
+        <p className="confirmation-fechaReserva">{formatDate()}</p>
 
         <div className="details-card">
           <div className="detail-item">
             <div className="detail-label">Booker</div>
-            <div className="detail-value">{reservationData.email}</div>
+            <div className="detail-value">{reservationData.mail}</div>
           </div>
 
           <div className="detail-item">
             <div className="detail-label">Reservation ID</div>
-            <div className="detail-value">{reservationData.reservationId}</div>
+            <div className="detail-value"></div>
           </div>
 
           <div className="detail-item">
-            <div className="detail-label">{reservationData.type === 'parking' ? 'Parking Lot' : 'Location'}</div>
+            <div className="detail-label">{reservationData.tipoReserva === 'ESTACIONAMIENTO' ? 'Parking Lot' : 'Location'}</div>
             <div className="detail-value">
-              {reservationData.type === 'parking' ? reservationData.parkingLot : reservationData.location}
+              {reservationData.tipoReserva === 'ESTACIONAMIENTO' ? reservationData.parkingLot : reservationData.location}
             </div>
           </div>
 
           <div className="detail-item">
-            <div className="detail-label">{reservationData.type === 'parking' ? 'Level' : 'Floor'}</div>
-            <div className="detail-value">{reservationData.type === 'parking' ? reservationData.level : reservationData.floor}</div>
+            <div className="detail-label">{reservationData.tipoReserva === 'ESTACIONAMIENTO' ? 'Level' : 'Floor'}</div>
+            <div className="detail-value">{reservationData.tipoReserva === 'ESTACIONAMIENTO' ? reservationData.level : reservationData.floor}</div>
           </div>
 
-          {reservationData.type === 'parking' && (
+          {reservationData.tipoReserva === 'ESTACIONAMIENTO' && (
             <div className="map-preview" style={{ gridColumn: '1 / -1' }}>
               <div className="detail-label">Location</div>
               <div style={{
