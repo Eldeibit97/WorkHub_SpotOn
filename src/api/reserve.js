@@ -11,8 +11,12 @@ import { apiFetch } from "./client";
  * @returns {Promise<object>} 
  */
 
-export async function reservar(datosReserva){
-  const res = await apiFetch('/api/reservando', {method: 'POST', body: datosReserva});
+export async function reservar(datosReserva) {
+  const res = await apiFetch('/api/reservando', { method: 'POST', body: datosReserva });
   const respuesta = await res.text();
-  console.log('Mensaje', respuesta.message);
+  let mensaje = {}
+  if (respuesta) {
+    mensaje = JSON.parse(respuesta)
+  }
+  console.log('Mensaje', mensaje);
 }
