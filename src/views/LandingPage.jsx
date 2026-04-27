@@ -27,7 +27,7 @@ export default function LandingPage() {
           <Link to="/login" className="landing-signin-link">
             Sign In
           </Link>
-          <Link to="/reservar" className="landing-cta-header">
+          <Link to="/sugerencias" className="landing-cta-header">
             Get Started <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
@@ -148,7 +148,7 @@ export default function LandingPage() {
         <div className="section-inner">
           <div className="footer-cta">
             <p className="footer-cta-text">Ready to reclaim your morning?</p>
-            <Link to="/reservar" className="landing-cta-main">
+            <Link to="/sugerencias" className="landing-cta-main">
               Get Started <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>

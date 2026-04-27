@@ -91,7 +91,7 @@ export default function SignInPage() {
     setSubmitting(true)
     try {
       await loginRequest({ email, password })
-      navigate('/')
+      navigate('/sugerencias')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo iniciar sesión.')
     } finally {
@@ -161,6 +161,12 @@ export default function SignInPage() {
           <button type="submit" className="signin-submit" disabled={submitting}>
             {submitting ? 'Signing in…' : 'Sign In'}
           </button>
+          <Link to="/" className="signin-submit" style={{
+            textAlign: 'center',
+            alignContent: 'center'
+          }}>
+            Regresar a landing page
+          </Link>
         </form>
       </div>
     </div>

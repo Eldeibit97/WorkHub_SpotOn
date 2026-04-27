@@ -33,9 +33,33 @@ const CrearReservacion = () => {
     return `${dateData.dayName}, ${dateData.monthName} ${String(dateData.dateObj.getDate()).padStart(2, '0')} of ${dateData.dateObj.getFullYear()}`;
   }
 
-  const handleConfirm = (data) =>{
-    reservar(data)
-    navigate('/confirmacion', {state: data})
+  const handleConfirm = async (data) =>{
+    //reservar(data)
+    //navigate('/confirmacion', {state: data})
+    try {
+      const response = await reservar(data);
+      
+      if (response.ok || response.status === 200 || response.status === 201) {
+        navigate('/confirmacion', { state: data });
+      } else {
+        const errorMessage = await response.text();
+        navigate('/error', { 
+          state: { 
+            statusCode: response.status,
+            message: errorMessage,
+            reservationData: data
+          } 
+        });
+      }
+    } catch (error) {
+      navigate('/error', { 
+        state: { 
+          statusCode: error.response?.status || 500,
+          message: error.message || 'Network error occurred',
+          reservationData: data
+        } 
+      });
+    }
   }
 
   const renderForm = () => {
@@ -50,8 +74,8 @@ const CrearReservacion = () => {
         <Link to="/home" className="reservation-top-bar-logo" aria-label="Inicio">
           <AccentureLogo size="small" />
         </Link>
-        <Link to="/home" className="reservation-back-link">
-          ← Back
+        <Link to="/sugerencias" className="reservation-back-link">
+          ← Regresar a casa
         </Link>
       </header>
       <div className="nav-tabs-custom">
