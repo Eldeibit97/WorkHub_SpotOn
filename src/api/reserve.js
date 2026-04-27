@@ -12,11 +12,16 @@ import { apiFetch } from "./client";
  */
 
 export async function reservar(datosReserva) {
-  const res = await apiFetch('/api/reservando', { method: 'POST', body: datosReserva });
-  const respuesta = await res.text();
-  let mensaje = {}
-  if (respuesta) {
-    mensaje = JSON.parse(respuesta)
+  try {
+    const res = await apiFetch('/api/reservando', { method: 'POST', body: datosReserva });
+    const respuesta = await res.text();
+    let mensaje = {};
+    if (respuesta) {
+      mensaje = JSON.parse(respuesta);
+    }
+    console.log('Mensaje', mensaje);
+    return mensaje;
+  } catch {
+    return {message: 'Hubo un error al completar'};
   }
-  console.log('Mensaje', mensaje);
 }
