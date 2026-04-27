@@ -1,5 +1,9 @@
-import React from 'react'
-import './sugerencias.css'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import AccentureLogo from '../components/AccentureLogo';
+import HeaderNavBar from '../components/HeaderNavBar';
+import './sugerencias.css';
+import '../views/crear_reservacion.css';
 
 const Sugerencias = () => {
   const getCurrentDate = () => {
@@ -16,23 +20,27 @@ const Sugerencias = () => {
   };
 
   return (
-    <>
+    <div className='page-container'>
+      <HeaderNavBar></HeaderNavBar>
       <div className='today-info-container'>
         <p className='greeting'>Buenos dias ...</p>
         <p className='date'>{getCurrentDate()}</p>
       </div>
       <div className='suggestions-container'>
-        <div className="info-box"></div>
+        <div className="info-box">
+          <p> Aqui se mostrara el mapa que utilizara la ubicacion del usuario para darle sugerencias de ruta</p>
+        </div>
         <div className="info-box">
           <p className='info-box-title'>Sobre tu ruta...</p>
           <p className='info-box-text'>ETA </p>
+          <p> Al realizar la conexion con el servicio de IA que creamos la informacion se desplegara aqui</p>
         </div>
         <div className="info-box">
-          <p className='info-box-title'>Sugerencias</p>
+          <p className='info-box-title'>Sugerencias para tu salida</p>
+          <p> Al realizar la conexion con el servicio de IA que creamos la informacion se desplegara aqui</p>
         </div>
       </div>
-      <button className='reserve-button'> Reservar lugar → </button>
-    </>
+    </div>
   )
 }
 

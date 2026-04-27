@@ -1,3 +1,7 @@
+.page-container{
+  padding: 10px 20px 20px 20px;
+}
+
 .today-info-container{
   display: flex;
   flex-wrap: wrap;
