@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import './Confirmacion.css';
+import './confirmacion.css';
 
 const Confirmacion = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Confirmacion = () => {
 
   useEffect(() => {
     if (!reservationData) {
-      navigate('/');
+      navigate('/home');
     }
   }, [reservationData, navigate]);
 
@@ -23,7 +23,7 @@ const Confirmacion = () => {
     <div className='reservation-container'>
       <div className="confirmation-container">
         <div className="confirmation-header">
-          <Link to='/' className="back-btn">
+          <Link to='/home' className="back-btn">
             ← Back Home
           </Link>
           <div className="confirmation-header-actions">

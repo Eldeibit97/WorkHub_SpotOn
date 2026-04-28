@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext'
  *
  * Props:
  *   role       — 'admin' | 'employee' (obligatorio)
- *   redirectTo — ruta a redirigir si no tiene permiso (default '/')
+ *   redirectTo — ruta a redirigir si no tiene permiso (default '/home')
  *   fallback   — elemento a mostrar en lugar de redirigir (para bloques inline)
  */
 export default function RequireRole({ 
@@ -29,8 +29,7 @@ export default function RequireRole({
   if (!user) return <Navigate to="/login" replace />
 
   // Si se especifican roles permitidos y el rol del usuario no está entre ellos
-  const role = user?.rol ?? user?.role ?? null
-  if (allowedRoles && !allowedRoles.includes(role)) {
+  if (allowedRoles && !allowedRoles.includes(user.rol)) {
     // Si se proporciona un fallback, mostrarlo en lugar de redirigir
     if (fallback !== null) return fallback
     return <Navigate to={redirectTo} replace />

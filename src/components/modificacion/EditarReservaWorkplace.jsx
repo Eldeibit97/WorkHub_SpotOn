@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import '../CrearReservacion/CrearReservacion.css';
-import '../CrearReservacion/OficinasForms.css';
+import '../../styles/crear_reservacion.css';
+import '../../styles/oficinas_forms.css';
 import DateSelector from './DateSelector';
-import TimeSelector from '../CrearReservacion/TimeSelector';
+import TimeSelector from '../creacion/TimeSelector';
  
 const EditarReservaWorkplace = () => {
   const [saved, setSaved] = useState(false);
