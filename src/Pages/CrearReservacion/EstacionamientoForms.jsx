@@ -1,32 +1,21 @@
-import React from 'react';
+import React from 'react'
 import { useState } from 'react';
-import './oficinas_forms.css';
+import './EstacionamientoForms.css';
 import CaruselMapas from './CaruselMapas';
-import DateSelector from '../modificacion/DateSelector';
-import TimeSelector from './TimeSelector';
+import DateSelector from '../ManageReservations/DateSelector';
 
-const OficinasForms = ( {currentDate, onConfirm} ) => {
+const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
   const [reservationData, setReservationData] = useState({
     date: currentDate,
-    startTime: '08:00',
-    endTime: '13:00',
-    floor: '3rd floor',
-    location: 'SIERRA MADRE - ICSJ-3040',
     email: '',
-    type: 'workplace',
+    parkingLot: 'South Parking Lot',
+    level: '2nd Level',
+    type: 'parking', 
     reservationId: 'PK-23941'
   });
 
   const handleDateChange = (newDate) => {
     setReservationData({ ...reservationData, date: newDate });
-  };
-
-  const handleTimeChange = (start, end) => {
-    setReservationData({
-      ...reservationData,
-      startTime: start,
-      endTime: end
-    });
   };
 
   const handleChange = (e) => {
@@ -37,7 +26,7 @@ const OficinasForms = ( {currentDate, onConfirm} ) => {
     <>
       <div className="main-grid">
         <div className="parking-map-container parking-map-container--carousel">
-          <CaruselMapas />
+          <CaruselMapas></CaruselMapas>
         </div>
 
         <div className="reservation-panel">
@@ -48,27 +37,20 @@ const OficinasForms = ( {currentDate, onConfirm} ) => {
             onDateChange={handleDateChange}
           />
 
-          <TimeSelector
-            startTime={reservationData.startTime}
-            endTime={reservationData.endTime}
-            onTimeChange={handleTimeChange}
-          />
-
-          <select className="floor-dropdown" name='floor' value={reservationData.floor} onChange={handleChange}>
-            <option>1st floor</option>
-            <option>2nd floor</option>
-            <option>3rd floor</option>
-            <option>4th floor</option>
-          </select>
-
           <div className="location-display">
-            {reservationData.location}
+            {reservationData.parkingLot}
           </div>
 
+          <select className="level-dropdown" name='level' value={reservationData.level} onChange={handleChange}>
+            <option>1st Level</option>
+            <option>2nd Level</option>
+            <option>3rd Level</option>
+            <option>4th Level</option>
+          </select>
           <div className="email-container">
             <input
               type="email"
-              name='email'
+              name = 'email'
               className="email-input"
               value={reservationData.email}
               onChange={handleChange}
@@ -76,7 +58,6 @@ const OficinasForms = ( {currentDate, onConfirm} ) => {
             />
             <button className="add-guest-btn" title="Add guest">+</button>
           </div>
-
           <button className="confirm-btn" onClick={() => onConfirm(reservationData)}>
             Confirm Reservation
           </button>
@@ -86,4 +67,4 @@ const OficinasForms = ( {currentDate, onConfirm} ) => {
   );
 }
 
-export default OficinasForms
+export default EstacionamientoForms

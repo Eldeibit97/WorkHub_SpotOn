@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ReservationList from '../components/cancelacion/ReservationList.jsx';
-import CancellationModal from '../components/cancelacion/CancellationModal.jsx';
-import '../components/cancelacion/styles/styles.css';
+import ReservationList from './ReservationList.jsx';
+import CancellationModal from './CancellationModal.jsx';
+import './ManageReservationsPage.css';
 
 // Datos de prueba ajustados para cubrir todos los casos (Past, Upcoming, < 1 hora, Checked In)
 const initialReservations = [
@@ -136,8 +136,8 @@ export default function ManageReservationsPage() {
   return (
     <div className="manage-page-container">
       <nav className="manage-top-nav" aria-label="Navegación">
-        <Link to="/home" className="manage-nav-link">← Volver al inicio</Link>
-        <Link to="/my-reservations" className="manage-nav-link manage-nav-link-secondary">Mis reservas</Link>
+        <Link to="/" className="manage-nav-link">← Volver al inicio</Link>
+        <Link to="/cancelar" className="manage-nav-link manage-nav-link-secondary">Mis reservas</Link>
       </nav>
       <header className="brand-header">
         <h2 className="page-title">Mis Reservaciones</h2>

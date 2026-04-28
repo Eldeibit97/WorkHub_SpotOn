@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { getStoredToken } from '../api/auth'
+import { useAuth } from '../../context/AuthContext'
+import { getStoredToken } from '../../api/auth'
 
 export default function AdminDashboard() {
   const { user } = useAuth()
