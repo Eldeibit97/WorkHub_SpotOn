@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function CancellationModal({ reservation, onClose, onConfirm }) {
-  // Prevenir que el clic dentro del modal cierre el modal (propagación hacia el overlay)
   const handleModalClick = (e) => {
     e.stopPropagation();
   };

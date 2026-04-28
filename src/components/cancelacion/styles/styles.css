@@ -264,6 +264,23 @@
   box-shadow: 0 4px 15px rgba(223, 70, 247, 0.4); /* Resplandor rosado al pasar el mouse */
 }
 
+.btn-primary-danger {
+  background: var(--brand-gradient);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-danger:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(223, 70, 247, 0.4); /* Resplandor rosado al pasar el mouse */
+}
+
 /* Separación entre los dos botones */
 .card-actions {
   margin-top: 24px;

@@ -6,6 +6,7 @@ import {
   getTodayStr,
   generateId,
   OFFICE_SPACES
+} from '../lib/constants'
 } from '../../lib/constants'
 import './Parking.css'
 

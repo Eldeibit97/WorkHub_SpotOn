@@ -3,14 +3,12 @@ import { Link } from 'react-router-dom';
 
 export default function ReservationCard({ reservation, onCancelRequest, onCheckIn, onCheckOut, isLoading }) {
   
-  // Función para calcular el estatus temporal y la diferencia de horas
   const getTimeLogic = (isoDateString) => {
     if (!isoDateString) return { status: null, hoursUntil: null };
 
     const resDate = new Date(isoDateString);
     const today = new Date();
 
-    // Lógica para badge (Días exactos)
     const resDateOnly = new Date(resDate);
     const todayOnly = new Date(today);
     resDateOnly.setHours(0, 0, 0, 0);
@@ -23,7 +21,6 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
     if (diffDays === 0) statusData = { text: 'Today', className: 'status-today' };
     else if (diffDays > 0) statusData = { text: 'Upcoming', className: 'status-upcoming' };
 
-    // Lógica para botones (Diferencia real en horas)
     const diffTimeMs = resDate - today;
     const hoursUntil = diffTimeMs / (1000 * 60 * 60);
 
@@ -32,17 +29,14 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
 
   const { status, hoursUntil } = getTimeLogic(reservation.isoDate);
   
-  // Reglas de negocio para visibilidad de botones
   const isPast = status?.text === 'Past' || reservation.estado_reserva === 'COMPLETADO';
   const isCheckedIn = reservation.estado_reserva === 'CHECKED_IN';
   const isLessOrEqualOneHour = hoursUntil !== null && hoursUntil <= 1;
 
-  // Renderizado condicional de la botonera
   const renderActions = () => {
-    if (isPast) return null; // Regla 1: Si ya pasó o está completado, no hay botones.
+    if (isPast) return null; 
 
     if (isCheckedIn) {
-      // Regla 4: Si ya hizo check-in, SOLO muestra check-out
       return (
         <button className="btn-primary-danger" onClick={onCheckOut} disabled={isLoading}>
           {isLoading ? 'Procesando...' : 'Realizar Check-out'}
@@ -51,7 +45,6 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
     }
 
     if (isLessOrEqualOneHour) {
-      // Regla 3: Falta 1 hora o menos -> Cambia Modificar por Check-in
       return (
         <>
           <button className="btn-checkin" onClick={onCheckIn} disabled={isLoading}>
@@ -64,7 +57,6 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
       );
     }
 
-    // Regla 2: Falta más de 1 hora -> Muestra Modificar y Cancelar
     return (
       <>
         <Link to="/my-reservations" className="btn-modify-outline">

@@ -3,24 +3,46 @@ import { useState } from 'react';
 import './estacionamiento_forms.css';
 import CaruselMapas from './CaruselMapas';
 import DateSelector from '../modificacion/DateSelector';
+import TimeSelector from './TimeSelector';
 
-const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
+const EstacionamientoForms = ({ currentDate, dateData, onConfirm }) => {
   const [reservationData, setReservationData] = useState({
-    date: currentDate,
-    email: '',
-    parkingLot: 'South Parking Lot',
-    level: '2nd Level',
-    type: 'parking', 
-    reservationId: 'PK-23941'
+    mail: '',
+    idEspacio: 163,
+    fechaReserva: dateData.dateObj,
+    horaInicio: '08:00',
+    horaSalida: '13:00',
+    fechaCreacion: new Date(),
+    //parkingLot: 'South Parking Lot',
+    //level: '2nd Level',
+    tipoReserva: 'ESTACIONAMIENTO',
+    //reservationID: 'PK9021'
   });
 
   const handleDateChange = (newDate) => {
-    setReservationData({ ...reservationData, date: newDate });
+    setReservationData({ ...reservationData, fechaReserva: newDate });
+  };
+
+  const handleTimeChange = (start, end) => {
+    setReservationData({
+      ...reservationData,
+      horaInicio: start,
+      horaSalida: end
+    });
   };
 
   const handleChange = (e) => {
     setReservationData({ ...reservationData, [e.target.name]: e.target.value });
   };
+
+  const handleConfirm = () =>{
+    const finalData = {
+      ...reservationData,
+      fechaReserva: reservationData.fechaReserva.toISOString(),
+      fechaCreacion: reservationData.fechaCreacion.toISOString(),
+    };
+    onConfirm(finalData);
+  }
 
   return (
     <>
@@ -33,14 +55,20 @@ const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
           <h3>New Reservation</h3>
 
           <DateSelector
-            selectedDate={reservationData.date}
+            selectedDate={reservationData.fechaReserva}
             onDateChange={handleDateChange}
           />
 
+          <TimeSelector
+            horaInicio={reservationData.horaInicio}
+            horaSalida={reservationData.horaSalida}
+            onTimeChange={handleTimeChange}
+          />
+          {/*
           <div className="location-display">
             {reservationData.parkingLot}
           </div>
-
+          */}
           <select className="level-dropdown" name='level' value={reservationData.level} onChange={handleChange}>
             <option>1st Level</option>
             <option>2nd Level</option>
@@ -50,15 +78,15 @@ const EstacionamientoForms = ( {currentDate, onConfirm} ) => {
           <div className="email-container">
             <input
               type="email"
-              name = 'email'
+              name='mail'
               className="email-input"
-              value={reservationData.email}
+              value={reservationData.mail}
               onChange={handleChange}
               placeholder="Email address"
             />
             <button className="add-guest-btn" title="Add guest">+</button>
           </div>
-          <button className="confirm-btn" onClick={() => onConfirm(reservationData)}>
+          <button className="confirm-btn" onClick={handleConfirm}>
             Confirm Reservation
           </button>
         </div>
