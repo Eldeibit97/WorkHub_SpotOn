@@ -1,11 +1,11 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import CrearReservacion from './pages/CrearReservacion/CrearReservacion'
-import Confirmacion from './pages/Confirmacion/Confirmacion'
-import LandingPage from './pages/LandingPage/LandingPage'
-import SignInPage from './pages/SignInPage/SignInPage'
-import ManageReservationsPage from './pages/ManageReservations/ManageReservationsPage'
-import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
+import CrearReservacion from './views/CrearReservacion'
+import Confirmacion from './components/creacion/Confirmacion'
+import LandingPage from './views/LandingPage'
+import SignInPage from './views/SignInPage'
+import ManageReservationsPage from './views/ManageReservationsPage'
+import AdminDashboard from './views/AdminDashboard'         
 import RequireRole from './components/RequireRole'
 
 const AppRoutes = () => {

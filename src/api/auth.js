@@ -46,11 +46,7 @@ export async function loginRequest(credentials) {
     sessionStorage.setItem(AUTH_TOKEN_KEY, token)
   }
 
-  return {
-    ...data,
-    token: token ?? data.token,
-    user: data.user ?? data.usuario ?? null,
-  }
+  return data
 }
 
 export function getStoredToken() {
