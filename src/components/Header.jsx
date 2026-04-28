@@ -6,10 +6,10 @@ export default function Header({ onNavigate }) {
   const location = useLocation()
 
   const links = [
-    { id: 'home', path: '/home', label: 'Inicio' },
-    { id: 'parking', path: '/parking', label: 'Estacionamiento' },
-    { id: 'offices', path: '/offices', label: 'Oficinas' },
-    { id: 'my-reservations', path: '/my-reservations', label: 'Mis reservas' },
+    { id: 'home', path: '/', label: 'Inicio' },
+    { id: 'parking', path: '/reservar', label: 'Estacionamiento' },
+    { id: 'offices', path: '/reservar', label: 'Oficinas' },
+    { id: 'my-reservations', path: '/cancelar', label: 'Mis reservas' },
   ]
 
   return (

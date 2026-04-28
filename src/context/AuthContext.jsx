@@ -36,11 +36,24 @@ export function AuthProvider({ children }) {
    * @param {{ token: string, user: object }} loginResponse  respuesta del backend
    */
   function signIn(loginResponse) {
-    const payload = decodeToken(loginResponse.token)
+    const token =
+      loginResponse?.token ??
+      loginResponse?.accessToken ??
+      loginResponse?.access_token
+    const payload = token ? decodeToken(token) : null
+    const responseUser = loginResponse?.user ?? loginResponse?.usuario ?? {}
+    const normalizedRole =
+      responseUser.rol ??
+      responseUser.role ??
+      payload?.rol ??
+      payload?.role ??
+      null
+
     setUser({
-      ...loginResponse.user,   // nombre, apellido, correo_institucional, rol
+      ...responseUser,         // nombre, apellido, correo_institucional, rol
       ...payload,              // sub, correo, rol (desde el token)
-      token: loginResponse.token,
+      rol: normalizedRole,
+      token,
     })
   }
 

@@ -67,7 +67,7 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
     // Regla 2: Falta más de 1 hora -> Muestra Modificar y Cancelar
     return (
       <>
-        <Link to="/my-reservations" className="btn-modify-outline">
+        <Link to="/cancelar" className="btn-modify-outline">
           Modificar
         </Link>
         <button className="btn-cancel-outline" onClick={onCancelRequest} disabled={isLoading}>
