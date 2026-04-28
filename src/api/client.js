@@ -17,6 +17,13 @@ export async function apiFetch(path, options = {}) {
   if (!apiBaseUrl) {
     throw new Error('Configura VITE_API_URL en .env (copia desde .env.example).')
   }
+  
+  // 👇 PONLO AQUÍ
+  console.log("API BASE URL:", apiBaseUrl)
+  console.log("PATH:", path)
+  console.log("FULL URL:", `${apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`)
+
+  const url = `${apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`
 
   const url = `${apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`
   const { headers, body, credentials: credentialsOverride, ...rest } = options

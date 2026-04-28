@@ -6,6 +6,11 @@ import './crear_reservacion.css';
 import TimerDisplay from '../components/creacion/TimerDisplay';
 import EstacionamientoForms from '../components/creacion/EstacionamientoForms';
 import OficinasForms from '../components/creacion/OficinasForms';
+import AccentureLogo from '../components/AccentureLogo';
+import './crear_reservacion.css';
+import TimerDisplay from '../components/creacion/TimerDisplay';
+import EstacionamientoForms from '../components/creacion//EstacionamientoForms';
+import OficinasForms from '../components/creacion//OficinasForms';
 
 const CrearReservacion = () => {
   const navigate = useNavigate();

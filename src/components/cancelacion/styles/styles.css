@@ -122,13 +122,12 @@
 }
 
 .badge {
-  background: rgba(223, 70, 247, 0.15); /* Fondo rosado translúcido */
-  color: var(--accent-pink);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid rgba(223, 70, 247, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .type-label {
@@ -161,8 +160,8 @@
 
 .btn-cancel-outline {
   background: transparent;
-  color: var(--accent-pink);
-  border: 1px solid var(--accent-pink);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
@@ -171,8 +170,8 @@
 }
 
 .btn-cancel-outline:hover {
-  background: rgba(223, 70, 247, 0.1);
-  box-shadow: 0 0 15px rgba(223, 70, 247, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-muted);
 }
 
 /* Modal */
