@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import HeaderNavBar from '../components/HeaderNavBar.jsx';
-import ReservationList from '../components/cancelacion/ReservationList.jsx';
-import CancellationModal from '../components/cancelacion/CancellationModal.jsx';
-import '../components/cancelacion/styles/styles.css';
+import HeaderNavBar from '../../components/HeaderNavBar.jsx';
+import ReservationList from './components/ReservationList.jsx';
+import CancellationModal from './components/CancellationModal.jsx';
+import './ManageReservationsPage.css';
 
 const initialReservations = [
   {
@@ -74,7 +74,7 @@ export default function ManageReservationsPage() {
       } else {
         alert("Error al cancelar: " + (data.message || data.error));
       }
-    } catch (error) {
+    } catch {
       alert("Error al conectar con el servidor.");
     }
   };
@@ -99,7 +99,7 @@ export default function ManageReservationsPage() {
       } else {
         alert("Error en Check-in: " + data.message);
       }
-    } catch (error) {
+    } catch {
       alert("Error de conexión al procesar el Check-in.");
     } finally {
       setLoadingId(null);
@@ -126,7 +126,7 @@ export default function ManageReservationsPage() {
       } else {
         alert("Error en Check-out: " + data.message);
       }
-    } catch (error) {
+    } catch {
       alert("Error de conexión al procesar el Check-out.");
     } finally {
       setLoadingId(null);

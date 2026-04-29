@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext'
  *
  * Props:
  *   role       — 'admin' | 'employee' (obligatorio)
- *   redirectTo — ruta a redirigir si no tiene permiso (default '/home')
+ *   redirectTo — ruta a redirigir si no tiene permiso (default '/')
  *   fallback   — elemento a mostrar en lugar de redirigir (para bloques inline)
  */
 export default function RequireRole({ 

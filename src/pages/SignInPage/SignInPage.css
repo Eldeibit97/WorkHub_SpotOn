@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import '../styles/reservation-theme.css';
+@import '../../styles/reservation-theme.css';
 
 /* Un ciclo = exactamente un período (dash + gap) para que el loop infinito no salte */
 @keyframes circuit-flow {

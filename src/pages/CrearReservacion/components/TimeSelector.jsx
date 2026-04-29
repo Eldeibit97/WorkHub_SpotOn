@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './time_selector.css';
+import './TimeSelector.css';
  
 const TimeSelector = ({ horaInicio, horaSalida, onTimeChange }) => {
   const [showStartPicker, setShowStartPicker] = useState(false);
