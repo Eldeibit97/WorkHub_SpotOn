@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import AccentureLogo from '../components/AccentureLogo'
-import torresHero from '../assets/torresmoradas-login.png'
-import accGtLogo from '../assets/Acc_GT_Solid_P1_RGB.png'
+import AccentureLogo from '../../components/AccentureLogo'
+import torresHero from '../../assets/torresmoradas-login.png'
+import accGtLogo from '../../assets/Acc_GT_Solid_P1_RGB.png'
 import './LandingPage.css'
 
 const leftItems = [

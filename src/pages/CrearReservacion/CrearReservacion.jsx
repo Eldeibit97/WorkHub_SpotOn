@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { reservar } from '../api/reserve';
-import AccentureLogo from '../components/AccentureLogo';
-import './crear_reservacion.css';
-import TimerDisplay from '../components/creacion/TimerDisplay';
-import EstacionamientoForms from '../components/creacion/EstacionamientoForms';
-import OficinasForms from '../components/creacion/OficinasForms';
-import AccentureLogo from '../components/AccentureLogo';
-import './crear_reservacion.css';
-import TimerDisplay from '../components/creacion/TimerDisplay';
-import EstacionamientoForms from '../components/creacion//EstacionamientoForms';
-import OficinasForms from '../components/creacion//OficinasForms';
+import { reservar } from '../../api/reserve';
+import AccentureLogo from '../../components/AccentureLogo';
+import './CrearReservacion.css';
+import TimerDisplay from './components/TimerDisplay';
+import EstacionamientoForms from './components/EstacionamientoForms';
+import OficinasForms from './components/OficinasForms';
 
 const CrearReservacion = () => {
   const navigate = useNavigate();
@@ -76,7 +71,7 @@ const CrearReservacion = () => {
   return (
     <div className="reservation-container">
       <header className="reservation-top-bar">
-        <Link to="/home" className="reservation-top-bar-logo" aria-label="Inicio">
+        <Link to="/" className="reservation-top-bar-logo" aria-label="Inicio">
           <AccentureLogo size="small" />
         </Link>
         <Link to="/sugerencias" className="reservation-back-link">

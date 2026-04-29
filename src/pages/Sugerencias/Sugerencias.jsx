@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AccentureLogo from '../components/AccentureLogo';
-import HeaderNavBar from '../components/HeaderNavBar';
-import './sugerencias.css';
-import '../views/crear_reservacion.css';
+import AccentureLogo from '../../components/AccentureLogo';
+import HeaderNavBar from '../../components/HeaderNavBar';
+import './Sugerencias.css';
+import '../CrearReservacion/CrearReservacion.css';
 
 const Sugerencias = () => {
   const getCurrentDate = () => {

@@ -2,11 +2,11 @@ import React from 'react'
 import { Carousel } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import './carusel-mapas.css'
-import Piso3 from '../../assets/mapas/piso_3.svg'
-import Piso9 from '../../assets/mapas/piso_9.svg'
-import PisoMZ from '../../assets/mapas/piso_MZ.svg'
-import PisoPB from '../../assets/mapas/piso_PB.svg'
+import './CaruselMapas.css'
+import Piso3 from '../../../assets/mapas/piso_3.svg'
+import Piso9 from '../../../assets/mapas/piso_9.svg'
+import PisoMZ from '../../../assets/mapas/piso_MZ.svg'
+import PisoPB from '../../../assets/mapas/piso_PB.svg'
 
 const CaruselMapas = () => {
   return (

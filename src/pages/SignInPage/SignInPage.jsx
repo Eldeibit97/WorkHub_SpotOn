@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import accGtLogo from '../assets/Acc_GT_Solid_P1_RGB.png'
-import { loginRequest } from '../api/auth'
-import { useAuth } from '../context/AuthContext'
+import accGtLogo from '../../assets/Acc_GT_Solid_P1_RGB.png'
+import { loginRequest } from '../../api/auth'
+import { useAuth } from '../../context/AuthContext'
 import './SignInPage.css'
 
 function MailIcon() {

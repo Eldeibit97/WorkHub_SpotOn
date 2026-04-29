@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import './error.css';
+import './Error.css';
 
 const Error = () => {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const Error = () => {
 
   React.useEffect(() => {
     if (!errorData) {
-      navigate('/home');
+      navigate('/');
     }
   }, [errorData, navigate]);
 
@@ -52,7 +52,7 @@ const Error = () => {
     <div className='reservation-container'>
       <div className="error-container">
         <div className="error-header">
-          <Link to='/home' className="back-btn">
+          <Link to='/' className="back-btn">
             ← Back Home
           </Link>
         </div>
@@ -120,7 +120,7 @@ const Error = () => {
           <button className="retry-btn" onClick={handleRetry}>
             Try Again
           </button>
-          <Link to='/home' className="home-btn">
+          <Link to='/' className="home-btn">
             Go to Home
           </Link>
           <Link to='/reservar' className="new-reservation-btn">

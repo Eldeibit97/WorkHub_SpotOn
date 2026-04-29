@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
-import './oficinas_forms.css';
+import './OficinasForms.css';
 import CaruselMapas from './CaruselMapas';
-import DateSelector from '../modificacion/DateSelector';
+import DateSelector from '../../ManageReservations/components/DateSelector';
 import TimeSelector from './TimeSelector';
 
-const OficinasForms = ({ currentDate, dateData, onConfirm }) => {
+const OficinasForms = ({ dateData, onConfirm }) => {
   const [reservationData, setReservationData] = useState({
     mail: '',
     idEspacio: 163,
