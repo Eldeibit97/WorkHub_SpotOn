@@ -1,111 +1,282 @@
 import { useEffect, useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
-import { getStoredToken } from '../../api/auth'
+import {
+  createUser,
+  deleteUser,
+  getRoles,
+  importUsersCsv,
+  listUsers,
+  updateUser,
+  updateUserPassword,
+  updateUserRoles,
+} from '../../api/users'
+import DeleteUserConfirmModal from './components/DeleteUserConfirmModal'
+import ImportCsvModal from './components/ImportCsvModal'
+import UserFormModal from './components/UserFormModal'
+import UsersTable from './components/UsersTable'
+import UsersToolbar from './components/UsersToolbar'
+
+const DEFAULT_PAGE_SIZE = 12
 
 export default function AdminDashboard() {
-  const { user } = useAuth()
   const [usuarios, setUsuarios] = useState([])
+  const [roles, setRoles] = useState([])
   const [mensaje, setMensaje] = useState('')
+  const [error, setError] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [importing, setImporting] = useState(false)
 
-  const apiUrl = import.meta.env.VITE_API_URL || ''
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [search, setSearch] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [roleFilter, setRoleFilter] = useState('')
+  const [sortKey, setSortKey] = useState('nombre')
+  const [sortDirection, setSortDirection] = useState('asc')
+
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [formMode, setFormMode] = useState('edit')
+  const [showUserModal, setShowUserModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showImportModal, setShowImportModal] = useState(false)
 
   useEffect(() => {
     fetchUsuarios()
+  }, [page, pageSize, search, roleFilter, sortKey, sortDirection])
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setPage(1)
+      setSearch(searchInput.trim())
+    }, 300)
+    return () => clearTimeout(timeoutId)
+  }, [searchInput])
+
+  useEffect(() => {
+    loadRoles()
   }, [])
 
   async function fetchUsuarios() {
     setCargando(true)
+    setError('')
     try {
-      const token = getStoredToken()
-      const res = await fetch(`${apiUrl}/api/users`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const data = await listUsers({
+        page,
+        pageSize,
+        search,
+        role: roleFilter,
+        sortKey,
+        sortDirection,
       })
-      const data = await res.json()
-      setUsuarios(data.usuarios || [])
-    } catch {
-      setMensaje('Error al cargar usuarios')
+      const nextUsers = data.usuarios || data.users || []
+      const total = data.total ?? nextUsers.length
+      const computedPages = data.totalPages || Math.max(1, Math.ceil(total / pageSize))
+      setUsuarios(applyClientSort(nextUsers, sortKey, sortDirection))
+      setTotalItems(total)
+      setTotalPages(computedPages)
+    } catch (fetchError) {
+      setError(fetchError.message || 'Error al cargar usuarios')
     } finally {
       setCargando(false)
     }
   }
 
-  async function cambiarRol(id_usuario, nuevoRol) {
+  async function loadRoles() {
     try {
-      const token = getStoredToken()
-      const res = await fetch(`${apiUrl}/api/users/${id_usuario}/rol`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ rol: nuevoRol }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setMensaje(`Error: ${data.message}`)
-        return
-      }
-      setMensaje(`Rol actualizado: ${data.usuario.correo_institucional} → ${data.usuario.rol}`)
-      fetchUsuarios()
+      const data = await getRoles()
+      const dynamicRoles = data.roles || data.data || []
+      setRoles(dynamicRoles.length ? dynamicRoles : ['employee', 'admin'])
     } catch {
-      setMensaje('Error al actualizar rol')
+      setRoles(['employee', 'admin'])
     }
   }
 
-  return (
-    <div style={{ padding: '2rem', maxWidth: 800, margin: '0 auto' }}>
-      <h1>Dashboard Administrativo</h1>
-      <p>Bienvenido, <strong>{user?.nombre}</strong> — rol: <em>{user?.rol}</em></p>
+  function openCreateModal() {
+    setFormMode('create')
+    setSelectedUser(null)
+    setShowUserModal(true)
+  }
 
-      {mensaje && (
-        <div style={{ background: '#f0f4ff', border: '1px solid #a0b0ff', padding: '0.75rem', borderRadius: 6, marginBottom: '1rem' }}>
-          {mensaje}
+  function openEditModal(targetUser) {
+    setFormMode('edit')
+    setSelectedUser(targetUser)
+    setShowUserModal(true)
+  }
+
+  function closeUserModal() {
+    setShowUserModal(false)
+    setSelectedUser(null)
+  }
+
+  function requestDeleteFromRow(targetUser) {
+    setSelectedUser(targetUser)
+    setShowDeleteModal(true)
+  }
+
+  function handleSortChange(nextKey, nextDirection) {
+    setSortKey(nextKey)
+    setSortDirection(nextDirection)
+    setPage(1)
+  }
+
+  async function saveUser(formData) {
+    setSaving(true)
+    setError('')
+    try {
+      if (formMode === 'create') {
+        await createUser({
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          correo_institucional: formData.correo_institucional,
+          rol: formData.rol,
+          password: formData.password,
+        })
+        setMensaje('Usuario creado correctamente.')
+      } else if (selectedUser) {
+        await updateUser(selectedUser.id_usuario, {
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          correo_institucional: formData.correo_institucional,
+        })
+        await updateUserRoles(selectedUser.id_usuario, [formData.rol])
+        if (formData.password.trim()) {
+          await updateUserPassword(selectedUser.id_usuario, formData.password)
+        }
+        setMensaje('Usuario actualizado correctamente.')
+      }
+      closeUserModal()
+      fetchUsuarios()
+    } catch (saveError) {
+      setError(saveError.message || 'No se pudo guardar el usuario')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function confirmDeleteUser() {
+    if (!selectedUser) return
+    setSaving(true)
+    setError('')
+    try {
+      await deleteUser(selectedUser.id_usuario)
+      setMensaje('Usuario eliminado correctamente.')
+      setShowDeleteModal(false)
+      closeUserModal()
+      fetchUsuarios()
+    } catch (deleteError) {
+      setError(deleteError.message || 'No se pudo eliminar el usuario')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleImport(rows) {
+    setImporting(true)
+    setError('')
+    try {
+      await importUsersCsv(rows)
+      setMensaje(`Importación completada. ${rows.length} filas enviadas.`)
+      setShowImportModal(false)
+      fetchUsuarios()
+    } catch (importError) {
+      setError(importError.message || 'No se pudo completar la importación')
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  function handlePageSizeChange(nextSize) {
+    setPageSize(nextSize)
+    setPage(1)
+  }
+
+  return (
+    <div className="admin-page">
+      <header className="admin-page__header">
+        <div>
+          <h1>Usuarios</h1>
+          <p className="admin-subtitle">
+            Gestiona información, accesos y permisos del equipo desde un solo panel.
+          </p>
         </div>
+      </header>
+
+      <UsersToolbar
+        search={searchInput}
+        onSearchChange={setSearchInput}
+        roleFilter={roleFilter}
+        onRoleFilterChange={(value) => {
+          setPage(1)
+          setRoleFilter(value)
+        }}
+        roles={roles}
+        pageSize={pageSize}
+        onPageSizeChange={handlePageSizeChange}
+        onOpenImport={() => setShowImportModal(true)}
+        onOpenCreate={openCreateModal}
+      />
+
+      {mensaje && <div className="admin-feedback admin-feedback--success">{mensaje}</div>}
+      {error && <div className="admin-feedback admin-feedback--error">{error}</div>}
+
+      <UsersTable
+        users={usuarios}
+        loading={cargando}
+        page={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={pageSize}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        onSortChange={handleSortChange}
+        onPageChange={setPage}
+        onEdit={openEditModal}
+        onDelete={requestDeleteFromRow}
+      />
+
+      {showUserModal && (
+        <UserFormModal
+          mode={formMode}
+          user={selectedUser}
+          roles={roles}
+          loading={saving}
+          onClose={closeUserModal}
+          onSave={saveUser}
+          onDeleteRequest={() => setShowDeleteModal(true)}
+        />
       )}
 
-      <h2>Gestión de Roles</h2>
-      {cargando ? (
-        <p>Cargando usuarios…</p>
-      ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #ccc', textAlign: 'left' }}>
-              <th style={{ padding: '0.5rem' }}>Nombre</th>
-              <th style={{ padding: '0.5rem' }}>Correo</th>
-              <th style={{ padding: '0.5rem' }}>Rol actual</th>
-              <th style={{ padding: '0.5rem' }}>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((u) => (
-              <tr key={u.id_usuario} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '0.5rem' }}>{u.nombre} {u.apellido}</td>
-                <td style={{ padding: '0.5rem' }}>{u.correo_institucional}</td>
-                <td style={{ padding: '0.5rem' }}>
-                  <span style={{
-                    background: u.rol === 'admin' ? '#6c5ce7' : '#00b894',
-                    color: '#fff', padding: '2px 10px', borderRadius: 12, fontSize: 12
-                  }}>
-                    {u.rol}
-                  </span>
-                </td>
-                <td style={{ padding: '0.5rem' }}>
-                  {/* No se puede quitar el rol al admin actual */}
-                  {u.id_usuario !== user?.sub && (
-                    <button
-                      onClick={() => cambiarRol(u.id_usuario, u.rol === 'admin' ? 'employee' : 'admin')}
-                      style={{ padding: '4px 12px', cursor: 'pointer' }}
-                    >
-                      {u.rol === 'admin' ? 'Quitar admin' : 'Hacer admin'}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {showDeleteModal && (
+        <DeleteUserConfirmModal
+          user={selectedUser}
+          onCancel={() => setShowDeleteModal(false)}
+          onConfirm={confirmDeleteUser}
+          loading={saving}
+        />
+      )}
+
+      {showImportModal && (
+        <ImportCsvModal
+          onClose={() => setShowImportModal(false)}
+          onImport={handleImport}
+          loading={importing}
+        />
       )}
     </div>
   )
+}
+
+function applyClientSort(items, key, direction) {
+  if (!key) return items
+  const sorted = [...items]
+  sorted.sort((a, b) => {
+    const aValue = (a[key] ?? '').toString().toLowerCase()
+    const bValue = (b[key] ?? '').toString().toLowerCase()
+    if (aValue < bValue) return direction === 'asc' ? -1 : 1
+    if (aValue > bValue) return direction === 'asc' ? 1 : -1
+    return 0
+  })
+  return sorted
 }

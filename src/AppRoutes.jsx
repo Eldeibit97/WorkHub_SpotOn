@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import CrearReservacion from './pages/CrearReservacion/CrearReservacion'
 import Confirmacion from './pages/Confirmacion/Confirmacion'
 import Sugerencias from './pages/Sugerencias/Sugerencias'
@@ -7,7 +7,9 @@ import Error from './pages/Error/Error'
 import LandingPage from './pages/LandingPage/LandingPage'
 import SignInPage from './pages/SignInPage/SignInPage'
 import ManageReservationsPage from './pages/ManageReservations/ManageReservationsPage'
+import AdminLayout from './pages/AdminDashboard/AdminLayout'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
+import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
 import RequireRole from './components/RequireRole'
 
 const AppRoutes = () => {
@@ -27,8 +29,19 @@ const AppRoutes = () => {
       <Route path="/confirmacion" element={<RequireRole allowedRoles={['employee', 'admin']}><Confirmacion /></RequireRole>} />
       <Route path="/cancelar" element={<RequireRole allowedRoles={['employee', 'admin']}><ManageReservationsPage /></RequireRole>} />
 
-      {/* Ruta exclusiva para admins */}
-      <Route path="/admin" element={<RequireRole allowedRoles={['admin']}><AdminDashboard /></RequireRole>} />
+      {/* Rutas exclusivas para admins (layout con top bar de pestañas) */}
+      <Route
+        path="/admin"
+        element={
+          <RequireRole allowedRoles={['admin']}>
+            <AdminLayout />
+          </RequireRole>
+        }
+      >
+        <Route index element={<DashboardOverview />} />
+        <Route path="usuarios" element={<AdminDashboard />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
+      </Route>
 
       {/* Ruta catch-all para redirigir a landing page */}
       <Route path="/*" element={<LandingPage />} />
