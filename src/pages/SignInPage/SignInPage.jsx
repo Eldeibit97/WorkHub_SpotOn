@@ -97,7 +97,7 @@ export default function SignInPage() {
       if (data.user.rol === 'admin') {
         navigate('/admin')
       } else {
-        navigate('/reservar')
+        navigate('/sugerencias')
       }
         
     } catch (err) {

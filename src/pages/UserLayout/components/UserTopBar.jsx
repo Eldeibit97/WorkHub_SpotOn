@@ -5,17 +5,18 @@ import { useTheme } from '../../../context/ThemeContext'
 import AccentureLogo from '../../../components/AccentureLogo'
 
 const TABS = [
-  { to: '/admin', label: 'Dashboard', end: true },
-  { to: '/admin/usuarios', label: 'Usuarios', end: false },
+  { to: '/sugerencias', label: 'Home', end: true },
+  { to: '/reservar', label: 'Reservar', end: true },
+  { to: '/cancelar', label: 'Mis Reservas', end: true },
 ]
 
 function getInitials(first, last) {
   const a = (first || '').charAt(0).toUpperCase()
   const b = (last || '').charAt(0).toUpperCase()
-  return `${a}${b}` || 'A'
+  return `${a}${b}` || 'U'
 }
 
-export default function AdminTopBar() {
+export default function UserTopBar() {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
@@ -23,7 +24,7 @@ export default function AdminTopBar() {
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef(null)
 
-  const fullName = `${user?.nombre || ''} ${user?.apellido || ''}`.trim() || 'Administrador'
+  const fullName = `${user?.nombre || ''} ${user?.apellido || ''}`.trim() || 'Usuario'
   const initials = getInitials(user?.nombre, user?.apellido)
   const email = user?.correo_institucional || user?.correo || ''
 
@@ -55,14 +56,16 @@ export default function AdminTopBar() {
   }
 
   return (
-    <header className="admin-topbar">
-      <div className="admin-topbar__inner">
+    <header className="user-topbar">
+      <div className="user-topbar__inner">
+        {/* Left: logo + module name */}
         <div className="admin-topbar__brand">
           <AccentureLogo size="small" />
-          <span className="admin-topbar__module">workhub admin</span>
+          <span className="admin-topbar__module">workhub</span>
         </div>
 
-        <nav className="admin-topbar__tabs" aria-label="Secciones de admin">
+        {/* Center: nav tabs */}
+        <nav className="admin-topbar__tabs" aria-label="Navegación principal">
           {TABS.map((tab) => (
             <NavLink
               key={tab.to}
@@ -77,6 +80,7 @@ export default function AdminTopBar() {
           ))}
         </nav>
 
+        {/* Right: theme toggle + profile dropdown */}
         <div className="admin-topbar__actions">
           <button
             type="button"
@@ -104,12 +108,12 @@ export default function AdminTopBar() {
               onClick={() => setOpen((prev) => !prev)}
               aria-haspopup="true"
               aria-expanded={open}
-              aria-label="Perfil del administrador"
+              aria-label="Perfil de usuario"
             >
               <div className="admin-topbar__avatar">{initials}</div>
               <div className="admin-topbar__profile-text">
                 <span className="admin-topbar__profile-name">{fullName}</span>
-                <span className="admin-topbar__profile-role">{user?.rol || 'admin'}</span>
+                <span className="admin-topbar__profile-role">{user?.rol || 'employee'}</span>
               </div>
               <svg
                 className={`admin-topbar__chevron${open ? ' admin-topbar__chevron--open' : ''}`}
@@ -135,8 +139,8 @@ export default function AdminTopBar() {
                     {email && (
                       <span className="admin-profile-dropdown__email">{email}</span>
                     )}
-                    <span className="admin-role-pill admin-role-pill--admin admin-profile-dropdown__badge">
-                      {user?.rol || 'admin'}
+                    <span className="admin-role-pill admin-role-pill--employee admin-profile-dropdown__badge">
+                      {user?.rol || 'employee'}
                     </span>
                   </div>
                 </div>
