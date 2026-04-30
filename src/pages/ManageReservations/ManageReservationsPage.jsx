@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import HeaderNavBar from '../../components/HeaderNavBar.jsx';
 import ReservationList from './components/ReservationList.jsx';
 import CancellationModal from './components/CancellationModal.jsx';
 import './ManageReservationsPage.css';
@@ -135,7 +134,6 @@ export default function ManageReservationsPage() {
 
   return (
     <div className="manage-page-container">
-      <HeaderNavBar></HeaderNavBar>
       <header className="brand-header">
         <h2 className="page-title">Mis Reservaciones</h2>
         <p className="page-subtitle">Gestiona tus espacios de trabajo y estacionamiento.</p>

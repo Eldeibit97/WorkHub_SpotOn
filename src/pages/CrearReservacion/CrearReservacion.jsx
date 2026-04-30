@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { reservar } from '../../api/reserve';
-import AccentureLogo from '../../components/AccentureLogo';
 import './CrearReservacion.css';
 import TimerDisplay from './components/TimerDisplay';
 import EstacionamientoForms from './components/EstacionamientoForms';
@@ -70,14 +69,6 @@ const CrearReservacion = () => {
 
   return (
     <div className="reservation-container">
-      <header className="reservation-top-bar">
-        <Link to="/" className="reservation-top-bar-logo" aria-label="Inicio">
-          <AccentureLogo size="small" />
-        </Link>
-        <Link to="/sugerencias" className="reservation-back-link">
-          ← Regresar a casa
-        </Link>
-      </header>
       <div className="nav-tabs-custom">
         <div
           className={`nav-link-sections ${activeTab === 'parking' ? 'active' : ''}`}

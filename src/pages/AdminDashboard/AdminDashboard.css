@@ -771,6 +771,142 @@
   margin: 0.4rem 0 0.8rem;
 }
 
+/* ==========================================================================
+   Profile dropdown
+   ========================================================================== */
+.admin-topbar__profile-wrapper {
+  position: relative;
+}
+
+.admin-topbar__profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.3rem 0.65rem 0.3rem 0.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  cursor: pointer;
+  color: inherit;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.admin-topbar__profile-btn:hover {
+  background: var(--accent-purple-05);
+  border-color: var(--acn-purple);
+}
+
+.admin-topbar__chevron {
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.admin-topbar__chevron--open {
+  transform: rotate(180deg);
+}
+
+@keyframes admin-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 256px;
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  overflow: hidden;
+  animation: admin-dropdown-in 0.15s ease forwards;
+}
+
+.admin-profile-dropdown__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.admin-profile-dropdown__avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--acn-gradient);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-profile-dropdown__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.admin-profile-dropdown__name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-profile-dropdown__email {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-profile-dropdown__badge {
+  margin-top: 0.1rem;
+  align-self: flex-start;
+}
+
+.admin-profile-dropdown__divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 0;
+}
+
+.admin-profile-dropdown__logout {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+}
+
+.admin-profile-dropdown__logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
 @media (max-width: 720px) {
   .admin-topbar__inner {
     flex-wrap: wrap;

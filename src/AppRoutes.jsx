@@ -10,24 +10,30 @@ import ManageReservationsPage from './pages/ManageReservations/ManageReservation
 import AdminLayout from './pages/AdminDashboard/AdminLayout'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
+import UserLayout from './pages/UserLayout/UserLayout'
 import RequireRole from './components/RequireRole'
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Rutas públicas */}
+      {/* Rutas públicas sin layout de usuario */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<SignInPage />} />
-      <Route path='/sugerencias' element={<Sugerencias />}/>
-      <Route path="/reservar" element={<CrearReservacion />} />
-      <Route path="/confirmacion" element={<Confirmacion />} />
-      <Route path='/error' element = {<Error />} />
-      <Route path="/cancelar" element={<ManageReservationsPage />} />
+      <Route path="/error" element={<Error />} />
 
-      {/* Rutas para empleados y admins (requieren sesión) */}
-      <Route path="/reservar" element={<RequireRole allowedRoles={['employee', 'admin']}><CrearReservacion /></RequireRole>} />
-      <Route path="/confirmacion" element={<RequireRole allowedRoles={['employee', 'admin']}><Confirmacion /></RequireRole>} />
-      <Route path="/cancelar" element={<RequireRole allowedRoles={['employee', 'admin']}><ManageReservationsPage /></RequireRole>} />
+      {/* Rutas de usuario con UserTopBar compartido */}
+      <Route
+        element={
+          <RequireRole allowedRoles={['employee', 'admin']}>
+            <UserLayout />
+          </RequireRole>
+        }
+      >
+        <Route path="/sugerencias" element={<Sugerencias />} />
+        <Route path="/reservar" element={<CrearReservacion />} />
+        <Route path="/confirmacion" element={<Confirmacion />} />
+        <Route path="/cancelar" element={<ManageReservationsPage />} />
+      </Route>
 
       {/* Rutas exclusivas para admins (layout con top bar de pestañas) */}
       <Route
@@ -43,7 +49,7 @@ const AppRoutes = () => {
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
 
-      {/* Ruta catch-all para redirigir a landing page */}
+      {/* Ruta catch-all */}
       <Route path="/*" element={<LandingPage />} />
     </Routes>
   )
