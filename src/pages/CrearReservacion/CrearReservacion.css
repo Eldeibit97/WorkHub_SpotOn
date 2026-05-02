@@ -1,0 +1,129 @@
+@import '../../styles/reservation-theme.css';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.reservation-container {
+  background: var(--res-gradient-page);
+  min-height: 100vh;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  padding: 10px 20px 20px 20px;
+  padding: 20px;
+}
+
+.reservation-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1400px;
+  margin: 0 auto 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.reservation-top-bar-logo {
+  text-decoration: none;
+  opacity: 0.95;
+}
+
+.reservation-top-bar-logo:hover {
+  opacity: 1;
+}
+
+.reservation-back-link {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--res-border-soft);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.reservation-back-link:hover {
+  color: var(--text-primary);
+  border-color: var(--res-border);
+  background: rgba(168, 85, 247, 0.12);
+}
+
+.nav-tabs-custom {
+  border: none;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+.nav-link-sections {
+  background: transparent;
+  border: none;
+  color: #c4b5d8;
+  font-size: 1.375rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.nav-link-sections.active {
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--res-purple);
+}
+
+.nav-link-sections:hover {
+  color: var(--acn-purple-light);
+}
+
+.time-display {
+  font-size: 32px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-header {
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+  padding: 36px 40px 24px;
+  margin-bottom: 40px;
+}
+
+.page-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+
+.edit-page-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 40px 60px;
+}
+
+.edit-page-content .reservation-panel {
+  width: 100%;
+}
