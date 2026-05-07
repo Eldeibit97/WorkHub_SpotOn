@@ -1,5 +1,5 @@
 const rawBase = import.meta.env.VITE_API_URL ?? ''
-const aiApiBase = import.meta.env.AI_API_URL ?? ''
+const aiApiBase = import.meta.env.VITE_AI_API_URL ?? ''
 
 export const aiApiBaseUrl = aiApiBase.replace(/\/$/, '')
 export const apiBaseUrl = rawBase.replace(/\/$/, '')
