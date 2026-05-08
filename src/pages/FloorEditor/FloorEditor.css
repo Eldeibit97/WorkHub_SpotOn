@@ -1,0 +1,352 @@
+/* ─────────────────────────────────────────
+   Floor Map Editor  –  full-height tool
+───────────────────────────────────────── */
+
+.fe {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #0d0d11;
+  color: #e2e2ee;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+/* ── Top bar ── */
+.fe__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 52px;
+  padding: 0 1.25rem;
+  background: #13131c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.fe__topbar-left,
+.fe__topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.fe__logo {
+  font-weight: 700;
+  font-size: 0.925rem;
+  color: #a855f7;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fe__zone-select {
+  background: #1e1e2a;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  color: #e2e2ee;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.fe__zone-select:focus {
+  border-color: #a855f7;
+}
+
+.fe__hint {
+  font-size: 0.75rem;
+  color: #666688;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fe__toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #9999bb;
+  cursor: pointer;
+  user-select: none;
+}
+.fe__toggle-label input {
+  cursor: pointer;
+  accent-color: #a855f7;
+  width: 14px;
+  height: 14px;
+}
+
+.fe__count {
+  font-size: 0.8rem;
+  color: #7777aa;
+  white-space: nowrap;
+}
+
+.fe__save-btn {
+  background: #9333ea;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.fe__save-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+.fe__save-btn:active {
+  transform: translateY(0);
+}
+
+/* ── Body ── */
+.fe__body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.fe__sidebar {
+  width: 218px;
+  flex-shrink: 0;
+  background: #111119;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.fe__section {
+  padding: 0.6rem 0.85rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.fe__section:last-child {
+  border-bottom: none;
+  flex: 1;
+}
+
+.fe__section-title {
+  font-size: 0.655rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #555577;
+  margin-bottom: 0.55rem;
+  padding-top: 0.2rem;
+}
+
+/* ── Tool palette ── */
+.fe__tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+
+.fe__tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.6rem 0.35rem;
+  background: #1a1a26;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  color: #8888aa;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.fe__tool:hover {
+  background: #21212e;
+  color: #ccccee;
+}
+.fe__tool--active {
+  background: rgba(168, 85, 247, 0.13);
+  border-color: #a855f7;
+  color: #c084fc;
+}
+
+.fe__tool-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+.fe__tool-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.fe__tool-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.fe__shortcuts {
+  margin-top: 0.55rem;
+  font-size: 0.67rem;
+  color: #444466;
+  text-align: center;
+}
+
+/* ── Zoom controls ── */
+.fe__zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fe__zoom-btn {
+  width: 26px;
+  height: 26px;
+  background: #1a1a26;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  color: #e2e2ee;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+}
+.fe__zoom-btn:hover {
+  background: #24243a;
+}
+
+.fe__zoom-val {
+  min-width: 44px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #e2e2ee;
+  font-feature-settings: 'tnum';
+}
+
+.fe__zoom-reset {
+  background: transparent;
+  border: none;
+  color: #666688;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0 0.2rem;
+  transition: color 0.12s;
+}
+.fe__zoom-reset:hover {
+  color: #e2e2ee;
+}
+
+/* ── Legend ── */
+.fe__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fe__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.74rem;
+  color: #9999bb;
+}
+
+.fe__legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Properties panel ── */
+.fe__props {
+  overflow-y: auto;
+}
+
+.fe__prop-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  margin-bottom: 0.5rem;
+}
+.fe__prop-row label {
+  font-size: 0.655rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #555577;
+}
+.fe__prop-row input,
+.fe__prop-row select {
+  background: #1a1a26;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  color: #e2e2ee;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.fe__prop-row input:focus,
+.fe__prop-row select:focus {
+  border-color: #a855f7;
+}
+
+.fe__prop-coords {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.5rem;
+}
+
+.fe__delete-selected {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.45rem;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.28);
+  border-radius: 8px;
+  color: #f87171;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.fe__delete-selected:hover {
+  background: rgba(244, 63, 94, 0.2);
+}
+
+/* ── Canvas area ── */
+.fe__canvas-wrap {
+  flex: 1;
+  overflow: auto;
+  background: #08080d;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1.5rem;
+}
+
+.fe__canvas-scroll {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.fe__svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  box-shadow: 0 6px 48px rgba(0, 0, 0, 0.7);
+}

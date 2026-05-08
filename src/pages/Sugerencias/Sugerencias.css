@@ -60,7 +60,7 @@
 
 .reserve-button{
   align-self: center;
-  background: linear-gradient(90deg, #a855f7 0%, #d946ef 100%);
+  background: #a855f7;
   border: none;
   border-radius: 0.40rem;
   width: 250px;

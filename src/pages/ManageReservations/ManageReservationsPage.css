@@ -71,10 +71,7 @@
 /* Letra '>' con el degradado rosado/morado típico de Accenture en este mockup */
 .brand-logo::after {
   content: '>';
-  background: var(--brand-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent-purple);
   margin-left: 2px;
   font-weight: 900;
 }

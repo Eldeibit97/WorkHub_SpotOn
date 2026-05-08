@@ -76,7 +76,7 @@
   width: 100px;
   height: 100px;
   margin: 0 auto 20px;
-  background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+  background: #a855f7;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -92,8 +92,8 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
-  opacity: 0.3;
+  background: #a855f7;
+  opacity: 0.35;
   animation: pulse 2s infinite;
 }
 
@@ -147,7 +147,7 @@
 }
 
 .open-maps-btn {
-  background: linear-gradient(90deg, #a855f7 0%, #d946ef 100%);
+  background: #a855f7;
   border: none;
   border-radius: 8px;
   padding: 8px 20px;
