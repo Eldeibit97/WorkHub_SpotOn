@@ -1,92 +1,91 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { reservar } from '../../api/reserve';
 import './CrearReservacion.css';
-import TimerDisplay from './components/TimerDisplay';
+import ReservationWizard from './components/ReservationWizard';
 import EstacionamientoForms from './components/EstacionamientoForms';
-import OficinasForms from './components/OficinasForms';
+import workplaceImg from '../../assets/floors/workplace-view.png';
+import parkingImg from '../../assets/floors/parking-view.png';
+
+const ReservationTypeSelector = ({ onSelect }) => (
+  <div className="res-type-selector">
+    <div className="res-type-selector__header">
+      <h1 className="res-type-selector__title">¿Qué quieres reservar?</h1>
+      <p className="res-type-selector__subtitle">Elige el tipo de espacio que necesitas</p>
+    </div>
+    <div className="res-type-selector__cards">
+      <button className="res-type-card" onClick={() => onSelect('workplace')}>
+        <span className="res-type-card__img-wrap">
+          <img src={workplaceImg} alt="Workplace" className="res-type-card__img" />
+        </span>
+        <span className="res-type-card__body">
+          <span className="res-type-card__title">Workplace</span>
+          <span className="res-type-card__desc">Reserva un escritorio, sala o espacio de trabajo en las oficinas</span>
+          <span className="res-type-card__cta">Seleccionar →</span>
+        </span>
+      </button>
+      <button className="res-type-card" onClick={() => onSelect('parking')}>
+        <span className="res-type-card__img-wrap">
+          <img src={parkingImg} alt="Parking" className="res-type-card__img" />
+        </span>
+        <span className="res-type-card__body">
+          <span className="res-type-card__title">Parking</span>
+          <span className="res-type-card__desc">Reserva un lugar de estacionamiento en el edificio</span>
+          <span className="res-type-card__cta">Seleccionar →</span>
+        </span>
+      </button>
+    </div>
+  </div>
+);
 
 const CrearReservacion = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('parking');
+  const [view, setView] = useState('selector');
 
   const getCurrentDate = () => {
     const today = new Date();
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 
-    const dayName = days[today.getDay()];
-    const monthName = months[today.getMonth()];
-
     return {
-      dayName: dayName,
-      monthName: monthName,
+      dayName: days[today.getDay()],
+      monthName: months[today.getMonth()],
       day: today.getDate(),
       mont: today.getMonth(),
       year: today.getFullYear(),
-      dateObj: today
+      dateObj: today,
     };
   };
 
-  const formatDate = (dateData) =>{
-    return `${dateData.dayName}, ${dateData.monthName} ${String(dateData.dateObj.getDate()).padStart(2, '0')} of ${dateData.dateObj.getFullYear()}`;
-  }
-
-  const handleConfirm = async (data) =>{
-    //reservar(data)
-    //navigate('/confirmacion', {state: data})
-    try {
-      const response = await reservar(data);
-      
-      if (response.ok || response.status === 200 || response.status === 201) {
-        navigate('/confirmacion', { state: data });
-      } else {
-        const errorMessage = await response.text();
-        navigate('/error', { 
-          state: { 
-            statusCode: response.status,
-            message: errorMessage,
-            reservationData: data
-          } 
-        });
-      }
-    } catch (error) {
-      navigate('/error', { 
-        state: { 
-          statusCode: error.response?.status || 500,
-          message: error.message || 'Network error occurred',
-          reservationData: data
-        } 
-      });
-    }
-  }
-
-  const renderForm = () => {
-    return activeTab === 'parking'
-    ? <EstacionamientoForms currentDate={ formatDate(getCurrentDate())} dateData={getCurrentDate()} onConfirm={handleConfirm}/>
-    : <OficinasForms currentDate={ formatDate(getCurrentDate()) } dateData={getCurrentDate()} onConfirm={handleConfirm}/>;
+  const handleParkingConfirm = (data) => {
+    console.log('Parking reservation:', data);
   };
 
   return (
     <div className="reservation-container">
-      <div className="nav-tabs-custom">
-        <div
-          className={`nav-link-sections ${activeTab === 'parking' ? 'active' : ''}`}
-          onClick={() => setActiveTab('parking')}
-        >
-          Parking
-        </div>
-        <div
-          className={`nav-link-sections ${activeTab === 'workplace' ? 'active' : ''}`}
-          onClick={() => setActiveTab('workplace')}
-        >
-          Workplace
-        </div>
-      </div>
-      <TimerDisplay></TimerDisplay>
-      {renderForm()}
+      {view === 'selector' && (
+        <ReservationTypeSelector onSelect={setView} />
+      )}
+
+      {view === 'workplace' && (
+        <>
+          <button className="res-back-btn" onClick={() => setView('selector')}>
+            ← Volver
+          </button>
+          <ReservationWizard tipoReserva="OFICINA" />
+        </>
+      )}
+
+      {view === 'parking' && (
+        <>
+          <button className="res-back-btn" onClick={() => setView('selector')}>
+            ← Volver
+          </button>
+          <EstacionamientoForms
+            dateData={getCurrentDate()}
+            onConfirm={handleParkingConfirm}
+          />
+        </>
+      )}
     </div>
   );
-}
+};
 
-export default CrearReservacion
+export default CrearReservacion;

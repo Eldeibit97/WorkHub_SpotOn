@@ -186,10 +186,7 @@
 .admin-kpi-card__value {
   font-size: 1.85rem;
   font-weight: 700;
-  background: var(--acn-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--acn-purple, #a100ff);
 }
 
 .admin-charts-grid {

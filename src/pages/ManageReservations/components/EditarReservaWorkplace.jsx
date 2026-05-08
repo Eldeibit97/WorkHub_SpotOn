@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../../CrearReservacion/CrearReservacion.css';
-import '../../CrearReservacion/components/OficinasForms.css';
 import DateSelector from './DateSelector';
 import TimeSelector from '../../CrearReservacion/components/TimeSelector';
  

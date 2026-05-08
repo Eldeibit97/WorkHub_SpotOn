@@ -76,13 +76,13 @@
 
 /* Estilo para el link activo */
 .nav-bar-link.active {
-  background: linear-gradient(135deg, #a855f7, #9333ea);
+  background: #9333ea;
   color: white;
   box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
 }
 
 .nav-bar-link.active:hover {
-  background: linear-gradient(135deg, #9333ea, #7e22ce);
+  background: #7c3aed;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);

@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
 import './EstacionamientoForms.css';
-import CaruselMapas from './CaruselMapas';
 import DateSelector from '../../ManageReservations/components/DateSelector';
 import TimeSelector from './TimeSelector';
 
@@ -48,7 +47,10 @@ const EstacionamientoForms = ({ dateData, onConfirm }) => {
     <>
       <div className="main-grid">
         <div className="parking-map-container parking-map-container--carousel">
-          <CaruselMapas></CaruselMapas>
+          <div className="parking-map-placeholder">
+            <h3>Mapa de estacionamiento</h3>
+            <p>El selector visual estará disponible próximamente.</p>
+          </div>
         </div>
 
         <div className="reservation-panel">
