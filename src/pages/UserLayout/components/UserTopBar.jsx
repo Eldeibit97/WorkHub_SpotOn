@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 import { useTheme } from '../../../context/ThemeContext'
 import AccentureLogo from '../../../components/AccentureLogo'
@@ -19,7 +19,6 @@ function getInitials(first, last) {
 export default function UserTopBar() {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
-  const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef(null)
@@ -49,10 +48,9 @@ export default function UserTopBar() {
     }
   }, [open])
 
-  function handleLogout() {
+  async function handleLogout() {
     setOpen(false)
-    signOut()
-    navigate('/login')
+    await signOut()
   }
 
   return (
