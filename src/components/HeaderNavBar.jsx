@@ -6,7 +6,7 @@ import './headernavbar.css';
 const HeaderNavBar = () => {
   return (
     <header className='header-container'>
-      <Link to="/home" className="reservation-top-bar-logo" aria-label="Inicio">
+      <Link to="/" className="reservation-top-bar-logo" aria-label="Inicio">
         <AccentureLogo size="small"/>
       </Link>
       <div className='nav-bar-container'>

@@ -1,0 +1,84 @@
+.page-container{
+  padding: 10px 20px 20px 20px;
+}
+
+.today-info-container{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.greeting{
+  color: white;
+  font-weight: bold;
+  font-size: xx-large;
+  text-align: center;
+  width: 100%;
+  margin: 0.25rem;
+}
+
+.date{
+  color: gray;
+  opacity: 75%;
+  font-size: larger;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.suggestions-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.info-box-title{
+  color: rgba(168, 85, 247);
+  font-weight: bold;
+  font-size: larger;
+  text-align: center;
+  margin: 0.25rem;
+}
+
+.info-box-text{
+  text-align: center;
+  font-size: 14px;
+  margin: 0.25rem;
+}
+
+.info-box{
+  background: rgba(41, 42, 43, 0.375);
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-radius: 20px;
+  min-height: 400px;
+  width: 450px;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.reserve-button{
+  align-self: center;
+  background: #a855f7;
+  border: none;
+  border-radius: 0.40rem;
+  width: 250px;
+  color: white;
+  font-size: larger;
+  padding: 0.25rem;
+}
+
+.info-box-bullet-title{
+  color: rgba(168, 85, 247);
+  font-weight: bold;
+  font-size: 15px;
+  margin: 0.6rem 0 0.1rem 0;
+}
+
+.info-box-bullet-text{
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.4;
+}

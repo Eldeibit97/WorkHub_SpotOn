@@ -1,22 +1,22 @@
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import './styles/AppShell.css'
 import Header from './components/Header'
-import Home from './views/views.test/Home'
-import Parking from './views/views.test/Parking'
-import Offices from './views/views.test/Offices'
-import MyReservations from './views/views.test/MyReservations'
+import LandingPage from './pages/LandingPage/LandingPage'
+import Sugerencias from './pages/Sugerencias/Sugerencias'
+import CrearReservacion from './pages/CrearReservacion/CrearReservacion'
+import ManageReservationsPage from './pages/ManageReservations/ManageReservationsPage'
 
 export default function AppShell() {
   const navigate = useNavigate()
 
   const onNavigate = (view) => {
     const routes = {
-      'home': '/home',
-      'parking': '/parking',
-      'offices': '/offices',
-      'my-reservations': '/my-reservations',
+      'home': '/',
+      'parking': '/reservar',
+      'offices': '/sugerencias',
+      'my-reservations': '/cancelar',
     }
-    navigate(routes[view] || '/home')
+    navigate(routes[view] || '/')
   }
 
   return (
@@ -24,10 +24,10 @@ export default function AppShell() {
       <Header onNavigate={onNavigate} />
       <main className="main">
         <Routes>
-          <Route path="/home" element={<Home onNavigate={onNavigate} />} />
-          <Route path="/parking" element={<Parking onNavigate={onNavigate} />} />
-          <Route path="/offices" element={<Offices onNavigate={onNavigate} />} />
-          <Route path="/my-reservations" element={<MyReservations onNavigate={onNavigate} />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/sugerencias" element={<Sugerencias />} />
+          <Route path="/reservar" element={<CrearReservacion />} />
+          <Route path="/cancelar" element={<ManageReservationsPage />} />
         </Routes>
       </main>
     </div>

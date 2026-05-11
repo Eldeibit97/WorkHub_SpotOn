@@ -1,0 +1,87 @@
+.time-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0;
+}
+
+.time-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.time-input {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color 150ms;
+}
+
+.time-input:hover,
+.time-input:focus {
+  border-color: rgba(168, 85, 247, 0.5);
+  outline: none;
+}
+
+.time-arrow {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.time-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(20, 10, 40, 0.98);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
+  margin-top: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+}
+
+.time-option {
+  padding: 12px 20px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-size: 16px;
+}
+
+.time-option:hover {
+  background: rgba(168, 85, 247, 0.2);
+}
+
+.time-option.selected {
+  background: #a855f7;
+  font-weight: 600;
+}
+
+.time-picker-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.time-picker-dropdown::-webkit-scrollbar-track {
+  background: rgba(168, 85, 247, 0.1);
+  border-radius: 10px;
+}
+
+.time-picker-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.5);
+  border-radius: 10px;
+}
+
+.time-picker-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.7);
+}

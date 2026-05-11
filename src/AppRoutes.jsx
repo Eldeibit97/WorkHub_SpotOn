@@ -1,36 +1,59 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import CrearReservacion from './views/CrearReservacion'
-import Confirmacion from './components/creacion/Confirmacion'
-import Sugerencias from './views/Sugerencias'
-import Error from './components/creacion/Error'
-import LandingPage from './views/LandingPage'
-import SignInPage from './views/SignInPage'
-import ManageReservationsPage from './views/ManageReservationsPage'
-import AdminDashboard from './views/AdminDashboard'         
+import { Routes, Route, Navigate } from 'react-router-dom'
+import CrearReservacion from './pages/CrearReservacion/CrearReservacion'
+import Confirmacion from './pages/Confirmacion/Confirmacion'
+import Sugerencias from './pages/Sugerencias/Sugerencias'
+import Error from './pages/Error/Error'
+import LandingPage from './pages/LandingPage/LandingPage'
+import SignInPage from './pages/SignInPage/SignInPage'
+import ManageReservationsPage from './pages/ManageReservations/ManageReservationsPage'
+import AdminLayout from './pages/AdminDashboard/AdminLayout'
+import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
+import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
+import UserLayout from './pages/UserLayout/UserLayout'
+import FloorEditor from './pages/FloorEditor/FloorEditor'
 import RequireRole from './components/RequireRole'
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Rutas públicas */}
+      {/* Rutas públicas sin layout de usuario */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<SignInPage />} />
-      <Route path='/sugerencias' element={<Sugerencias />}/>
-      <Route path="/reservar" element={<CrearReservacion />} />
-      <Route path="/confirmacion" element={<Confirmacion />} />
-      <Route path='/error' element = {<Error />} />
-      <Route path="/cancelar" element={<ManageReservationsPage />} />
+      <Route path="/error" element={<Error />} />
 
-      {/* Rutas para empleados y admins (requieren sesión) */}
-      <Route path="/reservar" element={<RequireRole allowedRoles={['employee', 'admin']}><CrearReservacion /></RequireRole>} />
-      <Route path="/confirmacion" element={<RequireRole allowedRoles={['employee', 'admin']}><Confirmacion /></RequireRole>} />
-      <Route path="/cancelar" element={<RequireRole allowedRoles={['employee', 'admin']}><ManageReservationsPage /></RequireRole>} />
+      {/* Rutas de usuario con UserTopBar compartido */}
+      <Route
+        element={
+          <RequireRole allowedRoles={['employee', 'admin']}>
+            <UserLayout />
+          </RequireRole>
+        }
+      >
+        <Route path="/sugerencias" element={<Sugerencias />} />
+        <Route path="/reservar" element={<CrearReservacion />} />
+        <Route path="/confirmacion" element={<Confirmacion />} />
+        <Route path="/cancelar" element={<ManageReservationsPage />} />
+      </Route>
 
-      {/* Ruta exclusiva para admins */}
-      <Route path="/admin" element={<RequireRole allowedRoles={['admin']}><AdminDashboard /></RequireRole>} />
+      {/* Rutas exclusivas para admins (layout con top bar de pestañas) */}
+      <Route
+        path="/admin"
+        element={
+          <RequireRole allowedRoles={['admin']}>
+            <AdminLayout />
+          </RequireRole>
+        }
+      >
+        <Route index element={<DashboardOverview />} />
+        <Route path="usuarios" element={<AdminDashboard />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
+      </Route>
 
-      {/* Ruta catch-all para redirigir a landing page */}
+      {/* Editor visual de planos – herramienta de desarrollo */}
+      <Route path="/floor-editor" element={<FloorEditor />} />
+
+      {/* Ruta catch-all */}
       <Route path="/*" element={<LandingPage />} />
     </Routes>
   )
