@@ -41,6 +41,7 @@ export default function AdminDashboard() {
   const [showUserModal, setShowUserModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [modalError, setModalError] = useState('')
 
   useEffect(() => {
     fetchUsuarios()
@@ -108,6 +109,7 @@ export default function AdminDashboard() {
   function closeUserModal() {
     setShowUserModal(false)
     setSelectedUser(null)
+    setModalError('')
   }
 
   function requestDeleteFromRow(targetUser) {
@@ -134,6 +136,8 @@ export default function AdminDashboard() {
           password: formData.password,
         })
         setMensaje('Usuario creado correctamente.')
+        closeUserModal()
+        fetchUsuarios()
       } else if (selectedUser) {
         await updateUser(selectedUser.id_usuario, {
           nombre: formData.nombre,
@@ -145,6 +149,8 @@ export default function AdminDashboard() {
           await updateUserPassword(selectedUser.id_usuario, formData.password)
         }
         setMensaje('Usuario actualizado correctamente.')
+        closeUserModal()
+        fetchUsuarios()
       }
       closeUserModal()
       fetchUsuarios()
@@ -243,6 +249,7 @@ export default function AdminDashboard() {
           roles={roles}
           loading={saving}
           onClose={closeUserModal}
+          error={modalError}
           onSave={saveUser}
           onDeleteRequest={() => setShowDeleteModal(true)}
         />
