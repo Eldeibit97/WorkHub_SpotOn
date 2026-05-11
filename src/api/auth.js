@@ -56,3 +56,23 @@ export function getStoredToken() {
 export function clearStoredToken() {
   sessionStorage.removeItem(AUTH_TOKEN_KEY)
 }
+
+/** Borrador del wizard de reserva (modo edición / pasos en sessionStorage). */
+export function clearReservationWizardStorage() {
+  try {
+    sessionStorage.removeItem('workhub_reservation_edit_draft')
+    sessionStorage.removeItem('workhub_reservation_edit_mode')
+    sessionStorage.removeItem('workhub_reservation_edit_step')
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Cierra sesión en servidor (invalida cookie `workhub.sid` y store en BD).
+ * Respuesta esperada: 204. Llamar con credenciales include (apiFetch por defecto).
+ */
+export async function logoutRequest() {
+  const res = await apiFetch('/api/auth/logout', { method: 'POST' })
+  return res
+}

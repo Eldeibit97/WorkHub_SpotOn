@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-import { getStoredToken, clearStoredToken } from '../api/auth'
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { getStoredToken, clearStoredToken, logoutRequest, clearReservationWizardStorage } from '../api/auth'
+import { setUnauthorizedHandler } from '../api/client'
 
 const AuthContext = createContext(null)
 
@@ -18,11 +20,34 @@ function decodeToken(token) {
 
 // Componente proveedor del contexto de autenticación
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)   // { sub, correo, rol, nombre?, ... }
+  const navigate = useNavigate()
+  const [user, setUser] = useState(null) // { sub, correo, rol, nombre?, ... }
   const [loading, setLoading] = useState(true)
+  const userRef = useRef(null)
+  const signOutRunning = useRef(false)
+
+  userRef.current = user
+
+  const signOut = useCallback(async () => {
+    if (signOutRunning.current) return
+    signOutRunning.current = true
+    try {
+      try {
+        await logoutRequest()
+      } catch {
+        // red de error: igual limpiamos cliente
+      }
+      clearStoredToken()
+      clearReservationWizardStorage()
+      setUser(null)
+      navigate('/login', { replace: true })
+    } finally {
+      signOutRunning.current = false
+    }
+  }, [navigate])
 
   useEffect(() => {
-    // Al recargar la página, recuperar sesión desde sessionStorage
+    // Al recargar: estado UI desde JWT local; sesión HTTP = cookie workhub.sid
     const token = getStoredToken()
     if (token) {
       const payload = decodeToken(token)
@@ -31,6 +56,20 @@ export function AuthProvider({ children }) {
     setLoading(false)
   }, [])
 
+  useEffect(() => {
+    const onUnauthorized = () => {
+      const hadSession = Boolean(getStoredToken() || userRef.current)
+      if (!hadSession) return
+      void logoutRequest().catch(() => {})
+      clearStoredToken()
+      clearReservationWizardStorage()
+      setUser(null)
+      navigate('/login', { replace: true })
+    }
+    setUnauthorizedHandler(onUnauthorized)
+    return () => setUnauthorizedHandler(null)
+  }, [navigate])
+
   /**
    * Llamar después de un login exitoso.
    * @param {{ token: string, user: object }} loginResponse  respuesta del backend
@@ -38,15 +77,10 @@ export function AuthProvider({ children }) {
   function signIn(loginResponse) {
     const payload = decodeToken(loginResponse.token)
     setUser({
-      ...loginResponse.user,   // nombre, apellido, correo_institucional, rol
-      ...payload,              // sub, correo, rol (desde el token)
+      ...loginResponse.user,
+      ...payload,
       token: loginResponse.token,
     })
-  }
-
-  function signOut() {
-    clearStoredToken()
-    setUser(null)
   }
 
   return (
