@@ -57,6 +57,18 @@ export function clearStoredToken() {
   sessionStorage.removeItem(AUTH_TOKEN_KEY)
 }
 
+/**
+ * Usuario actual vía cookie `workhub.sid` (compartida entre pestañas).
+ * Opcional: `Authorization: Bearer` si esta pestaña tiene JWT en sessionStorage.
+ *
+ * @returns {Promise<Response>}
+ */
+export async function getAuthMe() {
+  const token = getStoredToken()
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
+  return apiFetch('/api/auth/me', { method: 'GET', headers })
+}
+
 /** Borrador del wizard de reserva (modo edición / pasos en sessionStorage). */
 export function clearReservationWizardStorage() {
   try {

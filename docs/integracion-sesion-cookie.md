@@ -1,66 +1,73 @@
 # Integración frontend: sesión por cookie (WorkHub API)
 
-Referencia para consumir el backend con **sesión de servidor** (`express-session`, store en PostgreSQL).
+Referencia para consumir el backend con **sesión de servidor** (cookie `workhub.sid`, store en PostgreSQL, etc.).
 
-## Resumen
+## Pestañas y `sessionStorage`
 
-- Tras un login correcto, el servidor envía **`Set-Cookie`** con el nombre **`workhub.sid`** (httpOnly).
-- Las rutas protegidas aceptan **primero** esa cookie (sesión) y, en migración, **también** `Authorization: Bearer` con el JWT que devuelve el login.
-- Sin cookie válida ni Bearer, las rutas con `authenticate` responden **401** (`Sesión o token requerido` / mensaje de token inválido).
+La cookie **`workhub.sid`** (origen del API) la comparte el navegador entre **todas las pestañas**. En cambio, **`sessionStorage`** (p. ej. `workhub_auth_token`) es **por pestaña**: al abrir otra pestaña, puede no haber JWT aunque la sesión por cookie siga activa.
+
+**Solución implementada:** al montar la app, **`AuthProvider`** llama **`GET /api/auth/me`** con **`credentials: 'include'`** (por defecto en `apiFetch`). Si esa pestaña tiene JWT, también se envía **`Authorization: Bearer`** (migración).
+
+- **200** y body `{ "user": { ... } }` (mismo criterio que en login): usuario autenticado; se rellena el contexto sin depender solo de `sessionStorage`.
+- **401**: no hay sesión/cookie válida (o token inválido si se envió); se limpia el JWT de esa pestaña y el usuario queda no autenticado.
+- **Sin `VITE_API_URL`**: no se llama `/me`; solo se usa el JWT de esa pestaña si existe (desarrollo sin API).
+
+Código: [`src/context/AuthContext.jsx`](../src/context/AuthContext.jsx), [`src/api/auth.js`](../src/api/auth.js) (`getAuthMe`).
+
+## Rutas exentas del 401 global
+
+`GET /api/auth/me` puede responder **401** cuando no hay sesión; eso **no** debe disparar el handler global que hace logout y redirección (evita ruido en el arranque). En [`src/api/client.js`](../src/api/client.js), `/api/auth/me` se trata como ruta “pública” para ese propósito (junto con login y logout).
 
 ## Variables de entorno (frontend)
 
 | Variable | Uso |
 |----------|-----|
-| `VITE_API_URL` | Base del API (sin `/` final). |
-| `VITE_API_WITH_CREDENTIALS` | Por defecto el cliente usa `credentials: 'include'`; pon **`false`** solo si necesitas el modo legacy sin cookies CORS. |
+| `VITE_API_URL` | Base del API (sin `/` final). Obligatorio para llamar `/me` y el resto de rutas. |
+| `VITE_API_WITH_CREDENTIALS` | Si **`false`**, las peticiones no envían cookies. Por defecto se usa **`include`** (necesario para la cookie de sesión). |
+| `VITE_LOGIN_PATH` | Login; por defecto `/api/auth/login`. |
 
-El origen del frontend debe estar permitido en **`FRONTEND_ORIGINS`** (o `FRONTEND_ORIGIN`) del backend para que CORS permita credenciales.
+El origen del frontend debe estar en **`FRONTEND_ORIGINS`** / **`FRONTEND_ORIGIN`** del backend para CORS con credenciales.
 
 ## Login
 
-- **POST** `{VITE_API_URL}/api/auth/login`
-- **Body JSON**: `{ "email": string, "password": string }` (también se aceptan alias de correo en backend: `correo_institucional`, `correo`, `mail`).
-- **`credentials: 'include'`** en esta petición (comportamiento por defecto del `apiFetch` del repo).
-- **Respuesta 200**: `{ "token": string, "user": { ... } }`. El JWT se guarda en `sessionStorage` para migración y headers Bearer; la fuente de verdad server-side es la **cookie** tras login.
-
-## Cliente HTTP (`apiFetch`)
-
-- Las peticiones usan **`credentials: 'include'`** por defecto (ver `src/api/client.js`).
-- Sigue siendo válido enviar **`Authorization: Bearer`** durante la migración.
+- **POST** `{VITE_API_URL}/api/auth/login` (o `VITE_LOGIN_PATH`)
+- **Body JSON**: `{ "email": string, "password": string }` (el backend puede aceptar alias de correo).
+- **Respuesta 200**: `{ "token": string, "user": { ... } }` y **`Set-Cookie`** con la sesión.
+- El frontend guarda el JWT en `sessionStorage` para Bearer y claims locales; la fuente de verdad server-side es la **cookie**.
 
 ## Logout
 
 - **POST** `{VITE_API_URL}/api/auth/logout`
 - **`credentials: 'include'`**
-- **Respuesta 204**: sesión invalidada y cookie eliminada vía `Set-Cookie`.
-- El frontend llama a `logoutRequest()` desde `signOut()` en `AuthContext` y limpia `sessionStorage` (token y borrador del wizard de reserva).
+- **204** esperado: sesión invalidada; el cliente llama esto desde `signOut()` y borra token + borrador del wizard en `sessionStorage`.
 
-## Producción: HTTPS, SameSite y Secure
+## GET `/api/auth/me`
 
-En el backend, en **`NODE_ENV=production`**, la cookie suele usar **`SameSite=None`** y **`Secure=true`**: front y API deben servirse por **HTTPS** (o el navegador no guardará la cookie correctamente).
+- **GET** `{VITE_API_URL}/api/auth/me`
+- Headers: ninguno obligatorio si la cookie se envía; opcional **`Authorization: Bearer`**.
+- **200**: `{ "user": { "id_usuario", "nombre", "apellido", "correo_institucional", "rol", ... } }`
+- **401**: sesión inválida o usuario borrado.
 
-En **desarrollo local**, suele usarse **`SameSite=Lax`** y **`Secure=false`** para `http://localhost`.
+### Otros 401 (rutas protegidas)
+
+Si una petición autenticada recibe **401**, el cliente puede ejecutar el handler registrado con `setUnauthorizedHandler`: limpiar estado y redirigir a login (y opcionalmente intentar `POST /api/auth/logout`).
+
+## Producción: HTTPS, SameSite, Secure
+
+En **producción** el backend suele usar **`SameSite=None`** y **`Secure=true`**: front y API deben servirse por **HTTPS** para que el navegador guarde la cookie.
+
+En **desarrollo** suele usarse **`SameSite=Lax`** y **`Secure=false`** para `http://localhost`.
 
 ## CSRF
 
-Con cookie de sesión y SPA en **origen distinto** del API, si la cookie usa `SameSite=None`, puede aumentar el riesgo de **CSRF** en POST/PATCH/DELETE.
+Con cookie de sesión y SPA en **origen distinto** del API, **`SameSite=None`** puede aumentar riesgo de **CSRF** en POST/PATCH/DELETE. Mitigaciones habituales: mismo sitio vía proxy, o token CSRF. El backend puede no exponer aún CSRF; revisar política del equipo.
 
-Mitigaciones habituales: mismo sitio vía reverse proxy, o token CSRF. Este backend **no** expone actualmente un endpoint CSRF; revisar política de seguridad del equipo.
+## Referencia código backend (otro repositorio)
 
-## Errores y UX
+- Rutas y middleware: `auth.routes.js`, `auth.controller.js`, `authenticate.js`, `session.js`, etc.
 
-- **401** en rutas protegidas: el `apiFetch` dispara un handler que redirige a `/login` si había token o usuario en contexto (ver `setUnauthorizedHandler` en `src/api/client.js`).
+## Referencia código frontend
 
-## Implementación en este repo (checklist)
-
-- [x] `credentials: 'include'` por defecto en `apiFetch` (`VITE_API_WITH_CREDENTIALS !== 'false'`).
-- [x] Login y logout con credenciales.
-- [x] `POST /api/auth/logout` + limpieza de `workhub_auth_token` y claves del wizard en `sessionStorage`.
-- [x] Manejo global de **401** → redirección a login cuando aplica.
-
-Configurar en el servidor: **`FRONTEND_ORIGINS`** incluye el origen del dev server (p. ej. `http://localhost:5173`).
-
-## Referencia backend (otro repositorio)
-
-Rutas y middleware viven en el proyecto **WorkHub_Backend** (`session.js`, `authenticate.js`, `auth.routes.js`).
+- Cliente HTTP: [`src/api/client.js`](../src/api/client.js)
+- Login, `/me`, logout: [`src/api/auth.js`](../src/api/auth.js)
+- Estado de usuario y arranque: [`src/context/AuthContext.jsx`](../src/context/AuthContext.jsx)
