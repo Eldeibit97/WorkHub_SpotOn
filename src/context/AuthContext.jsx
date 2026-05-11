@@ -1,7 +1,13 @@
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getStoredToken, clearStoredToken, logoutRequest, clearReservationWizardStorage } from '../api/auth'
-import { setUnauthorizedHandler } from '../api/client'
+import {
+  getStoredToken,
+  clearStoredToken,
+  logoutRequest,
+  clearReservationWizardStorage,
+  getAuthMe,
+} from '../api/auth'
+import { apiBaseUrl, setUnauthorizedHandler } from '../api/client'
 
 const AuthContext = createContext(null)
 
@@ -47,13 +53,65 @@ export function AuthProvider({ children }) {
   }, [navigate])
 
   useEffect(() => {
-    // Al recargar: estado UI desde JWT local; sesión HTTP = cookie workhub.sid
-    const token = getStoredToken()
-    if (token) {
-      const payload = decodeToken(token)
-      if (payload) setUser({ ...payload, token })
+    let cancelled = false
+
+    async function bootstrap() {
+      const token = getStoredToken()
+
+      if (!apiBaseUrl) {
+        if (token) {
+          const payload = decodeToken(token)
+          if (payload && !cancelled) setUser({ ...payload, token })
+        }
+        if (!cancelled) setLoading(false)
+        return
+      }
+
+      try {
+        const res = await getAuthMe()
+        if (cancelled) return
+
+        if (res.ok) {
+          const text = await res.text()
+          let data = {}
+          if (text) {
+            try {
+              data = JSON.parse(text)
+            } catch {
+              data = {}
+            }
+          }
+          const apiUser = data.user
+          if (apiUser && typeof apiUser === 'object') {
+            const jwtPayload = token ? decodeToken(token) : null
+            setUser({
+              ...(jwtPayload || {}),
+              ...apiUser,
+              ...(token ? { token } : {}),
+            })
+          } else if (token) {
+            const payload = decodeToken(token)
+            if (payload) setUser({ ...payload, token })
+          }
+        } else if (res.status === 401) {
+          clearStoredToken()
+          setUser(null)
+        }
+      } catch {
+        if (cancelled) return
+        if (token) {
+          const payload = decodeToken(token)
+          if (payload) setUser({ ...payload, token })
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
-    setLoading(false)
+
+    bootstrap()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   useEffect(() => {

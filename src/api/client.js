@@ -20,7 +20,11 @@ function normalizeApiPath(path) {
 function isPublicAuthPath(apiPath) {
   const p = normalizeApiPath(apiPath)
   const loginPath = normalizeApiPath(import.meta.env.VITE_LOGIN_PATH ?? '/api/auth/login')
-  return p === loginPath || p === '/api/auth/logout'
+  return (
+    p === loginPath ||
+    p === '/api/auth/logout' ||
+    p === '/api/auth/me'
+  )
 }
 
 let unauthorizedHandler = null
