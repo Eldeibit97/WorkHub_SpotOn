@@ -1,7 +1,8 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import './Confirmacion.css';
+import { formatDateLongEsMx } from '../../lib/dateFormat'
+import './Confirmacion.css'
 
 const Confirmacion = () => {
   const navigate = useNavigate();
@@ -19,18 +20,7 @@ const Confirmacion = () => {
     return null;
   }
 
-  const formatDate = () => {
-    const dateObj = new Date(reservationData.fechaReserva);
-
-    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
-
-    const dayName = days[dateObj.getDay()];
-    const monthName = months[dateObj.getMonth()];
-    const day = dateObj.getDate();
-
-    return `${dayName}, ${monthName} ${day}`;
-  }
+  const fechaTexto = formatDateLongEsMx(reservationData.fechaReserva)
 
   return (
     <div className='reservation-container'>
@@ -55,7 +45,7 @@ const Confirmacion = () => {
           Your {reservationData.tipoReserva === 'ESTACIONAMIENTO' ? 'parking spot' : 'workspace'} has been successfully reserved.
         </p>
 
-        <p className="confirmation-fechaReserva">{formatDate()}</p>
+        <p className="confirmation-fechaReserva">{fechaTexto}</p>
 
         <div className="details-card">
           <div className="detail-item">

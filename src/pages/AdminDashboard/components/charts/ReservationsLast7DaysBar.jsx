@@ -7,13 +7,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-
-function formatDate(value) {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
-}
+import { formatDateShortEsMx } from '../../../../lib/dateFormat'
 
 export default function ReservationsLast7DaysBar({ data = [] }) {
   if (!data.length) {
@@ -21,7 +15,7 @@ export default function ReservationsLast7DaysBar({ data = [] }) {
   }
 
   const chartData = data.map((row) => ({
-    label: formatDate(row.date),
+    label: formatDateShortEsMx(row.date),
     count: row.count,
   }))
 

@@ -4,288 +4,16 @@ import { apiFetch } from '../../../api/client'
 import { getStoredToken } from '../../../api/auth'
 import FLOOR_INTERIOR_IMAGES from '../../../assets/floors/index.js'
 import TimeSelector from './TimeSelector'
+import DateStrip from './DateStrip'
+import SeatMapExportModal from './SeatMapExportModal'
+import SeatMapSpaceDetailModal from './SeatMapSpaceDetailModal'
+import SeatMapExpiredModal from './SeatMapExpiredModal'
+import { labelForTipo } from '../../../lib/spaceTipo'
+import { toYyyyMmDd } from '../../../lib/dateFormat'
+import { formatCountdown, isSharedRoomType } from './seatMapHelpers'
+import { getInitialsFromEmail } from '../../../lib/userDisplay'
 import './Step2SeatMap.css'
 
-const TIPO_LABEL = {
-  1: 'Estación',
-  2: 'Sala de juntas',
-  3: 'Phone Booth',
-  4: 'Media Scape',
-  5: 'Área especial',
-}
-
-function isSharedRoomType(tipo) {
-  return tipo !== 1
-}
-
-const DAYS_ES = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb']
-const MONTHS_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
-
-function formatFechaLarga(d) {
-  const date = d instanceof Date ? d : new Date(d)
-  const dayNames = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
-  return `${dayNames[date.getDay()]}, ${date.getDate()} ${MONTHS_ES[date.getMonth()]}`
-}
-
-function isSameDay(a, b) {
-  return a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear()
-}
-
-/** Cabeceras lun → dom (misma convención que la tira semanal). */
-const WEEKDAY_LABELS_MON = [...DAYS_ES.slice(1), DAYS_ES[0]]
-
-
-function getInitialsFromEmail(mail) {
-  if (!mail) return '?'
-  const before = mail.split('@')[0]
-  const parts = before.split(/[.\-_]+/).filter(Boolean)
-  if (parts.length === 0) return mail.charAt(0).toUpperCase()
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return (parts[0][0] + parts[1][0]).toUpperCase()
-}
-
-function formatCountdown(secs) {
-  const m = Math.floor(secs / 60)
-  const s = secs % 60
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-}
-
-// ─── Week strip for date selection ───────────────────────────────────────────
-function DateStrip({ value, onChange }) {
-  const today = useMemo(() => {
-    const d = new Date()
-    d.setHours(0, 0, 0, 0)
-    return d
-  }, [])
-
-  const selectedDate = useMemo(() => {
-    const d = value instanceof Date ? new Date(value) : new Date(value)
-    d.setHours(0, 0, 0, 0)
-    return d
-  }, [value])
-
-  // Anchor week on today's Monday (stable across day picks)
-  const todayMonday = useMemo(() => {
-    const m = new Date(today)
-    const dow = m.getDay() === 0 ? 6 : m.getDay() - 1
-    m.setDate(m.getDate() - dow)
-    return m
-  }, [today])
-
-  function diffWeeks(from, to) {
-    const ms = to.getTime() - from.getTime()
-    return Math.floor(ms / (7 * 24 * 60 * 60 * 1000))
-  }
-
-  // Initial offset: bring selected date's week into view
-  const [weekOffset, setWeekOffset] = useState(() => {
-    const selMonday = new Date(selectedDate)
-    const sdow = selMonday.getDay() === 0 ? 6 : selMonday.getDay() - 1
-    selMonday.setDate(selMonday.getDate() - sdow)
-    return diffWeeks(todayMonday, selMonday)
-  })
-
-  // Cuando cambia el día elegido (tira de días, calendario, paso 1), alinear la
-  // semana visible. No depender de weekOffset: si no, las flechas se revierten al instante.
-  useEffect(() => {
-    const selMonday = new Date(selectedDate)
-    const sdow = selMonday.getDay() === 0 ? 6 : selMonday.getDay() - 1
-    selMonday.setDate(selMonday.getDate() - sdow)
-    setWeekOffset(diffWeeks(todayMonday, selMonday))
-  }, [selectedDate, todayMonday])
-
-  const shiftedDays = useMemo(() => {
-    const start = new Date(todayMonday)
-    start.setDate(start.getDate() + weekOffset * 7)
-    return Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(start)
-      d.setDate(start.getDate() + i)
-      return d
-    })
-  }, [todayMonday, weekOffset])
-
-  const [calOpen, setCalOpen] = useState(false)
-  const [viewMonth, setViewMonth] = useState(() => ({
-    y: selectedDate.getFullYear(),
-    m: selectedDate.getMonth(),
-  }))
-  const calRef = useRef(null)
-  const calToggleRef = useRef(null)
-
-  useEffect(() => {
-    if (!calOpen) return
-    setViewMonth({ y: selectedDate.getFullYear(), m: selectedDate.getMonth() })
-  }, [calOpen, selectedDate])
-
-  const monthGridDays = useMemo(() => {
-    const { y, m } = viewMonth
-    const first = new Date(y, m, 1)
-    const startPad = first.getDay() === 0 ? 6 : first.getDay() - 1
-    const start = new Date(y, m, 1 - startPad)
-    return Array.from({ length: 42 }, (_, i) => {
-      const d = new Date(start)
-      d.setDate(start.getDate() + i)
-      return d
-    })
-  }, [viewMonth])
-
-  const canPrevMonth =
-    viewMonth.y > today.getFullYear() ||
-    (viewMonth.y === today.getFullYear() && viewMonth.m > today.getMonth())
-
-  // Close calendar on outside click (sin pelear con el botón que abre/cierra)
-  useEffect(() => {
-    if (!calOpen) return
-    function close(e) {
-      if (calToggleRef.current?.contains(e.target)) return
-      if (calRef.current?.contains(e.target)) return
-      setCalOpen(false)
-    }
-    document.addEventListener('mousedown', close)
-    return () => document.removeEventListener('mousedown', close)
-  }, [calOpen])
-
-  function handleDayClick(d) {
-    if (d < today) return
-    onChange(new Date(d))
-    setCalOpen(false)
-  }
-
-  function pickCalendarDay(d) {
-    handleDayClick(d)
-  }
-
-  return (
-    <div className="date-strip">
-      <div className="date-strip__bar">
-        <button
-          type="button"
-          className="date-strip__toggle"
-          ref={calToggleRef}
-          onClick={() => setCalOpen((v) => !v)}
-          aria-label={calOpen ? 'Cerrar calendario' : 'Abrir calendario del mes'}
-          aria-expanded={calOpen}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <rect x="3" y="4" width="18" height="18" rx="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-          <span className="date-strip__date-text">{formatFechaLarga(selectedDate)}</span>
-          <svg
-            className={`date-strip__chevron${calOpen ? ' date-strip__chevron--open' : ''}`}
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </button>
-
-        <div className="date-strip__week">
-          <button
-            type="button"
-            className="date-strip__nav"
-            onClick={() => setWeekOffset((o) => o - 1)}
-            aria-label="Semana anterior"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-          </button>
-          {shiftedDays.map((d) => {
-            const isPast = d < today
-            const isSel = isSameDay(d, selectedDate)
-            return (
-              <button
-                key={d.toISOString()}
-                type="button"
-                className={`date-strip__day${isSel ? ' date-strip__day--active' : ''}${isPast ? ' date-strip__day--past' : ''}`}
-                onClick={() => handleDayClick(d)}
-                disabled={isPast}
-              >
-                <span className="date-strip__day-name">{DAYS_ES[d.getDay()]}</span>
-                <span className="date-strip__day-num">{d.getDate()}</span>
-              </button>
-            )
-          })}
-          <button
-            type="button"
-            className="date-strip__nav"
-            onClick={() => setWeekOffset((o) => o + 1)}
-            aria-label="Semana siguiente"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-          </button>
-        </div>
-      </div>
-
-      {calOpen && (
-        <div className="date-strip__popover date-strip__popover--month" ref={calRef} role="dialog" aria-label="Calendario">
-          <div className="date-strip__month-head">
-            <button
-              type="button"
-              className="date-strip__month-nav"
-              onClick={() => setViewMonth(({ y, m }) => {
-                const d = new Date(y, m - 1, 1)
-                return { y: d.getFullYear(), m: d.getMonth() }
-              })}
-              disabled={!canPrevMonth}
-              aria-label="Mes anterior"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-            </button>
-            <span className="date-strip__month-title">
-              {MONTHS_ES[viewMonth.m]} {viewMonth.y}
-            </span>
-            <button
-              type="button"
-              className="date-strip__month-nav"
-              onClick={() => setViewMonth(({ y, m }) => {
-                const d = new Date(y, m + 1, 1)
-                return { y: d.getFullYear(), m: d.getMonth() }
-              })}
-              aria-label="Mes siguiente"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-            </button>
-          </div>
-          <div className="date-strip__month-weekdays">
-            {WEEKDAY_LABELS_MON.map((label) => (
-              <span key={label} className="date-strip__month-wd">{label}</span>
-            ))}
-          </div>
-          <div className="date-strip__month-grid">
-            {monthGridDays.map((d) => {
-              const inMonth = d.getMonth() === viewMonth.m
-              const isPast = d < today
-              const isSel = isSameDay(d, selectedDate)
-              const isTodayCell = isSameDay(d, today)
-              return (
-                <button
-                  key={`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`}
-                  type="button"
-                  className={`date-strip__month-day${inMonth ? '' : ' date-strip__month-day--outside'}${isSel ? ' date-strip__month-day--selected' : ''}${isPast ? ' date-strip__month-day--past' : ''}${isTodayCell ? ' date-strip__month-day--today' : ''}`}
-                  disabled={isPast}
-                  onClick={() => pickCalendarDay(d)}
-                >
-                  {d.getDate()}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ─── Main component ───────────────────────────────────────────────────────────
 export default function Step2SeatMap({
   data,
   update,
@@ -312,8 +40,6 @@ export default function Step2SeatMap({
   const [expiredDialogOpen, setExpiredDialogOpen] = useState(false)
   const [showAvailabilityTooltip, setShowAvailabilityTooltip] = useState(false)
 
-
-  // Countdown state: 5 min = 300 s
   const COUNTDOWN_START = 300
   const [countdown, setCountdown] = useState(COUNTDOWN_START)
   const [expired, setExpired] = useState(false)
@@ -322,14 +48,12 @@ export default function Step2SeatMap({
   const mapWrapperRef = useRef(null)
   const draggingRef = useRef(null)
 
-  // Reset countdown only when the map zone changes (new floor), not when date/time is adjusted
   useEffect(() => {
     setCountdown(COUNTDOWN_START)
     setExpired(false)
     setExpiredDialogOpen(false)
   }, [data.zonaId])
 
-  // Countdown tick
   useEffect(() => {
     if (editMode) return
     if (expired) return
@@ -346,12 +70,10 @@ export default function Step2SeatMap({
     return () => clearInterval(id)
   }, [editMode, expired])
 
-  // Show custom expired dialog
   useEffect(() => {
     if (!editMode && expired) setExpiredDialogOpen(true)
   }, [editMode, expired])
 
-  // Floor stats
   const stats = useMemo(() => {
     if (!floorMap) return { disponibles: 0, ocupados: 0, total: 0 }
     let disponibles = 0
@@ -366,7 +88,6 @@ export default function Step2SeatMap({
   const availablePct = stats.total > 0 ? (stats.disponibles / stats.total) * 100 : 0
   const occupiedPct = Math.max(0, 100 - availablePct)
 
-  // Attendees list (tú + compañeros) — informational only, no per-seat assignment
   const attendees = useMemo(() => {
     const list = [{ key: '__me__', label: bookerName || bookerMail || 'Tú', isMe: true }]
     data.coworkers.forEach((c) => list.push({ key: c.email, label: c.email, isMe: false }))
@@ -378,8 +99,7 @@ export default function Step2SeatMap({
     setSpaceSchedule(null)
     setScheduleLoading(true)
     try {
-      const d = data.fecha instanceof Date ? data.fecha : new Date(data.fecha)
-      const fechaStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      const fechaStr = toYyyyMmDd(data.fecha)
       const token = getStoredToken()
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
       const res = await apiFetch(`/api/spaces/${sel.id_espacio}/schedule?fecha=${fechaStr}`, { headers })
@@ -402,7 +122,6 @@ export default function Step2SeatMap({
     return map
   }, [data.selectedSpaces])
 
-  // Load floor map + availability
   useEffect(() => {
     if (!data.zonaId) return
     let cancelled = false
@@ -410,8 +129,7 @@ export default function Step2SeatMap({
     async function load() {
       const map = await getFloorMap(data.zonaId)
       if (cancelled) return
-      const d = data.fecha instanceof Date ? data.fecha : new Date(data.fecha)
-      const fechaStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      const fechaStr = toYyyyMmDd(data.fecha)
       const av = await getAvailability({ zonaId: data.zonaId, fecha: fechaStr, horaInicio: data.horaInicio, horaFin: data.horaFin })
       if (cancelled) return
       setFloorMap(map)
@@ -423,7 +141,6 @@ export default function Step2SeatMap({
     return () => { cancelled = true }
   }, [data.zonaId, data.fecha, data.horaInicio, data.horaFin])
 
-  // Edit mode: drag handlers
   const screenToSvg = useCallback((clientX, clientY) => {
     const svg = svgRef.current
     if (!svg) return { x: 0, y: 0 }
@@ -528,19 +245,16 @@ export default function Step2SeatMap({
       sharedForAll: sharedRoom,
     }
 
-    // Salas: una selección cubre a todos (tú + compañeros).
     if (sharedRoom) {
       update({ selectedSpaces: [newEntry] })
       return
     }
 
-    // Si había una sala compartida y ahora eligen estación, reiniciar selección por asientos.
     const currentHasSharedRoom = data.selectedSpaces.some((s) => s.sharedForAll)
     const currentSeats = currentHasSharedRoom ? [] : data.selectedSpaces
 
     const maxSeats = 1 + data.coworkers.length
     if (currentSeats.length >= maxSeats) {
-      // Conserva el comportamiento de reemplazo automático al cambiar de lugar.
       update({ selectedSpaces: [...currentSeats.slice(0, -1), newEntry] })
       return
     }
@@ -592,7 +306,7 @@ export default function Step2SeatMap({
     setTooltip({
       x: e.clientX - rect.left, y: e.clientY - rect.top,
       title: space.codigo, subtitle: space.nombre,
-      tipo: TIPO_LABEL[space.tipo] || `Tipo ${space.tipo}`,
+      tipo: labelForTipo(space.tipo),
       state,
     })
     setHovered(space.id_espacio)
@@ -605,11 +319,13 @@ export default function Step2SeatMap({
   const hasSharedRoomSelection = data.selectedSpaces.some((s) => s.sharedForAll)
   const effectiveSelectedCount = hasSharedRoomSelection ? (1 + data.coworkers.length) : data.selectedSpaces.length
 
+  const detailTipoLabel = detailSpace
+    ? (detailSpace.nombre || labelForTipo(detailSpace.tipo))
+    : ''
+
   return (
     <div className="step2">
-      {/* ── Cinema-style unified card ── */}
       <div className="cinema-card">
-        {/* Sidebar */}
         <aside className="cinema-card__sidebar">
           <div className="step2__floor-img-wrap">
             {floorImage
@@ -665,9 +381,7 @@ export default function Step2SeatMap({
 
         </aside>
 
-        {/* Main column: header → coworkers → map → legend */}
         <div className="cinema-card__main">
-          {/* Header: title + datetime side by side */}
           <div className="cinema-card__header">
             <div className="step2__title-block">
               <h2 className="step2__floor-title">
@@ -696,9 +410,7 @@ export default function Step2SeatMap({
             </div>
           </div>
 
-          {/* Coworkers + Space picker row */}
           <div className="step2__middle-row">
-            {/* Attendees — informational chips */}
             <div className="step2__coworkers">
               <div className="step2__coworkers-title">Agregar compañeros</div>
               <div className="assignees__row">
@@ -733,7 +445,6 @@ export default function Step2SeatMap({
               {coworkerError && <div className="assignees__error">{coworkerError}</div>}
             </div>
 
-            {/* Selected spaces summary panel */}
             <div className="space-picker">
               <div className="space-picker__header">
                 <span className="space-picker__title">Espacios seleccionados</span>
@@ -749,7 +460,7 @@ export default function Step2SeatMap({
                   <div key={sel.id_espacio} className="space-picker__item space-picker__item--selected">
                     <span className="space-picker__item-dot" />
                     <span className="space-picker__item-code">{sel.codigo}</span>
-                    <span className="space-picker__item-name">{sel.nombre || TIPO_LABEL[sel.tipo]}</span>
+                    <span className="space-picker__item-name">{sel.nombre || labelForTipo(sel.tipo)}</span>
                     <button
                       type="button"
                       className="space-picker__item-detail-btn"
@@ -768,7 +479,6 @@ export default function Step2SeatMap({
             </div>
           </div>
 
-          {/* Map area */}
           <div className="cinema-card__map" ref={mapWrapperRef}>
             {loading && <div className="step2__loader">Cargando plano…</div>}
 
@@ -846,7 +556,6 @@ export default function Step2SeatMap({
         </div>
       </div>
 
-      {/* ── Actions ── */}
       <div className="wiz-actions">
         <button type="button" className="wiz-btn wiz-btn--ghost" onClick={onBack}>← Atrás</button>
         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
@@ -862,90 +571,29 @@ export default function Step2SeatMap({
         </div>
       </div>
 
-      {/* ── Export modal (edit mode) ── */}
-      {editorOpen && (
-        <div className="export-modal" role="dialog" aria-modal="true">
-          <div className="export-modal__panel">
-            <div className="export-modal__header">
-              <h3>Exportar JSON · {floorMap?.codigoZona}</h3>
-              <button type="button" className="export-modal__close" onClick={() => setEditorOpen(false)}>×</button>
-            </div>
-            <p className="export-modal__hint">
-              Copia este contenido y pégalo en{' '}
-              <code>src/data/floor-maps/{(floorMap?.codigoZona || '').toLowerCase()}.json</code>.
-            </p>
-            <textarea className="export-modal__textarea" readOnly value={exportPayload} onFocus={(e) => e.currentTarget.select()} />
-            <div className="export-modal__actions">
-              <button type="button" className="wiz-btn wiz-btn--ghost" onClick={() => setEditorOpen(false)}>Cerrar</button>
-              <button type="button" className="wiz-btn wiz-btn--primary" onClick={copyExport}>Copiar al portapapeles</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SeatMapExportModal
+        open={editorOpen}
+        codigoZona={floorMap?.codigoZona}
+        exportPayload={exportPayload}
+        onClose={() => setEditorOpen(false)}
+        onCopy={copyExport}
+      />
 
-      {/* ── Space detail modal ── */}
-      {detailSpace && (
-        <div className="export-modal" role="dialog" aria-modal="true" onClick={(e) => { if (e.target === e.currentTarget) setDetailSpace(null) }}>
-          <div className="export-modal__panel space-detail-modal">
-            <div className="export-modal__header">
-              <div>
-                <h3 className="space-detail-modal__title">{detailSpace.codigo}</h3>
-                <p className="space-detail-modal__subtitle">{detailSpace.nombre || TIPO_LABEL[detailSpace.tipo]}</p>
-              </div>
-              <button type="button" className="export-modal__close" onClick={() => setDetailSpace(null)}>×</button>
-            </div>
+      <SeatMapSpaceDetailModal
+        space={detailSpace}
+        scheduleLoading={scheduleLoading}
+        spaceSchedule={spaceSchedule}
+        horaInicio={data.horaInicio}
+        horaFin={data.horaFin}
+        availabilityState={detailSpace ? (availability[detailSpace.id_espacio] || 'DISPONIBLE') : ''}
+        tipoLabel={detailTipoLabel}
+        onClose={() => setDetailSpace(null)}
+      />
 
-            <div className="space-detail-modal__current">
-              <span className="space-detail-modal__label">Horario seleccionado</span>
-              <span className="space-detail-modal__range">{data.horaInicio} – {data.horaFin}</span>
-              <span className={`seat-tooltip__state seat-tooltip__state--${(availability[detailSpace.id_espacio] || 'disponible').toLowerCase()}`}>
-                {availability[detailSpace.id_espacio] || 'DISPONIBLE'}
-              </span>
-            </div>
-
-            <div className="space-detail-modal__schedule">
-              <span className="space-detail-modal__label">Horario del día</span>
-              {scheduleLoading && <p className="space-detail-modal__loading">Cargando horario…</p>}
-              {!scheduleLoading && spaceSchedule && Array.isArray(spaceSchedule.bloques) && spaceSchedule.bloques.length > 0 && (
-                <div className="space-detail-modal__blocks">
-                  {spaceSchedule.bloques.map((b, i) => (
-                    <div key={i} className={`space-detail-modal__block space-detail-modal__block--${b.estado?.toLowerCase() === 'ocupado' ? 'ocupado' : 'libre'}`}>
-                      <span className="space-detail-modal__block-time">{b.inicio} – {b.fin}</span>
-                      <span className="space-detail-modal__block-state">{b.estado}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {!scheduleLoading && !spaceSchedule && (
-                <p className="space-detail-modal__no-data">Sin datos de horario detallado disponibles</p>
-              )}
-            </div>
-
-            <div className="export-modal__actions">
-              <button type="button" className="wiz-btn wiz-btn--primary" onClick={() => setDetailSpace(null)}>Cerrar</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Expired session modal ── */}
-      {expiredDialogOpen && (
-        <div className="export-modal export-modal--expired" role="alertdialog" aria-modal="true">
-          <div className="export-modal__panel expired-modal">
-            <div className="expired-modal__icon" aria-hidden="true">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-            </div>
-            <h3 className="expired-modal__title">Tu tiempo de reserva ha acabado</h3>
-            <p className="expired-modal__body">Para continuar con tu reserva necesitas recargar la página e iniciar de nuevo.</p>
-            <button type="button" className="wiz-btn wiz-btn--primary expired-modal__reload" onClick={() => window.location.reload()}>
-              Recargar página
-            </button>
-          </div>
-        </div>
-      )}
+      <SeatMapExpiredModal
+        open={expiredDialogOpen}
+        onReload={() => window.location.reload()}
+      />
     </div>
   )
 }
