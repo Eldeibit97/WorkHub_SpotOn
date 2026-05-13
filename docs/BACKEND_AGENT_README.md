@@ -3,6 +3,7 @@
 Resumen de **rutas HTTP que el frontend usa** (`src/api/*.js` y llamadas con `apiFetch`). La base es **`VITE_API_URL`** (sin barra final).
 
 Contratos detallados del wizard de reservas: [reservation-flow-backend-integration.md](./reservation-flow-backend-integration.md).  
+**Batch de reservas (cuerpo y respuesta 201):** [reservas-batch-api.md](./reservas-batch-api.md).  
 Autenticación por cookie + JWT: [integracion-sesion-cookie.md](./integracion-sesion-cookie.md).
 
 ---
@@ -37,7 +38,7 @@ Autenticación por cookie + JWT: [integracion-sesion-cookie.md](./integracion-se
 | GET | `/api/spaces?zonaId=:id` | Bearer opcional | `spaces.js` |
 | GET | `/api/spaces/availability?zonaId&fecha&horaInicio&horaFin` | Bearer opcional | `spaces.js` |
 | GET | `/api/spaces/:id_espacio/schedule?fecha=YYYY-MM-DD` | Bearer si hay token | `Step2SeatMap.jsx` |
-| POST | `/api/reservas/batch` | Bearer recomendado | `reserve.js` |
+| POST | `/api/reservas/batch` | Cookie y/o Bearer | `reserve.js` | Body `{ reservas: [...] }` camelCase; ver [reservas-batch-api.md](./reservas-batch-api.md). |
 | POST | `/api/reservando` | Hoy sin Bearer en código | `reserve.js` (legacy) |
 | GET | `/api/admin/stats?from&to` | Bearer | `admin.js` |
 | GET | `/api/admin/users?...` | Bearer | `users.js` |

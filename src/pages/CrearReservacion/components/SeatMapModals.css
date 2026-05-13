@@ -1,0 +1,222 @@
+/* Export + detail + expired modals (paso 2 mapa) */
+.export-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  padding: 1rem;
+}
+
+.export-modal__panel {
+  background: var(--white);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 90vh;
+}
+
+.export-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.export-modal__header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.export-modal__close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.export-modal__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.export-modal__hint code {
+  background: var(--surface);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+}
+
+.export-modal__textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 320px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.78rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  resize: vertical;
+}
+
+.export-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.space-detail-modal {
+  max-width: 480px !important;
+}
+
+.space-detail-modal__title {
+  margin: 0 0 0.1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.space-detail-modal__subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.space-detail-modal__current {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--surface);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.space-detail-modal__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+.space-detail-modal__range {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.space-detail-modal__schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.space-detail-modal__blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.space-detail-modal__block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.space-detail-modal__block--libre {
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+}
+
+.space-detail-modal__block--ocupado {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+}
+
+.space-detail-modal__block-time {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.space-detail-modal__block-state {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.space-detail-modal__loading,
+.space-detail-modal__no-data {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.export-modal--expired {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.expired-modal {
+  max-width: 400px !important;
+  text-align: center;
+  align-items: center !important;
+  gap: 1.15rem !important;
+}
+
+.expired-modal__icon {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.expired-modal__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.expired-modal__body {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.expired-modal__reload {
+  width: 100%;
+  justify-content: center;
+  background: #dc2626;
+  border-color: transparent;
+}
+
+.expired-modal__reload:hover {
+  opacity: 0.88;
+}

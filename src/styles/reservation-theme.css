@@ -1,4 +1,4 @@
-/* Shared tokens: reservation flow, cancelación, AppShell dark bridge */
+/* Shared tokens: reservation flow, cancelación, shell compartido */
 :root {
   --acn-purple: #a100ff;
   --acn-purple-light: #c084fc;
@@ -31,7 +31,7 @@
   --brand-gradient: #9b2df2;
   --text-main: #ffffff;
 
-  /* AppShell views (legacy var names → dark UI) */
+  /* Legacy var names (topbar / tablas) */
   --black: #f4f4f5;
   --white: rgba(22, 22, 28, 0.94);
   --medium-gray: #a1a1aa;

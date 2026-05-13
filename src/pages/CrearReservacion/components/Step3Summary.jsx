@@ -1,27 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getFloorMap } from '../../../api/spaces'
+import { formatDateLongEsMx } from '../../../lib/dateFormat'
+import { TIPO_ICON, labelForTipo } from '../../../lib/spaceTipo'
 import './Step3Summary.css'
-
-const TIPO_LABEL = {
-  1: 'Estación de trabajo',
-  2: 'Sala de juntas',
-  3: 'Phone Booth',
-  4: 'Media Scape',
-  5: 'Área especial',
-}
-
-const TIPO_ICON = {
-  1: '💺',
-  2: '🪑',
-  3: '📞',
-  4: '🖥️',
-  5: '☕',
-}
-
-function formatFecha(d) {
-  const date = d instanceof Date ? d : new Date(d)
-  return date.toLocaleDateString('es-MX', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })
-}
 
 export default function Step3Summary({
   data,
@@ -61,7 +42,7 @@ export default function Step3Summary({
             </div>
             <div>
               <div className="step3__row-label">Fecha</div>
-              <div className="step3__row-value">{formatFecha(data.fecha)}</div>
+              <div className="step3__row-value">{formatDateLongEsMx(data.fecha)}</div>
             </div>
           </div>
           <div className="step3__row">
@@ -105,7 +86,7 @@ export default function Step3Summary({
                   <div className="step3__space-codigo">{sp.codigo}</div>
                   <div className="step3__space-nombre">{sp.nombre}</div>
                 </div>
-                <span className="step3__space-tipo">{TIPO_LABEL[sp.tipo] || `Tipo ${sp.tipo}`}</span>
+                <span className="step3__space-tipo">{labelForTipo(sp.tipo)}</span>
                 <span className="step3__space-assignee">
                   {sp.assigneeMail
                     ? <>Para: <strong>{sp.assigneeMail}</strong></>

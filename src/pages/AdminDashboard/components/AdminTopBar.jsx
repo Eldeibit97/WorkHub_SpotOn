@@ -2,18 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 import { useTheme } from '../../../context/ThemeContext'
+import { getInitialsFromNames } from '../../../lib/userDisplay'
 import AccentureLogo from '../../../components/AccentureLogo'
 
 const TABS = [
   { to: '/admin', label: 'Dashboard', end: true },
   { to: '/admin/usuarios', label: 'Usuarios', end: false },
 ]
-
-function getInitials(first, last) {
-  const a = (first || '').charAt(0).toUpperCase()
-  const b = (last || '').charAt(0).toUpperCase()
-  return `${a}${b}` || 'A'
-}
 
 export default function AdminTopBar() {
   const { user, signOut } = useAuth()
@@ -23,7 +18,7 @@ export default function AdminTopBar() {
   const wrapperRef = useRef(null)
 
   const fullName = `${user?.nombre || ''} ${user?.apellido || ''}`.trim() || 'Administrador'
-  const initials = getInitials(user?.nombre, user?.apellido)
+  const initials = getInitialsFromNames(user?.nombre, user?.apellido, 'A')
   const email = user?.correo_institucional || user?.correo || ''
 
   useEffect(() => {

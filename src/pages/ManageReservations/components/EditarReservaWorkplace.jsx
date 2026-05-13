@@ -6,21 +6,8 @@ import TimeSelector from '../../CrearReservacion/components/TimeSelector';
 const EditarReservaWorkplace = () => {
   const [saved, setSaved] = useState(false);
 
-  const getCurrentDate = () => {
-    const today = new Date();
-    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
-    
-    const dayName = days[today.getDay()];
-    const monthName = months[today.getMonth()];
-    const day = today.getDate();
-    const year = today.getFullYear();
-    
-    return `${dayName}, ${monthName} ${String(day).padStart(2, '0')} of ${year}`;
-  };
- 
   const [reservationData, setReservationData] = useState({
-    date: getCurrentDate(),
+    date: new Date(),
     startTime: '08:00',
     endTime: '13:00',
     floor: '3rd floor',

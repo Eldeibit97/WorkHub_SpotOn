@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
-import { reservarBatch } from '../../../api/reserve'
+import {
+  reservarBatch,
+  toBatchReservaItem,
+  parseBatchCreateResponse,
+  isPlausibleDbEspacioId,
+} from '../../../api/reserve'
+import { toYyyyMmDd } from '../../../lib/dateFormat'
 import StepIndicator from './StepIndicator'
 import Step1DateFloor from './Step1DateFloor'
 import Step2SeatMap from './Step2SeatMap'
@@ -15,12 +21,9 @@ function todayAt(hour, minute = 0) {
   return d
 }
 
-function formatDateForApi(date) {
-  const d = date instanceof Date ? date : new Date(date)
-  const yyyy = d.getFullYear()
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  const dd = String(d.getDate()).padStart(2, '0')
-  return `${yyyy}-${mm}-${dd}`
+function batchTipoForApi(tipoReservaProp) {
+  if (tipoReservaProp === 'ESTACIONAMIENTO') return 'ESTACIONAMIENTO'
+  return 'INDIVIDUAL'
 }
 
 const EDIT_DRAFT_KEY = 'workhub_reservation_edit_draft'
@@ -95,7 +98,6 @@ function makeInitialStep(editMode) {
 export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const [editMode] = useState(readEditModeFromUrlOrStorage)
   const [step, setStep] = useState(() => makeInitialStep(editMode))
@@ -169,52 +171,65 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
   const handleConfirm = useCallback(async () => {
     setSubmitting(true)
     setSubmitError('')
-    const fecha = formatDateForApi(data.fecha)
+    const fechaReserva = toYyyyMmDd(data.fecha)
     const bookerMail = user?.correo_institucional || user?.correo || ''
+    const apiTipo = batchTipoForApi(tipoReserva)
 
     const allPeople = [bookerMail, ...data.coworkers.map((c) => c.email)]
     const sharedRoomSelection = data.selectedSpaces.find((s) => s.sharedForAll)
-    const items = sharedRoomSelection
-      ? allPeople.map((assignee) => ({
-          id_espacio: sharedRoomSelection.id_espacio,
-          mail: assignee || bookerMail,
-          fecha,
-          horaInicio: data.horaInicio,
-          horaFin: data.horaFin,
-          tipoReserva,
-          observaciones: assignee !== bookerMail
+
+    const mapAssigneeToItem = (id_espacio, assignee) =>
+      toBatchReservaItem({
+        id_espacio,
+        fechaReserva,
+        horaInicio: data.horaInicio,
+        horaSalida: data.horaFin,
+        tipoReserva: apiTipo,
+        mail: assignee || bookerMail,
+        observaciones:
+          assignee !== bookerMail
             ? `Reserva creada por ${bookerMail} para ${assignee}`
             : 'Reserva creada por wizard',
-        }))
+      })
+
+    const items = sharedRoomSelection
+      ? allPeople.map((assignee) => mapAssigneeToItem(sharedRoomSelection.id_espacio, assignee))
       : data.selectedSpaces.map((sel, i) => {
           const assignee = allPeople[i] || bookerMail
-          return {
-            id_espacio: sel.id_espacio,
-            mail: assignee,
-            fecha,
-            horaInicio: data.horaInicio,
-            horaFin: data.horaFin,
-            tipoReserva,
-            observaciones: assignee !== bookerMail
-              ? `Reserva creada por ${bookerMail} para ${assignee}`
-              : 'Reserva creada por wizard',
-          }
+          return mapAssigneeToItem(sel.id_espacio, assignee)
         })
+
+    const badId = items.find((it) => !isPlausibleDbEspacioId(it.idEspacio))
+    if (badId) {
+      setSubmitError(
+        'Cada reserva debe usar el id real de espacio (tabla Espacio en la base de datos). ' +
+          'Si el plano muestra identificadores temporales, el servidor debe exponer GET /api/spaces ' +
+          'con id_espacio y codigo alineados al mapa, o hay que corregir los datos del piso.',
+      )
+      setSubmitting(false)
+      return
+    }
 
     try {
       const res = await reservarBatch(items)
       if (res.ok) {
-        update({ createdReservations: res.data?.creadas || items.map((it, i) => ({
-          id_reserva: `local-${Date.now()}-${i}`,
-          id_espacio: it.id_espacio,
-          estado: 'PENDIENTE',
-        })) })
+        const created = parseBatchCreateResponse(res.data, items)
+        update({
+          createdReservations:
+            created.length > 0
+              ? created
+              : items.map((it, i) => ({
+                  id_reserva: `local-${Date.now()}-${i}`,
+                  id_espacio: it.idEspacio,
+                  estado: 'PENDIENTE',
+                })),
+        })
         goNext()
       } else {
         setSubmitError(
           res.data?.message ||
             (res.data?.conflictos
-              ? `Conflictos: ${res.data.conflictos.map((c) => c.razon).join(', ')}`
+              ? `Conflictos: ${res.data.conflictos.map((c) => c.razon ?? c).join(', ')}`
               : `Error ${res.status}`),
         )
       }
