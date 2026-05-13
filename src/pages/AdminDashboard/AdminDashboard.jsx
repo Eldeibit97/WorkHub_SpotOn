@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   createUser,
   deleteUser,
@@ -42,6 +43,8 @@ export default function AdminDashboard() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [modalError, setModalError] = useState('')
+  
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchUsuarios()
@@ -121,6 +124,10 @@ export default function AdminDashboard() {
     setSortKey(nextKey)
     setSortDirection(nextDirection)
     setPage(1)
+  }
+
+  function handleViewReservations(user) {
+    navigate(`/admin/usuarios/${user.id_usuario}/reservaciones`)
   }
 
   async function saveUser(formData) {
@@ -240,6 +247,7 @@ export default function AdminDashboard() {
         onPageChange={setPage}
         onEdit={openEditModal}
         onDelete={requestDeleteFromRow}
+        onViewReservations={handleViewReservations}
       />
 
       {showUserModal && (

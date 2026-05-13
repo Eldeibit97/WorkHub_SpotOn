@@ -13,6 +13,7 @@ import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
 import UserLayout from './pages/UserLayout/UserLayout'
 import FloorEditor from './pages/FloorEditor/FloorEditor'
 import RequireRole from './components/RequireRole'
+import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'  // ← agrega esta línea
 
 const AppRoutes = () => {
   return (
@@ -47,6 +48,7 @@ const AppRoutes = () => {
       >
         <Route index element={<DashboardOverview />} />
         <Route path="usuarios" element={<AdminDashboard />} />
+        <Route path="usuarios/:id/reservaciones" element={<AdminUserReservations />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
 

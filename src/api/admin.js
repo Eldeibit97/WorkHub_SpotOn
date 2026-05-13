@@ -41,3 +41,25 @@ export async function getDashboardStats({ from, to } = {}) {
   })
   return parseResponse(res)
 }
+
+export async function getAdminUserReservations(userId, { status, from, to, page, pageSize } = {}) {
+  const params = new URLSearchParams()
+  if (status)   params.set('status',   status)
+  if (from)     params.set('from',     from)
+  if (to)       params.set('to',       to)
+  if (page)     params.set('page',     String(page))
+  if (pageSize) params.set('pageSize', String(pageSize))
+
+  const res = await apiFetch(`/api/admin/users/${userId}/reservations?${params.toString()}`, {
+    headers: authHeaders(),
+  })
+  return parseResponse(res)
+}
+
+export async function cancelAdminUserReservation(userId, reservationId) {
+  const res = await apiFetch(`/api/admin/users/${userId}/reservations/${reservationId}/cancel`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+  })
+  return parseResponse(res)
+}
