@@ -27,12 +27,14 @@ const Sugerencias = () => {
     if (!userId || hasFetched.current) return;
     hasFetched.current = true;
 
+    const rangoFecha = new Date();
+    rangoFecha.setDate(rangoFecha.getDate() + 7);
     const fetchSuggestion = async () => {
       setLoadingSuggestion(true);
       const result = await suggest({
-        query: '¿Que me sugieres reservar en la proxima semana basado en mis preferencias? Da opciones variadas',
         user_id: parseInt(userId, 10),
         today: new Date().toISOString().slice(0, 10),
+        rango: rangoFecha.toISOString().slice(0,10)
       });
       setSuggestion(result);
       setLoadingSuggestion(false);
@@ -69,12 +71,16 @@ const Sugerencias = () => {
           <p> Aqui se mostrara el mapa que utilizara la ubicacion del usuario para darle sugerencias de ruta</p>
         </div>
         <div className="info-box">
-          <p className='info-box-title'>Sobre tu ruta...</p>
-          <p className='info-box-text'>ETA </p>
-          <p> Al realizar la conexion con el servicio de IA que creamos la informacion se desplegara aqui</p>
+          <p className='info-box-title'>Tus espacios previos</p>
+          {loadingSuggestion
+            ? <p>Cargando sugerencias...</p>
+            : suggestion?.result
+              ? renderSuggestion(suggestion.result)
+              : <p>No se pudieron obtener sugerencias.</p>
+          }
         </div>
         <div className="info-box">
-          <p className='info-box-title'>Sugerencias para tu salida</p>
+          <p className='info-box-title'>Tipos de espacios recomendados</p>
           {loadingSuggestion
             ? <p>Cargando sugerencias...</p>
             : suggestion?.result
