@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
+// IMPORTANTE: Agregamos useParams y useNavigate
+import { useParams, useNavigate } from 'react-router-dom'; 
 import '../../CrearReservacion/CrearReservacion.css';
 import DateSelector from './DateSelector';
 import TimeSelector from '../../CrearReservacion/components/TimeSelector';
  
 const EditarReservaWorkplace = () => {
+  // Leemos el ID de la URL que nos mandó la tarjeta
+  const { id } = useParams(); 
+  const navigate = useNavigate();
   const [saved, setSaved] = useState(false);
 
+  // Inicializamos los datos. (En el futuro, aquí harías un fetch al backend usando el 'id')
   const [reservationData, setReservationData] = useState({
     date: new Date(),
     startTime: '08:00',
@@ -15,7 +21,8 @@ const EditarReservaWorkplace = () => {
     email: 'pedrosanchez@gmail.com',
     parkingLot: 'South Parking Lot',
     level: '2nd Floor',
-    reservationId: 'PK-23941'
+    // Usamos el ID de la URL si existe, si no, uno por defecto
+    reservationId: id ? `WP-${id}` : 'WP-48231' 
   });
  
   const handleDateChange = (newDate) => {
@@ -37,7 +44,11 @@ const EditarReservaWorkplace = () => {
   const handleSave = () => {
     // TODO: llamar al endpoint PATCH aquí
     setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setTimeout(() => {
+      setSaved(false);
+      // Opcional: Regresar a "Mis reservaciones" después de guardar
+      navigate('/my-reservations'); 
+    }, 2000);
   };
  
   return (
@@ -53,7 +64,8 @@ const EditarReservaWorkplace = () => {
         <div className="reservation-panel">
 
           <div className="reservation-panel-header">
-            <span className="reservation-id-badge">WP-48231</span>
+            {/* Mostramos el ID dinámico que leímos de la URL */}
+            <span className="reservation-id-badge">{reservationData.reservationId}</span>
             <h3>Edit Reservation</h3>
           </div>
 
@@ -116,4 +128,4 @@ const EditarReservaWorkplace = () => {
   );
 }
 
-export default EditarReservaWorkplace
+export default EditarReservaWorkplace;
