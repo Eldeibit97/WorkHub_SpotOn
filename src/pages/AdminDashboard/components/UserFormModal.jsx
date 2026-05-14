@@ -24,6 +24,7 @@ export default function UserFormModal({
   user,
   roles,
   loading,
+  error,
   onClose,
   onSave,
   onDeleteRequest,
@@ -91,6 +92,12 @@ export default function UserFormModal({
           x
         </button>
         <h3>{mode === 'create' ? 'Crear nuevo usuario' : 'Editar usuario'}</h3>
+
+        {error && (
+          <div className="admin-feedback admin-feedback--error" style={{ marginBottom: '1rem' }}>
+            {error}
+          </div>
+        )}
 
         <form className="admin-form" onSubmit={submit}>
           <label>
