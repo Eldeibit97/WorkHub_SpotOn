@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getFloorMap, getAvailability } from '../../../api/spaces'
 import { apiFetch } from '../../../api/client'
 import { getStoredToken } from '../../../api/auth'
+import { connectWebSocket, subscribeToZona, unsubscribeFromZona, disconnectWebSocket } from '../../../api/websocket'
 import FLOOR_INTERIOR_IMAGES from '../../../assets/floors/index.js'
 import TimeSelector from './TimeSelector'
 import DateStrip from './DateStrip'
@@ -39,6 +40,8 @@ export default function Step2SeatMap({
   const [scheduleLoading, setScheduleLoading] = useState(false)
   const [expiredDialogOpen, setExpiredDialogOpen] = useState(false)
   const [showAvailabilityTooltip, setShowAvailabilityTooltip] = useState(false)
+  const [syncStatus, setSyncStatus] = useState('synced')
+  const [lastUpdate, setLastUpdate] = useState(new Date())
 
   const COUNTDOWN_START = 300
   const [countdown, setCountdown] = useState(COUNTDOWN_START)
@@ -73,6 +76,44 @@ export default function Step2SeatMap({
   useEffect(() => {
     if (!editMode && expired) setExpiredDialogOpen(true)
   }, [editMode, expired])
+
+  // WebSocket para actualizaciones en tiempo real
+  useEffect(() => {
+    if (!data.zonaId) return
+
+    function handleAvailabilityChange(wsData) {
+      console.log('[Step2SeatMap] availability:changed recibido:', wsData)
+      
+      if (wsData.zonaId === data.zonaId) {
+        setSyncStatus('syncing')
+        
+        // Actualizar solo los espacios que cambiaron
+        setAvailability((prev) => {
+          const updated = { ...prev }
+          if (wsData.espacios && Array.isArray(wsData.espacios)) {
+            for (const esp of wsData.espacios) {
+              updated[esp.idEspacio] = esp.estado === 'OCUPADO' ? 'OCUPADO' : 'DISPONIBLE'
+            }
+          }
+          return updated
+        })
+        
+        setLastUpdate(new Date())
+        
+        // Animación: mostrar "syncing" 500ms luego volver a "synced"
+        setTimeout(() => setSyncStatus('synced'), 500)
+      }
+    }
+
+    // Conectar WebSocket y suscribirse a la zona
+    connectWebSocket(handleAvailabilityChange)
+    subscribeToZona(data.zonaId)
+
+    // Cleanup: desuscribirse al desmontar o cambiar zona
+    return () => {
+      unsubscribeFromZona(data.zonaId)
+    }
+  }, [data.zonaId])
 
   const stats = useMemo(() => {
     if (!floorMap) return { disponibles: 0, ocupados: 0, total: 0 }
@@ -138,7 +179,10 @@ export default function Step2SeatMap({
       setLoading(false)
     }
     load()
-    return () => { cancelled = true }
+    return () => { 
+      cancelled = true
+      disconnectWebSocket()
+    }
   }, [data.zonaId, data.fecha, data.horaInicio, data.horaFin])
 
   const screenToSvg = useCallback((clientX, clientY) => {
@@ -323,6 +367,14 @@ export default function Step2SeatMap({
     ? (detailSpace.nombre || labelForTipo(detailSpace.tipo))
     : ''
 
+  function getTimeDiff(date) {
+    const now = new Date()
+    const diff = Math.floor((now - date) / 1000)
+    if (diff < 60) return 'hace pocos segundos'
+    if (diff < 3600) return `hace ${Math.floor(diff / 60)}m`
+    return `hace ${Math.floor(diff / 3600)}h`
+  }
+
   return (
     <div className="step2">
       <div className="cinema-card">
@@ -387,6 +439,12 @@ export default function Step2SeatMap({
               <h2 className="step2__floor-title">
                 {floorMap ? `${floorMap.codigoZona} · ${floorMap.nombre}` : 'Cargando…'}
               </h2>
+              <div className="step2__sync-indicator">
+                {syncStatus === 'syncing' && <span className="step2__sync-spinner" />}
+                <span className="step2__last-update">
+                  {syncStatus === 'syncing' ? 'Sincronizando...' : `Actualizado hace ${getTimeDiff(lastUpdate)}`}
+                </span>
+              </div>
               {!editMode && (
                 <div className={`step2__countdown${isExpiredBlocking ? ' step2__countdown--expired' : ''}`}>
                   <h3 className="step2__countdown-label">Tiempo para reservar</h3>
