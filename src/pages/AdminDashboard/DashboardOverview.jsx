@@ -29,6 +29,8 @@ export default function DashboardOverview() {
   const [stats, setStats] = useState(EMPTY_STATS)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -37,7 +39,7 @@ export default function DashboardOverview() {
       setLoading(true)
       setError('')
       try {
-        const data = await getDashboardStats()
+        const data = await getDashboardStats({ from: from || undefined, to: to || undefined })
         if (cancelled) return
         setStats({
           totals: { ...EMPTY_STATS.totals, ...(data.totals || {}) },
@@ -63,7 +65,7 @@ export default function DashboardOverview() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [from, to])
 
   return (
     <div className="admin-page">
@@ -74,6 +76,36 @@ export default function DashboardOverview() {
             Resumen ejecutivo de actividad, ocupación y usuarios del workhub.
           </p>
         </div>
+
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <label className="admin-date-filter__label">
+            Desde
+            <input
+              type="date"
+              className="admin-input admin-date-filter__input"
+              value={from}
+              onChange={e => setFrom(e.target.value)}
+            />
+          </label>
+          <label className="admin-date-filter__label">
+            Hasta
+            <input
+              type="date"
+              className="admin-input admin-date-filter__input"
+              value={to}
+              onChange={e => setTo(e.target.value)}
+            />
+          </label>
+          {(from || to) && (
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => { setFrom(''); setTo('') }}
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+
       </header>
 
       {error && <div className="admin-feedback admin-feedback--error">{error}</div>}

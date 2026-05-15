@@ -13,6 +13,9 @@ import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
 import UserLayout from './pages/UserLayout/UserLayout'
 import FloorEditor from './pages/FloorEditor/FloorEditor'
 import RequireRole from './components/RequireRole'
+import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
+
+import EditarReservaWorkplace from "./pages/ManageReservations/components/EditarReservaWorkplace";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +37,9 @@ const AppRoutes = () => {
         <Route path="/reservar" element={<CrearReservacion />} />
         <Route path="/confirmacion" element={<Confirmacion />} />
         <Route path="/cancelar" element={<ManageReservationsPage />} />
+        
+        {/* RUTA ÚNICA PARA MODIFICAR WORKPLACE */}
+        <Route path="/edit-workplace/:id" element={<EditarReservaWorkplace />} />
       </Route>
 
       {/* Rutas exclusivas para admins (layout con top bar de pestañas) */}
@@ -47,6 +53,7 @@ const AppRoutes = () => {
       >
         <Route index element={<DashboardOverview />} />
         <Route path="usuarios" element={<AdminDashboard />} />
+        <Route path="usuarios/:id/reservaciones" element={<AdminUserReservations />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
 

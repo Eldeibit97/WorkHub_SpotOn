@@ -1,5 +1,23 @@
-import { apiFetch } from "./client";
-import { getStoredToken } from "./auth";
+import { apiFetch } from './client';
+import { getStoredToken } from './auth';
+
+/** Límite superior típico de `INTEGER` en PostgreSQL (id_espacio en la app). */
+export const PG_INTEGER_MAX = 2_147_483_647;
+/** Por encima suele ser timestamp en ms (FloorEditor `Date.now()`), no un id de tabla `Espacio`. */
+export const TIMESTAMP_STYLE_ESPACIO_ID_THRESHOLD = 1_000_000_000_000;
+
+/**
+ * Comprueba si un número puede ser un `id_espacio` real (entero positivo en rango PG int, no estilo timestamp).
+ * @param {unknown} id
+ * @returns {boolean}
+ */
+export function isPlausibleDbEspacioId(id) {
+  const n = Number(id);
+  if (!Number.isInteger(n) || n < 1) return false;
+  if (n > PG_INTEGER_MAX) return false;
+  if (n >= TIMESTAMP_STYLE_ESPACIO_ID_THRESHOLD) return false;
+  return true;
+}
 
 function authHeaders() {
   const token = getStoredToken();
@@ -7,14 +25,75 @@ function authHeaders() {
 }
 
 /**
- * @param {Object} datosReserva - Datos de la reserva
- * @param {string} datosReserva.mail - mail del usuario (Mientras no se manejan sesiones)
- * @param {number} datosReserva.idEspacio - ID del espacio reservado
- * @param {string} datosReserva.fechaReserva - Fecha de la reserva (formato timestamp)
- * @param {string} datosReserva.fechaInicio - Fecha de inicio (formato timestamp)
- * @param {string} datosReserva.fechaSalida - Fecha de Salida (formato timestamp)
- * @param {string} datosReserva.fechaCreacion - Fecha de creación (formato timestamp)
- * @returns {Promise<object>}
+ * POST /api/reservas/batch — normaliza un ítem al contrato camelCase del backend.
+ * @param {object} raw
+ * @returns {{ idEspacio: number, fechaReserva: string, horaInicio: string, horaSalida: string, tipoReserva?: string, mail?: string, observaciones?: string }}
+ */
+export function toBatchReservaItem(raw) {
+  const idEspacio = Number(raw.idEspacio ?? raw.id_espacio ?? raw.spaceId ?? raw.espacioId);
+  const fechaReserva =
+    raw.fechaReserva ?? raw.fecha_reserva ?? raw.fecha ?? raw.date ?? '';
+  let horaInicio = raw.horaInicio ?? raw.hora_inicio ?? raw.startTime ?? '';
+  let horaSalida =
+    raw.horaSalida ?? raw.hora_salida ?? raw.hora_fin ?? raw.horaFin ?? raw.endTime ?? '';
+  if (typeof horaInicio === 'number') horaInicio = String(horaInicio);
+  if (typeof horaSalida === 'number') horaSalida = String(horaSalida);
+  const out = {
+    idEspacio,
+    fechaReserva,
+    horaInicio,
+    horaSalida,
+  };
+  if (raw.tipoReserva) out.tipoReserva = raw.tipoReserva;
+  if (raw.mail) out.mail = raw.mail;
+  if (raw.observaciones) out.observaciones = raw.observaciones;
+  return out;
+}
+
+/**
+ * Interpreta la respuesta 201 de /api/reservas/batch para el paso "listo" del wizard.
+ * Soporta forma nueva (`creadas`, `ids`, `reservas`) y legada (`creadas` como array de objetos).
+ *
+ * @param {object|null} data - JSON parseado
+ * @param {Array<{ idEspacio?: number, id_espacio?: number }>} [fallbackItems] - ítems enviados (por orden)
+ * @returns {Array<{ id_reserva: number|string, id_espacio: number, estado?: string }>}
+ */
+export function parseBatchCreateResponse(data, fallbackItems = []) {
+  if (!data || typeof data !== 'object') return [];
+
+  if (Array.isArray(data.reservas) && data.reservas.length > 0) {
+    return data.reservas.map((r, i) => ({
+      id_reserva: r.idReserva ?? r.id_reserva ?? data.ids?.[i] ?? '—',
+      id_espacio: r.idEspacio ?? r.id_espacio ?? fallbackItems[i]?.idEspacio ?? fallbackItems[i]?.id_espacio,
+      estado: r.estado ?? 'PENDIENTE',
+    }));
+  }
+
+  if (Array.isArray(data.creadas) && data.creadas.length > 0 && typeof data.creadas[0] === 'object') {
+    return data.creadas.map((c) => ({
+      id_reserva: c.id_reserva ?? c.idReserva ?? '—',
+      id_espacio: c.id_espacio ?? c.idEspacio,
+      estado: c.estado ?? 'PENDIENTE',
+    }));
+  }
+
+  if (typeof data.creadas === 'number' && Array.isArray(data.ids) && data.ids.length > 0) {
+    return data.ids.map((id, i) => ({
+      id_reserva: id,
+      id_espacio: fallbackItems[i]?.idEspacio ?? fallbackItems[i]?.id_espacio,
+      estado: 'PENDIENTE',
+    }));
+  }
+
+  return (fallbackItems || []).map((it, i) => ({
+    id_reserva: data.ids?.[i] ?? `local-${Date.now()}-${i}`,
+    id_espacio: it.idEspacio ?? it.id_espacio,
+    estado: 'PENDIENTE',
+  }));
+}
+
+/**
+ * @param {Object} datosReserva - Datos de la reserva (legacy /api/reservando)
  */
 export async function reservar(datosReserva) {
   try {
@@ -32,14 +111,9 @@ export async function reservar(datosReserva) {
 }
 
 /**
- * Creates one reservation per item in `items`. Each item maps to a
- * { id_espacio, id_usuario | mail, fecha, horaInicio, horaFin, observaciones }
- * payload. The backend MUST treat the array atomically (all-or-nothing) when
- * possible.
+ * POST /api/reservas/batch — cuerpo `{ reservas: [ ... ] }` (array no vacío).
  *
- * @param {Array<{ id_espacio:number, mail?:string, id_usuario?:number, fecha:string,
- *                 horaInicio:string, horaFin:string, observaciones?:string,
- *                 tipoReserva?:'OFICINA'|'ESTACIONAMIENTO' }>} items
+ * @param {Array<object>} items - Objetos con campos camelCase o snake_case; se pueden pasar por `toBatchReservaItem`.
  * @returns {Promise<{ ok:boolean, status:number, data:any }>}
  */
 export async function reservarBatch(items) {
