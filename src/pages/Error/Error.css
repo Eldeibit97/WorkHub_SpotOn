@@ -23,7 +23,7 @@
   width: 80px;
   height: 80px;
   margin: 0 auto 30px;
-  background: linear-gradient(135deg, #dc2626, #ef4444);
+  background: #dc2626;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -114,7 +114,7 @@
 }
 
 .retry-btn {
-  background: linear-gradient(135deg, #a855f7, #9333ea);
+  background: #9333ea;
   color: white;
   border: none;
   padding: 14px 28px;

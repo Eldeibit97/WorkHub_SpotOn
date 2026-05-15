@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import UserTopBar from './components/UserTopBar'
 import './UserLayout.css'
-import '../../pages/AdminDashboard/AdminDashboard.css'
+import '../../styles/appTopbar.css'
 
 export default function UserLayout() {
   return (

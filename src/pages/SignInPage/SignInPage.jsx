@@ -169,11 +169,8 @@ export default function SignInPage() {
           <button type="submit" className="signin-submit" disabled={submitting}>
             {submitting ? 'Signing in…' : 'Sign In'}
           </button>
-          <Link to="/" className="signin-submit" style={{
-            textAlign: 'center',
-            alignContent: 'center'
-          }}>
-            Regresar a landing page
+          <Link to="/" className="signin-back-link">
+            ← Regresar
           </Link>
         </form>
       </div>

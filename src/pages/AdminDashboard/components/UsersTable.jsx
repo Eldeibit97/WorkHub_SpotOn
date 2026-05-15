@@ -64,6 +64,7 @@ export default function UsersTable({
   onPageChange,
   onEdit,
   onDelete,
+  onViewReservations,
 }) {
   const sortable = ['nombre', 'correo_institucional', 'rol']
 
@@ -123,7 +124,12 @@ export default function UsersTable({
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id_usuario}>
+              <tr 
+                key={user.id_usuario}
+                onClick={() => onViewReservations?.(user)}
+                style={{ cursor: 'pointer' }}
+                title={`Ver reservaciones de ${getDisplayName(user)}`}
+              >
                 <td>
                   <div className="admin-user-cell">
                     <div className="admin-user-cell__avatar">{getInitials(user)}</div>
@@ -138,7 +144,7 @@ export default function UsersTable({
                   <div className="admin-row-actions">
                     <button
                       className="admin-icon-btn admin-icon-btn--ghost"
-                      onClick={() => onEdit(user)}
+                      onClick={() => { e.stopPropagation(); onEdit(user) }}
                       aria-label={`Editar ${getDisplayName(user)}`}
                       title="Editar"
                     >
@@ -149,7 +155,7 @@ export default function UsersTable({
                     </button>
                     <button
                       className="admin-icon-btn admin-icon-btn--danger"
-                      onClick={() => onDelete?.(user)}
+                      onClick={() => { e.stopPropagation(); onDelete?.(user) }}
                       aria-label={`Eliminar ${getDisplayName(user)}`}
                       title="Eliminar"
                     >

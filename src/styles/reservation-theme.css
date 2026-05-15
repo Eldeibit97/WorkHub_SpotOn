@@ -1,13 +1,13 @@
-/* Shared tokens: reservation flow, cancelación, AppShell dark bridge */
+/* Shared tokens: reservation flow, cancelación, shell compartido */
 :root {
   --acn-purple: #a100ff;
   --acn-purple-light: #c084fc;
   --acn-magenta: #d946ef;
-  --acn-gradient: linear-gradient(135deg, #a100ff, #d946ef);
+  --acn-gradient: #a100ff;
 
   --res-purple: #a855f7;
   --res-magenta: #d946ef;
-  --res-gradient-btn: linear-gradient(90deg, #a855f7 0%, #d946ef 100%);
+  --res-gradient-btn: #a855f7;
   --res-gradient-page: linear-gradient(135deg, #0f1419 0%, #1a0b2e 50%, #2d1b4e 100%);
   --res-border: rgba(168, 85, 247, 0.4);
   --res-border-soft: rgba(168, 85, 247, 0.22);
@@ -28,10 +28,10 @@
   --border-color: #3b1d5c;
   --accent-pink: #df46f7;
   --accent-purple: #9b2df2;
-  --brand-gradient: linear-gradient(90deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+  --brand-gradient: #9b2df2;
   --text-main: #ffffff;
 
-  /* AppShell views (legacy var names → dark UI) */
+  /* Legacy var names (topbar / tablas) */
   --black: #f4f4f5;
   --white: rgba(22, 22, 28, 0.94);
   --medium-gray: #a1a1aa;
