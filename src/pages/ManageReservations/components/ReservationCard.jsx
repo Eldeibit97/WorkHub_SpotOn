@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function ReservationCard({ reservation, onCancelRequest, onCheckIn, onCheckOut, isLoading }) {
+export default function ReservationCard({ reservation, onCancelRequest, onCheckIn, onCheckOut, onViewDetails, isLoading }) {
   
+  // --- LÓGICA DE TIEMPO Y FECHAS ---
   const getTimeLogic = (isoDateString) => {
-    if (!isoDateString) return { status: null, hoursUntil: null };
+    if (!isoDateString || isoDateString.includes('undefined')) return { status: null, hoursUntil: null };
 
     const resDate = new Date(isoDateString);
     const today = new Date();
@@ -17,9 +18,10 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
     const diffTimeDays = resDateOnly - todayOnly;
     const diffDays = Math.ceil(diffTimeDays / (1000 * 60 * 60 * 24));
 
-    let statusData = { text: 'Past', className: 'status-past' };
-    if (diffDays === 0) statusData = { text: 'Today', className: 'status-today' };
-    else if (diffDays > 0) statusData = { text: 'Upcoming', className: 'status-upcoming' };
+    // AHORA TODO EN ESPAÑOL
+    let statusData = { text: 'Pasado', className: 'status-past' };
+    if (diffDays === 0) statusData = { text: 'Hoy', className: 'status-today' };
+    else if (diffDays > 0) statusData = { text: 'Próximo', className: 'status-upcoming' };
 
     const diffTimeMs = resDate - today;
     const hoursUntil = diffTimeMs / (1000 * 60 * 60);
@@ -28,11 +30,11 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
   };
 
   const { status, hoursUntil } = getTimeLogic(reservation.isoDate);
-  
-  const isPast = status?.text === 'Past' || reservation.estado_reserva === 'COMPLETADO';
+  const isPast = status?.text === 'Pasado' || reservation.estado_reserva === 'COMPLETADO';
   const isCheckedIn = reservation.estado_reserva === 'CHECKED_IN';
   const isLessOrEqualOneHour = hoursUntil !== null && hoursUntil <= 1;
 
+  // --- RENDERIZADO DE BOTONES ---
   const renderActions = () => {
     if (isPast) return null; 
 
@@ -57,9 +59,11 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
       );
     }
 
+    const editRoute = `/edit-workplace/${reservation.id}`;
+
     return (
       <>
-        <Link to="/my-reservations" className="btn-modify-outline">
+        <Link to={editRoute} className="btn-modify-outline">
           Modificar
         </Link>
         <button className="btn-cancel-outline" onClick={onCancelRequest} disabled={isLoading}>
@@ -72,14 +76,16 @@ export default function ReservationCard({ reservation, onCancelRequest, onCheckI
   return (
     <div className="reservation-card">
       <div className="card-header">
-        <span className={`badge ${status ? status.className : ''}`}>
-          {/* Si está checked in, forzamos la vista del estatus */}
-          {isCheckedIn ? 'Checked-In' : (status ? status.text : 'Activa')}
+        {/* Aquí mostramos Próximo, Hoy, Check-in o Completado */}
+        <span className={`badge ${reservation.estado_reserva === 'COMPLETADO' ? 'status-past' : (status ? status.className : '')}`}>
+          {reservation.estado_reserva === 'COMPLETADO' 
+            ? 'Completado' 
+            : (isCheckedIn ? 'Check-in' : (status ? status.text : 'Activo'))}
         </span>
         <span className="type-label">{reservation.type}</span>
       </div>
       
-      <div className="card-body">
+      <div className="card-body clickable-body" onClick={onViewDetails} title="Haz clic para ver más detalles">
         <div className="detail-row">
           <strong>Fecha:</strong> <span>{reservation.date}</span>
         </div>

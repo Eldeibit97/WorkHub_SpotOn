@@ -1,0 +1,188 @@
+.step1 {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.step1__header {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.step1__title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.step1__subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.step1__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.step1__panel {
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 1.4rem 1.4rem 1.6rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.step1__panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.2rem;
+}
+
+.step1__panel-title h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.step1__panel-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 8px;
+  background: var(--accent-purple-05, rgba(168, 85, 247, 0.1));
+  color: var(--res-purple, #a855f7);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Floor cards */
+.step1__floors {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.95rem;
+}
+
+@media (max-width: 540px) {
+  .step1__floors {
+    grid-template-columns: 1fr;
+  }
+}
+
+.floor-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--white);
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  transition: transform var(--transition-fast), border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.floor-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-purple-30, rgba(168, 85, 247, 0.4));
+  box-shadow: 0 12px 28px rgba(168, 85, 247, 0.12);
+}
+
+.floor-card--selected {
+  border-color: transparent;
+  box-shadow: 0 12px 28px rgba(168, 85, 247, 0.18);
+  background:
+    linear-gradient(var(--white), var(--white)) padding-box,
+    var(--acn-gradient) border-box;
+  border: 2px solid transparent;
+}
+
+.floor-card--skeleton {
+  min-height: 260px;
+  background: linear-gradient(90deg, var(--surface) 0%, rgba(168,85,247,0.06) 50%, var(--surface) 100%);
+  background-size: 200% 100%;
+  animation: floor-skeleton 1.4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes floor-skeleton {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.floor-card__thumb {
+  height: 168px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.floor-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.floor-card__body {
+  padding: 0.75rem 0.95rem 0.95rem;
+}
+
+.floor-card__codigo {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--res-purple, #a855f7);
+  text-transform: uppercase;
+}
+
+.floor-card__name {
+  margin: 0.15rem 0 0.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.floor-card__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.floor-card__count {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.floor-card__check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--acn-gradient);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(168, 85, 247, 0.35);
+}

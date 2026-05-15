@@ -36,9 +36,10 @@
 .info-box-title{
   color: rgba(168, 85, 247);
   font-weight: bold;
-  font-size: larger;
+  font-size: 22px;
   text-align: center;
   margin: 0.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .info-box-text{
@@ -60,11 +61,25 @@
 
 .reserve-button{
   align-self: center;
-  background: linear-gradient(90deg, #a855f7 0%, #d946ef 100%);
+  background: #a855f7;
   border: none;
   border-radius: 0.40rem;
   width: 250px;
   color: white;
   font-size: larger;
   padding: 0.25rem;
+}
+
+.info-box-bullet-title{
+  color: rgba(168, 85, 247);
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0.6rem 0 0.1rem 0;
+}
+
+.info-box-bullet-text{
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.4;
 }

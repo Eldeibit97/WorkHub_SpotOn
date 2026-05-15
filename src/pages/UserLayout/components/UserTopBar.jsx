@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 import { useTheme } from '../../../context/ThemeContext'
+import { getInitialsFromNames } from '../../../lib/userDisplay'
 import AccentureLogo from '../../../components/AccentureLogo'
 
 const TABS = [
@@ -10,22 +11,15 @@ const TABS = [
   { to: '/cancelar', label: 'Mis Reservas', end: true },
 ]
 
-function getInitials(first, last) {
-  const a = (first || '').charAt(0).toUpperCase()
-  const b = (last || '').charAt(0).toUpperCase()
-  return `${a}${b}` || 'U'
-}
-
 export default function UserTopBar() {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
-  const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef(null)
 
   const fullName = `${user?.nombre || ''} ${user?.apellido || ''}`.trim() || 'Usuario'
-  const initials = getInitials(user?.nombre, user?.apellido)
+  const initials = getInitialsFromNames(user?.nombre, user?.apellido, 'U')
   const email = user?.correo_institucional || user?.correo || ''
 
   useEffect(() => {
@@ -49,10 +43,9 @@ export default function UserTopBar() {
     }
   }, [open])
 
-  function handleLogout() {
+  async function handleLogout() {
     setOpen(false)
-    signOut()
-    navigate('/login')
+    await signOut()
   }
 
   return (

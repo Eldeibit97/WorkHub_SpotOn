@@ -1,136 +1,178 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import ReservationList from './components/ReservationList.jsx';
-import CancellationModal from './components/CancellationModal.jsx';
-import './ManageReservationsPage.css';
+import React, { useState, useEffect } from 'react'
+import { useAuth } from '../../context/AuthContext'
+import { apiFetch } from '../../api/client'
+import { getStoredToken } from '../../api/auth'
+import ReservationList from './components/ReservationList.jsx'
+import CancellationModal from './components/CancellationModal.jsx'
+import ReservationDetailModal from './components/ReservationDetailModal.jsx'
+import './ManageReservationsPage.css'
 
-const initialReservations = [
-  {
-    id: 1, 
-    type: 'Workplace',
-    date: 'jueves, 23 de abril de 2026', 
-    isoDate: '2026-04-23T08:00:00',
-    time: '08:00 → 13:00',
-    location: '3rd Floor',
-    details: 'SIERRA MADRE - ICSJ-3040',
-    estado_reserva: 'COMPLETADO' 
-  },
-  {
-    id: 2,
-    type: 'Workplace',
-    date: 'sábado, 25 de abril de 2026', 
-    isoDate: '2026-04-25T19:30:00', 
-    time: '19:30 → 21:00',
-    location: 'South Parking Lot',
-    details: '2nd Floor',
-    estado_reserva: 'ACTIVO' 
-  },
-  {
-    id: 3,
-    type: 'Parking',
-    date: 'sábado, 25 de abril de 2026', 
-    isoDate: '2026-04-25T16:00:00', 
-    time: '16:00 → 20:00',
-    location: 'South Parking Lot',
-    details: 'Spot 15',
-    estado_reserva: 'CHECKED_IN' 
-  },
-  {
-    id: 4,
-    type: 'Workplace',
-    date: 'lunes, 27 de abril de 2026',
-    isoDate: '2026-04-27T08:00:00', 
-    time: '08:00 → 13:00',
-    location: '4th Floor',
-    details: 'SIERRA MADRE - ICSJ-4050',
-    estado_reserva: 'ACTIVO' 
+function authHeaders() {
+  const token = getStoredToken()
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+// Convierte una reserva del backend al formato que ReservationCard espera
+function toCardFormat(r) {
+  const fecha = r.fecha_reserva ? new Date(r.fecha_reserva) : null
+
+  const dateLabel = fecha
+    ? fecha.toLocaleDateString('es-MX', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+      })
+    : '—'
+
+  const isoDate = fecha
+    ? `${r.fecha_reserva?.slice(0, 10)}T${r.hora_inicio || '00:00:00'}`
+    : undefined
+
+  const time = r.hora_inicio && r.hora_fin
+    ? `${r.hora_inicio.slice(0, 5)} → ${r.hora_fin.slice(0, 5)}`
+    : '—'
+
+  const type = r.nombre_tipo || r.tipo_reserva || 'Espacio'
+  const location = [r.nombre_zona, r.edificio].filter(Boolean).join(' · ') || '—'
+  const details = [r.nombre_espacio, r.codigo_espacio].filter(Boolean).join(' - ') || '—'
+
+  return {
+    id: r.id_reserva,
+    type,
+    date: dateLabel,
+    isoDate,
+    time,
+    location,
+    details,
+    estado_reserva: r.estado_reserva,
+    nombre_usuario: r.nombre_usuario || '',
+    // guardamos los originales por si los necesita el modal
+    _raw: r,
   }
-];
+}
 
 export default function ManageReservationsPage() {
-  const [reservations, setReservations] = useState(initialReservations);
-  const [selectedReservation, setSelectedReservation] = useState(null);
-  
-  // Estado para manejar la carga visual por ID de reserva
-  const [loadingId, setLoadingId] = useState(null); 
+  const { user } = useAuth()
+  const userId = user?.sub
 
-  const handleOpenModal = (reservation) => setSelectedReservation(reservation);
-  const handleCloseModal = () => setSelectedReservation(null);
+  const [reservations, setReservations] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [loadingId, setLoadingId] = useState(null)
+  const [selectedReservation, setSelectedReservation] = useState(null)
+  const [detailReservation, setDetailReservation] = useState(null)
 
-  // --- TRIGGER: CANCELAR ---
-  const handleConfirmCancellation = async () => {
-    if (!selectedReservation) return;
-    try {
-      const response = await fetch(`http://localhost:5500/reservas/reserva/${selectedReservation.id}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const data = await response.json();
+  // Carga reservas del backend
+  useEffect(() => {
+    if (!userId) return
+    let cancelled = false
 
-      if (response.ok && data.success) {
-        setReservations(reservations.filter(res => res.id !== selectedReservation.id));
-        handleCloseModal();
-      } else {
-        alert("Error al cancelar: " + (data.message || data.error));
+    async function load() {
+      setLoading(true)
+      setError('')
+      try {
+        const res = await apiFetch(
+          `/api/reservas/consulta?userId=${userId}`,
+          { headers: authHeaders() }
+        )
+        const data = await res.json()
+        if (cancelled) return
+        setReservations((Array.isArray(data) ? data : []).map(toCardFormat))
+      } catch (e) {
+        if (!cancelled) setError('No se pudieron cargar las reservaciones.')
+      } finally {
+        if (!cancelled) setLoading(false)
       }
-    } catch {
-      alert("Error al conectar con el servidor.");
     }
-  };
 
-  // --- TRIGGER: CHECK-IN ---
+    load()
+    return () => { cancelled = true }
+  }, [userId])
+
+  // --- HANDLERS DE MODALES ---
+  const handleOpenModal = (reservation) => setSelectedReservation(reservation)
+  const handleCloseModal = () => setSelectedReservation(null)
+  const handleOpenDetail = (reservation) => setDetailReservation(reservation)
+  const handleCloseDetail = () => setDetailReservation(null)
+
+  // --- CHECK-IN ---
   const handleCheckIn = async (id) => {
-    setLoadingId(id); // Activamos estado de carga
+    setLoadingId(id)
     try {
-      const response = await fetch(`http://localhost:5500/reservas/check-in`, { // Ajusta la ruta a la tuya
+      const res = await apiFetch('/api/reservas/check-in', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_reserva: id })
-      });
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        // Actualizamos el estado local a CHECKED_IN
-        setReservations(reservations.map(res => 
-          res.id === id ? { ...res, estado_reserva: 'CHECKED_IN' } : res
-        ));
-        alert("¡Check-in exitoso!");
+        headers: authHeaders(),
+        body: { id_reserva: id },
+      })
+      if (res.ok) {
+        setReservations(prev =>
+          prev.map(r => r.id === id ? { ...r, estado_reserva: 'CHECKED_IN' } : r)
+        )
       } else {
-        alert("Error en Check-in: " + data.message);
+        const data = await res.json()
+        setError(data.message || 'No se pudo hacer check-in')
       }
     } catch {
-      alert("Error de conexión al procesar el Check-in.");
+      setError('Error al hacer check-in')
     } finally {
-      setLoadingId(null);
+      setLoadingId(null)
     }
-  };
+  }
 
-  // --- TRIGGER: CHECK-OUT ---
+  // --- CHECK-OUT ---
   const handleCheckOut = async (id) => {
-    setLoadingId(id); // Activamos estado de carga
+    setLoadingId(id)
     try {
-      const response = await fetch(`http://localhost:5500/reservas/check-out`, {
+      const res = await apiFetch('/api/reservas/check-out', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_reserva: id })
-      });
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        // Actualizamos el estado local a COMPLETADO (Desaparecerán los botones)
-        setReservations(reservations.map(res => 
-          res.id === id ? { ...res, estado_reserva: 'COMPLETADO' } : res
-        ));
-        alert("Check-out realizado. Espacio liberado.");
+        headers: authHeaders(),
+        body: { id_reserva: id },
+      })
+      if (res.ok) {
+        setReservations(prev =>
+          prev.map(r => r.id === id ? { ...r, estado_reserva: 'COMPLETADO' } : r)
+        )
       } else {
-        alert("Error en Check-out: " + data.message);
+        const data = await res.json()
+        setError(data.message || 'No se pudo hacer check-out')
       }
     } catch {
-      alert("Error de conexión al procesar el Check-out.");
+      setError('Error al hacer check-out')
     } finally {
-      setLoadingId(null);
+      setLoadingId(null)
     }
-  };
+  }
+
+  // --- CANCELAR ---
+  const handleConfirmCancellation = async () => {
+    if (!selectedReservation) return
+    const id = selectedReservation.id
+    try {
+      const res = await apiFetch('/api/reservas/update', {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: {
+          id_reserva: id,
+          id_usuario: userId,
+          id_espacio: selectedReservation._raw?.id_espacio,
+          fecha_reserva: selectedReservation._raw?.fecha_reserva,
+          hora_inicio: selectedReservation._raw?.hora_inicio,
+          hora_fin: selectedReservation._raw?.hora_fin,
+          estado_reserva: 'CANCELADO',
+          fecha_creacion: selectedReservation._raw?.fecha_creacion,
+          tipo_reserva: selectedReservation._raw?.tipo_reserva,
+        },
+      })
+      if (res.ok) {
+        setReservations(prev => prev.filter(r => r.id !== id))
+      } else {
+        const data = await res.json()
+        setError(data.message || 'No se pudo cancelar la reserva')
+      }
+    } catch {
+      setError('Error al cancelar la reserva')
+    } finally {
+      handleCloseModal()
+    }
+  }
 
   return (
     <div className="manage-page-container">
@@ -140,22 +182,41 @@ export default function ManageReservationsPage() {
       </header>
 
       <main className="main-content">
-        <ReservationList 
-          reservations={reservations} 
-          onCancelRequest={handleOpenModal} 
-          onCheckIn={handleCheckIn}
-          onCheckOut={handleCheckOut}
-          loadingId={loadingId}
-        />
+        {error && (
+          <p style={{ color: '#E24B4A', fontSize: '14px', marginBottom: '1rem' }}>
+            {error}
+          </p>
+        )}
+        {loading ? (
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>
+            Cargando reservaciones...
+          </p>
+        ) : (
+          <ReservationList
+            reservations={reservations}
+            onCancelRequest={handleOpenModal}
+            onCheckIn={handleCheckIn}
+            onCheckOut={handleCheckOut}
+            onViewDetails={handleOpenDetail}
+            loadingId={loadingId}
+          />
+        )}
       </main>
 
       {selectedReservation && (
-        <CancellationModal 
+        <CancellationModal
           reservation={selectedReservation}
           onClose={handleCloseModal}
           onConfirm={handleConfirmCancellation}
         />
       )}
+
+      {detailReservation && (
+        <ReservationDetailModal
+          reservation={detailReservation}
+          onClose={handleCloseDetail}
+        />
+      )}
     </div>
-  );
+  )
 }

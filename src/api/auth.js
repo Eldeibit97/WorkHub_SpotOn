@@ -56,3 +56,35 @@ export function getStoredToken() {
 export function clearStoredToken() {
   sessionStorage.removeItem(AUTH_TOKEN_KEY)
 }
+
+/**
+ * Usuario actual vía cookie `workhub.sid` (compartida entre pestañas).
+ * Opcional: `Authorization: Bearer` si esta pestaña tiene JWT en sessionStorage.
+ *
+ * @returns {Promise<Response>}
+ */
+export async function getAuthMe() {
+  const token = getStoredToken()
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
+  return apiFetch('/api/auth/me', { method: 'GET', headers })
+}
+
+/** Borrador del wizard de reserva (modo edición / pasos en sessionStorage). */
+export function clearReservationWizardStorage() {
+  try {
+    sessionStorage.removeItem('workhub_reservation_edit_draft')
+    sessionStorage.removeItem('workhub_reservation_edit_mode')
+    sessionStorage.removeItem('workhub_reservation_edit_step')
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Cierra sesión en servidor (invalida cookie `workhub.sid` y store en BD).
+ * Respuesta esperada: 204. Llamar con credenciales include (apiFetch por defecto).
+ */
+export async function logoutRequest() {
+  const res = await apiFetch('/api/auth/logout', { method: 'POST' })
+  return res
+}

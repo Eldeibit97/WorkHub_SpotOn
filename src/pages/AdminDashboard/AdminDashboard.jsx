@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   createUser,
   deleteUser,
@@ -41,6 +42,9 @@ export default function AdminDashboard() {
   const [showUserModal, setShowUserModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [modalError, setModalError] = useState('')
+  
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchUsuarios()
@@ -108,6 +112,7 @@ export default function AdminDashboard() {
   function closeUserModal() {
     setShowUserModal(false)
     setSelectedUser(null)
+    setModalError('')
   }
 
   function requestDeleteFromRow(targetUser) {
@@ -119,6 +124,10 @@ export default function AdminDashboard() {
     setSortKey(nextKey)
     setSortDirection(nextDirection)
     setPage(1)
+  }
+
+  function handleViewReservations(user) {
+    navigate(`/admin/usuarios/${user.id_usuario}/reservaciones`)
   }
 
   async function saveUser(formData) {
@@ -134,6 +143,8 @@ export default function AdminDashboard() {
           password: formData.password,
         })
         setMensaje('Usuario creado correctamente.')
+        closeUserModal()
+        fetchUsuarios()
       } else if (selectedUser) {
         await updateUser(selectedUser.id_usuario, {
           nombre: formData.nombre,
@@ -145,6 +156,8 @@ export default function AdminDashboard() {
           await updateUserPassword(selectedUser.id_usuario, formData.password)
         }
         setMensaje('Usuario actualizado correctamente.')
+        closeUserModal()
+        fetchUsuarios()
       }
       closeUserModal()
       fetchUsuarios()
@@ -234,6 +247,7 @@ export default function AdminDashboard() {
         onPageChange={setPage}
         onEdit={openEditModal}
         onDelete={requestDeleteFromRow}
+        onViewReservations={handleViewReservations}
       />
 
       {showUserModal && (
@@ -243,6 +257,7 @@ export default function AdminDashboard() {
           roles={roles}
           loading={saving}
           onClose={closeUserModal}
+          error={modalError}
           onSave={saveUser}
           onDeleteRequest={() => setShowDeleteModal(true)}
         />

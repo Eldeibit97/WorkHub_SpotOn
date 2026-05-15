@@ -1,0 +1,344 @@
+@import './reservation-theme.css';
+
+/* Shared: AdminTopBar + UserTopBar (tabs, perfil, tema, dropdown) */
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+}
+
+.admin-topbar__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  justify-content: space-between;
+}
+
+.admin-topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.admin-topbar__module {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 0.85rem;
+}
+
+.admin-topbar__tabs {
+  display: flex;
+  gap: 0.4rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.admin-topbar__tab {
+  position: relative;
+  padding: 0.5rem 0.95rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.admin-topbar__tab:hover {
+  color: var(--text-primary);
+  background: var(--surface);
+}
+
+.admin-topbar__tab--active {
+  color: var(--text-primary);
+  background: var(--accent-purple-05);
+}
+
+.admin-topbar__tab--active::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: -10px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--acn-gradient);
+}
+
+.admin-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-topbar__profile {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.3rem 0.85rem 0.3rem 0.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+}
+
+.admin-topbar__avatar {
+  width: 2.05rem;
+  height: 2.05rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--acn-gradient);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.admin-topbar__profile-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.admin-topbar__profile-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-topbar__profile-role {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.admin-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid var(--border-subtle);
+  background: var(--white);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.admin-icon-btn:hover {
+  background: var(--surface);
+}
+
+.admin-icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-icon-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+}
+
+.admin-icon-btn--ghost:hover {
+  background: var(--surface);
+}
+
+.admin-icon-btn--danger {
+  color: #ef4444;
+}
+
+.admin-icon-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.admin-role-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.admin-role-pill--admin {
+  background: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+}
+
+.admin-role-pill--employee {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+}
+
+.admin-role-pill--neutral {
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+[data-theme='light'] .admin-role-pill--admin {
+  color: #7c3aed;
+}
+
+[data-theme='light'] .admin-role-pill--employee {
+  color: #047857;
+}
+
+.admin-topbar__profile-wrapper {
+  position: relative;
+}
+
+.admin-topbar__profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.3rem 0.65rem 0.3rem 0.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  cursor: pointer;
+  color: inherit;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.admin-topbar__profile-btn:hover {
+  background: var(--accent-purple-05);
+  border-color: var(--acn-purple);
+}
+
+.admin-topbar__chevron {
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.admin-topbar__chevron--open {
+  transform: rotate(180deg);
+}
+
+@keyframes admin-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 256px;
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  overflow: hidden;
+  animation: admin-dropdown-in 0.15s ease forwards;
+}
+
+.admin-profile-dropdown__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.admin-profile-dropdown__avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--acn-gradient);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-profile-dropdown__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.admin-profile-dropdown__name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-profile-dropdown__email {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-profile-dropdown__badge {
+  margin-top: 0.1rem;
+  align-self: flex-start;
+}
+
+.admin-profile-dropdown__divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 0;
+}
+
+.admin-profile-dropdown__logout {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+}
+
+.admin-profile-dropdown__logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+@media (max-width: 720px) {
+  .admin-topbar__inner {
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .admin-topbar__tabs {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

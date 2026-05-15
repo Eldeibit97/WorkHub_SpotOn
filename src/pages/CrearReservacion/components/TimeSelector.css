@@ -1,8 +1,8 @@
 .time-selector {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 0.65rem;
+  margin-bottom: 0;
 }
 
 .time-input-wrapper {
@@ -11,26 +11,28 @@
 }
 
 .time-input {
-  background: rgba(30, 20, 50, 0.8);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  border-radius: 8px;
-  padding: 12px 20px;
-  color: white;
-  font-size: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
   text-align: center;
   width: 100%;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: border-color 150ms;
 }
 
-.time-input:hover {
+.time-input:hover,
+.time-input:focus {
   border-color: rgba(168, 85, 247, 0.5);
-  background: rgba(30, 20, 50, 0.9);
+  outline: none;
 }
 
 .time-arrow {
-  font-size: 24px;
-  color: rgba(168, 85, 247, 0.8);
+  font-size: 1rem;
+  color: var(--text-secondary);
 }
 
 .time-picker-dropdown {
@@ -39,8 +41,8 @@
   left: 0;
   right: 0;
   background: rgba(20, 10, 40, 0.98);
-  border: 2px solid rgba(168, 85, 247, 0.4);
-  border-radius: 12px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
   margin-top: 8px;
   max-height: 250px;
   overflow-y: auto;
@@ -62,7 +64,7 @@
 }
 
 .time-option.selected {
-  background: linear-gradient(90deg, #a855f7 0%, #d946ef 100%);
+  background: #a855f7;
   font-weight: 600;
 }
 

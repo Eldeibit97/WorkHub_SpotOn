@@ -1,5 +1,13 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-import { getStoredToken, clearStoredToken } from '../api/auth'
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  getStoredToken,
+  clearStoredToken,
+  logoutRequest,
+  clearReservationWizardStorage,
+  getAuthMe,
+} from '../api/auth'
+import { apiBaseUrl, setUnauthorizedHandler } from '../api/client'
 
 const AuthContext = createContext(null)
 
@@ -18,18 +26,107 @@ function decodeToken(token) {
 
 // Componente proveedor del contexto de autenticación
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)   // { sub, correo, rol, nombre?, ... }
+  const navigate = useNavigate()
+  const [user, setUser] = useState(null) // { sub, correo, rol, nombre?, ... }
   const [loading, setLoading] = useState(true)
+  const userRef = useRef(null)
+  const signOutRunning = useRef(false)
+
+  userRef.current = user
+
+  const signOut = useCallback(async () => {
+    if (signOutRunning.current) return
+    signOutRunning.current = true
+    try {
+      try {
+        await logoutRequest()
+      } catch {
+        // red de error: igual limpiamos cliente
+      }
+      clearStoredToken()
+      clearReservationWizardStorage()
+      setUser(null)
+      navigate('/login', { replace: true })
+    } finally {
+      signOutRunning.current = false
+    }
+  }, [navigate])
 
   useEffect(() => {
-    // Al recargar la página, recuperar sesión desde sessionStorage
-    const token = getStoredToken()
-    if (token) {
-      const payload = decodeToken(token)
-      if (payload) setUser({ ...payload, token })
+    let cancelled = false
+
+    async function bootstrap() {
+      const token = getStoredToken()
+
+      if (!apiBaseUrl) {
+        if (token) {
+          const payload = decodeToken(token)
+          if (payload && !cancelled) setUser({ ...payload, token })
+        }
+        if (!cancelled) setLoading(false)
+        return
+      }
+
+      try {
+        const res = await getAuthMe()
+        if (cancelled) return
+
+        if (res.ok) {
+          const text = await res.text()
+          let data = {}
+          if (text) {
+            try {
+              data = JSON.parse(text)
+            } catch {
+              data = {}
+            }
+          }
+          const apiUser = data.user
+          if (apiUser && typeof apiUser === 'object') {
+            const jwtPayload = token ? decodeToken(token) : null
+            setUser({
+              ...(jwtPayload || {}),
+              ...apiUser,
+              ...(token ? { token } : {}),
+            })
+          } else if (token) {
+            const payload = decodeToken(token)
+            if (payload) setUser({ ...payload, token })
+          }
+        } else if (res.status === 401) {
+          clearStoredToken()
+          setUser(null)
+        }
+      } catch {
+        if (cancelled) return
+        if (token) {
+          const payload = decodeToken(token)
+          if (payload) setUser({ ...payload, token })
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
-    setLoading(false)
+
+    bootstrap()
+    return () => {
+      cancelled = true
+    }
   }, [])
+
+  useEffect(() => {
+    const onUnauthorized = () => {
+      const hadSession = Boolean(getStoredToken() || userRef.current)
+      if (!hadSession) return
+      void logoutRequest().catch(() => {})
+      clearStoredToken()
+      clearReservationWizardStorage()
+      setUser(null)
+      navigate('/login', { replace: true })
+    }
+    setUnauthorizedHandler(onUnauthorized)
+    return () => setUnauthorizedHandler(null)
+  }, [navigate])
 
   /**
    * Llamar después de un login exitoso.
@@ -38,15 +135,10 @@ export function AuthProvider({ children }) {
   function signIn(loginResponse) {
     const payload = decodeToken(loginResponse.token)
     setUser({
-      ...loginResponse.user,   // nombre, apellido, correo_institucional, rol
-      ...payload,              // sub, correo, rol (desde el token)
+      ...loginResponse.user,
+      ...payload,
       token: loginResponse.token,
     })
-  }
-
-  function signOut() {
-    clearStoredToken()
-    setUser(null)
   }
 
   return (
