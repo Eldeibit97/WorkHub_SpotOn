@@ -36,22 +36,22 @@ const SHAPE_DEFAULTS = {
 // many columns it has (rough fit on each plano). The user will refine.
 const ZONA_LAYOUTS = {
   1: { // PB
-    background: '/src/assets/mapas/piso_PB.svg',
+    background: '/mapas/piso_PB.svg',
     deskGrid: { x: 110, y: 130, cols: 12, gapX: 70, gapY: 60 },
     rooms: { x: 1000, y: 140, perRow: 1, gapX: 0, gapY: 110 },
   },
   2: { // MZ
-    background: '/src/assets/mapas/piso_MZ.svg',
+    background: '/mapas/piso_MZ.svg',
     deskGrid: { x: 100, y: 110, cols: 14, gapX: 65, gapY: 55 },
     rooms: { x: 1080, y: 130, perRow: 1, gapX: 0, gapY: 110 },
   },
   3: { // P3
-    background: '/src/assets/mapas/piso_3.svg',
+    background: '/mapas/piso_3.svg',
     deskGrid: { x: 130, y: 150, cols: 9, gapX: 80, gapY: 70 },
     rooms: { x: 1050, y: 140, perRow: 1, gapX: 0, gapY: 130 },
   },
   4: { // P9
-    background: '/src/assets/mapas/piso_9.svg',
+    background: '/mapas/piso_9.svg',
     deskGrid: { x: 100, y: 110, cols: 13, gapX: 70, gapY: 55 },
     rooms: { x: 1090, y: 140, perRow: 1, gapX: 0, gapY: 110 },
   },
