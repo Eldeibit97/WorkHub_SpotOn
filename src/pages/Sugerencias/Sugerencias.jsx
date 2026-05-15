@@ -7,6 +7,7 @@ const Sugerencias = () => {
   const { user } = useAuth();
   const userId = user?.sub;
   const [suggestion, setSuggestion] = useState({suggestions : []});
+  const [suggestionError, setSuggestionError] = useState(null);
   const [loadingSuggestion, setLoadingSuggestion] = useState(true);
   const hasFetched = useRef(false);
 
@@ -36,8 +37,19 @@ const Sugerencias = () => {
         today: new Date().toISOString().slice(0, 10),
         rango: rangoFecha.toISOString().slice(0, 10)
       });
+      if (!result.result) {
+        setSuggestionError(result.message ?? 'No se pudieron cargar las sugerencias');
+        setLoadingSuggestion(false);
+        return;
+      }
       let parsedResult;
-      parsedResult = JSON.parse(result.result);
+      try {
+        parsedResult = JSON.parse(result.result);
+      } catch {
+        setSuggestionError('Respuesta inválida del servicio de sugerencias');
+        setLoadingSuggestion(false);
+        return;
+      }
       setSuggestion(parsedResult);
       setLoadingSuggestion(false);
     };
@@ -85,7 +97,10 @@ const Sugerencias = () => {
         <p className='greeting'>Buenos dias ...</p>
         <p className='date'>{getCurrentDate()}</p>
       </div>
-      {renderAllSuggestions(suggestion)}
+      {suggestionError
+        ? <div className='no-suggestions'><p>{suggestionError}</p></div>
+        : renderAllSuggestions(suggestion)
+      }
     </div>
   )
 }
