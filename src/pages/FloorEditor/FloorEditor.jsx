@@ -3,14 +3,28 @@ import pbMap from '../../data/floor-maps/pb.json'
 import mzMap from '../../data/floor-maps/mz.json'
 import p3Map from '../../data/floor-maps/p3.json'
 import p9Map from '../../data/floor-maps/p9.json'
-import PisoPB from '../../assets/mapas/piso_PB.svg'
-import PisoMZ from '../../assets/mapas/piso_MZ.svg'
-import Piso3 from '../../assets/mapas/piso_3.png'
-import Piso9 from '../../assets/mapas/piso_9.svg'
 import './FloorEditor.css'
 
 const FLOOR_MAPS = { 1: pbMap, 2: mzMap, 3: p3Map, 4: p9Map }
-const FLOOR_BG = { 1: PisoPB, 2: PisoMZ, 3: Piso3, 4: Piso9 }
+
+function floorBgPath(zonaId) {
+  const rel = {
+    1: '/mapas/piso_PB.svg',
+    2: '/mapas/piso_MZ.svg',
+    3: '/mapas/piso_3.png',
+    4: '/mapas/piso_9.svg',
+  }[zonaId]
+  const base = import.meta.env.BASE_URL ?? '/'
+  const normalizedBase = base === '/' ? '' : base.replace(/\/$/, '')
+  return `${normalizedBase}${rel}`
+}
+
+const FLOOR_BG = {
+  1: floorBgPath(1),
+  2: floorBgPath(2),
+  3: floorBgPath(3),
+  4: floorBgPath(4),
+}
 
 const ZONES = Object.values(FLOOR_MAPS).map((m) => ({
   id: m.zonaId,

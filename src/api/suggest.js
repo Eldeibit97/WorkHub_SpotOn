@@ -20,8 +20,16 @@ export async function suggest(promptData) {
     }
     promptData = {
       ...promptData, query: hasPending
-        ? 'Que recomendaciones me darias para antes de salir hacia la oficina? (ej. con cuanto tiempo deberia salir, que deberia tomar en cuenta, etc.)'
-        : 'Primer tipo de sugerencia: ¿Que me sugieres reservar en la proxima semana basado en mis preferencias? Da opciones variadas, segundo tipo de sugerencia: ¿Como esta en disponibilidad espacios que he utilizado en reservas previas?, tercera'
+        ? `Primer tipo de sugerencia: Que posibles inconvenientes habria en mi ruta hacia 
+       la oficina (Por el momento digamos que partes del tec de monterrey 
+       campus monterrey a la oficina de accenture monterrey), 
+       Segundo tipo de sugerencia: ¿Que recomendaciones me darias para antes de salir 
+       hacia la oficina? (ej. con cuanto tiempo deberia salir, que deberia tomar en 
+       cuenta, etc.)`
+       : `Primer tipo de sugerencia: ¿Que me sugieres reservar en la proxima semana 
+       basado en mis preferencias? Da opciones variadas, segundo tipo de sugerencia: 
+       ¿Como esta en disponibilidad espacios que he utilizado en reservas previas?, 
+       tercera`
     };
     const res = await apiFetch('/suggest', { method: 'POST', body: promptData }, true);
     if (!res.ok) {

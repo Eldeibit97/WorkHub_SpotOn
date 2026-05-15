@@ -14,6 +14,21 @@ const LOCAL_MAPS = {
   4: p9Map,
 }
 
+/** Planos en `public/mapas/` + `import.meta.env.BASE_URL` (subcarpeta en deploy). */
+function resolveFloorBackgroundHref(floorMap) {
+  if (!floorMap?.background || typeof floorMap.background !== 'string') return floorMap
+  let bg = floorMap.background
+  if (/^https?:\/\//i.test(bg)) return floorMap
+  if (bg.startsWith('/src/assets/mapas/')) {
+    const file = bg.split('/').pop()
+    bg = `/mapas/${file}`
+  }
+  const base = import.meta.env.BASE_URL ?? '/'
+  const normalizedBase = base === '/' ? '' : base.replace(/\/$/, '')
+  if (bg.startsWith('/')) return { ...floorMap, background: `${normalizedBase}${bg}` }
+  return { ...floorMap, background: bg }
+}
+
 function authHeaders() {
   const token = getStoredToken()
   return token ? { Authorization: `Bearer ${token}` } : {}
@@ -218,13 +233,13 @@ export async function getFloorMap(zonaId) {
       const data = await safeJson(res)
       const apiSpaces = extractSpacesArray(data)
       if (apiSpaces && apiSpaces.length > 0) {
-        return mergeLocalFloorMapWithApiSpaces(local, apiSpaces)
+        return resolveFloorBackgroundHref(mergeLocalFloorMapWithApiSpaces(local, apiSpaces))
       }
     }
   } catch {
     // fall through
   }
-  return local
+  return resolveFloorBackgroundHref(local)
 }
 
 /**
