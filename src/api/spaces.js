@@ -2,6 +2,11 @@ import { apiFetch } from './client'
 import { getStoredToken } from './auth'
 import { isPlausibleDbEspacioId } from './reserve'
 
+import pbBgUrl from '../assets/mapas/piso_PB.svg'
+import mzBgUrl from '../assets/mapas/piso_MZ.svg'
+import p3BgUrl from '../assets/mapas/piso_3.svg'
+import p9BgUrl from '../assets/mapas/piso_9.svg'
+
 import pbMap from '../data/floor-maps/pb.json'
 import mzMap from '../data/floor-maps/mz.json'
 import p3Map from '../data/floor-maps/p3.json'
@@ -12,6 +17,19 @@ const LOCAL_MAPS = {
   2: mzMap,
   3: p3Map,
   4: p9Map,
+}
+
+/** Rutas `/src/assets/...` del JSON no existen en `dist`; Vite resuelve estos imports en build. */
+const FLOOR_BACKGROUND_URL_BY_ZONA_ID = {
+  1: pbBgUrl,
+  2: mzBgUrl,
+  3: p3BgUrl,
+  4: p9BgUrl,
+}
+
+function withBundledFloorBackground(zonaId, floorMap) {
+  const url = FLOOR_BACKGROUND_URL_BY_ZONA_ID[zonaId]
+  return url ? { ...floorMap, background: url } : floorMap
 }
 
 function authHeaders() {
@@ -218,13 +236,16 @@ export async function getFloorMap(zonaId) {
       const data = await safeJson(res)
       const apiSpaces = extractSpacesArray(data)
       if (apiSpaces && apiSpaces.length > 0) {
-        return mergeLocalFloorMapWithApiSpaces(local, apiSpaces)
+        return withBundledFloorBackground(
+          zonaId,
+          mergeLocalFloorMapWithApiSpaces(local, apiSpaces),
+        )
       }
     }
   } catch {
     // fall through
   }
-  return local
+  return withBundledFloorBackground(zonaId, local)
 }
 
 /**
