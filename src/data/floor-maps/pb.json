@@ -8,8 +8,6 @@
   "tipoLabels": {
     "1": "Estacion de trabajo",
     "2": "Sala de juntas",
-    "3": "Phone Booth",
-    "4": "Media Scape",
     "5": "Area especial"
   },
   "spaces": [
@@ -156,7 +154,7 @@
     },
     {
       "id_espacio": 1778101964682,
-      "codigo": "PBSJ-076",
+      "codigo": "PBSJ-075",
       "nombre": "MONTERREY",
       "tipo": 2,
       "shape": "rect",
@@ -227,8 +225,8 @@
     },
     {
       "id_espacio": 1778102506069,
-      "codigo": "PB019",
-      "nombre": "Estación PB019",
+      "codigo": "PB020",
+      "nombre": "Estación PB020",
       "tipo": 1,
       "shape": "circle",
       "x": 584.5,
