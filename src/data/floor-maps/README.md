@@ -26,8 +26,6 @@ SVG in the reservation wizard (`Step2SeatMap`).
   "tipoLabels": {
     "1": "Estacion de trabajo",
     "2": "Sala de juntas",
-    "3": "Phone Booth",
-    "4": "Media Scape",
     "5": "Area especial"
   },
   "spaces": [

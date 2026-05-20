@@ -8,6 +8,7 @@ import AccentureLogo from '../../../components/AccentureLogo'
 const TABS = [
   { to: '/admin', label: 'Dashboard', end: true },
   { to: '/admin/usuarios', label: 'Usuarios', end: false },
+  { to: '/admin/floor-editor', label: 'Editor de pisos', end: false },
 ]
 
 export default function AdminTopBar() {

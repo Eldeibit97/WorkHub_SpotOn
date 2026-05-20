@@ -12,6 +12,8 @@ import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
 import UserLayout from './pages/UserLayout/UserLayout'
 import FloorEditor from './pages/FloorEditor/FloorEditor'
+import FloorEditorOffices from './pages/FloorEditor/FloorEditorOffices'
+import FloorEditorFloors from './pages/FloorEditor/FloorEditorFloors'
 import RequireRole from './components/RequireRole'
 import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
 
@@ -54,11 +56,15 @@ const AppRoutes = () => {
         <Route index element={<DashboardOverview />} />
         <Route path="usuarios" element={<AdminDashboard />} />
         <Route path="usuarios/:id/reservaciones" element={<AdminUserReservations />} />
+        <Route path="floor-editor">
+          <Route index element={<FloorEditorOffices />} />
+          <Route path="edificios/:edificioSlug" element={<FloorEditorFloors />} />
+          <Route path="edificios/:edificioSlug/pisos/:zonaId" element={<FloorEditor />} />
+        </Route>
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
 
-      {/* Editor visual de planos – herramienta de desarrollo */}
-      <Route path="/floor-editor" element={<FloorEditor />} />
+      <Route path="/floor-editor" element={<Navigate to="/admin/floor-editor" replace />} />
 
       {/* Ruta catch-all */}
       <Route path="/*" element={<LandingPage />} />

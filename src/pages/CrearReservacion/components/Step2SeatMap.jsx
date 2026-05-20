@@ -8,7 +8,7 @@ import DateStrip from './DateStrip'
 import SeatMapExportModal from './SeatMapExportModal'
 import SeatMapSpaceDetailModal from './SeatMapSpaceDetailModal'
 import SeatMapExpiredModal from './SeatMapExpiredModal'
-import { labelForTipo } from '../../../lib/spaceTipo'
+import { labelForTipo, normalizeTipoEspacio } from '../../../lib/spaceTipo'
 import { toYyyyMmDd } from '../../../lib/dateFormat'
 import { formatCountdown, isSharedRoomType } from './seatMapHelpers'
 import { getInitialsFromEmail } from '../../../lib/userDisplay'
@@ -508,7 +508,7 @@ export default function Step2SeatMap({
                           sel ? 'seat-marker--selected' : '',
                           isHovered ? 'seat-marker--hover' : '',
                           editMode ? 'seat-marker--edit' : '',
-                          `seat-marker--tipo-${space.tipo}`,
+                          `seat-marker--tipo-${normalizeTipoEspacio(space.tipo)}`,
                         ].filter(Boolean).join(' ')
 
                         const commonProps = {
