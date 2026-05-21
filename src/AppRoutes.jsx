@@ -16,6 +16,7 @@ import FloorEditorOffices from './pages/FloorEditor/FloorEditorOffices'
 import FloorEditorFloors from './pages/FloorEditor/FloorEditorFloors'
 import RequireRole from './components/RequireRole'
 import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
+import NoShowsPage from './pages/AdminDashboard/NoShowsPage'
 
 import EditarReservaWorkplace from "./pages/ManageReservations/components/EditarReservaWorkplace";
 

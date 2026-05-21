@@ -63,3 +63,17 @@ export async function cancelAdminUserReservation(userId, reservationId) {
   })
   return parseResponse(res)
 }
+
+export async function getNoShowHeatmap({ from, to } = {}) {
+  const params = new URLSearchParams()
+  if (from) params.set('from', from)
+  if (to)   params.set('to', to)
+
+  const query = params.toString()
+  const path  = query
+    ? `/api/admin/no-shows/heatmap?${query}`
+    : '/api/admin/no-shows/heatmap'
+
+  const res = await apiFetch(path, { headers: authHeaders() })
+  return parseResponse(res)
+}

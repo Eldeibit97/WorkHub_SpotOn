@@ -624,3 +624,123 @@
 [data-theme='light'] .admin-date-filter__input {
   color-scheme: light;
 }
+
+/* ==========================================================================
+   Heatmap de No Shows 
+   ========================================================================== */
+.nsh-wrapper {
+  position: relative;
+  user-select: none;
+  padding-bottom: 0.5rem;
+}
+
+.nsh-y-axis {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 0;
+  gap: 2px;
+}
+
+.nsh-corner {
+  height: 28px; /* misma altura que nsh-day-label */
+}
+
+.nsh-y-label {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  padding-right: 0.35rem;
+  white-space: nowrap;
+}
+
+.nsh-grid {
+  display: flex;
+  gap: 3px;
+  padding-left: 2.8rem; /* espacio para eje Y */
+  overflow-x: auto;
+}
+
+.nsh-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 38px;
+}
+
+.nsh-day-label {
+  height: 28px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nsh-cell {
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid rgba(161, 0, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  transition: transform 0.1s, filter 0.1s;
+}
+
+.nsh-cell:hover {
+  transform: scale(1.12);
+  filter: brightness(1.15);
+  z-index: 2;
+}
+
+.nsh-cell__count {
+  font-size: 0.62rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.nsh-tooltip {
+  position: fixed;
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.nsh-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-left: 2.8rem;
+}
+
+.nsh-legend__label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.nsh-legend__scale {
+  display: flex;
+  gap: 3px;
+}
+
+.nsh-legend__swatch {
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(161,0,255,0.15);
+}
