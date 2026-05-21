@@ -632,6 +632,7 @@
   position: relative;
   user-select: none;
   padding-bottom: 0.5rem;
+  overflow: hidden;
 }
 
 .nsh-y-axis {
@@ -661,7 +662,8 @@
   display: flex;
   gap: 3px;
   padding-left: 2.8rem; /* espacio para eje Y */
-  overflow-x: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .nsh-col {
@@ -695,8 +697,8 @@
 }
 
 .nsh-cell:hover {
-  transform: scale(1.12);
-  filter: brightness(1.15);
+  filter: brightness(1.2);
+  outline: 2px solid rgba(161, 0, 255, 0.6);
   z-index: 2;
 }
 

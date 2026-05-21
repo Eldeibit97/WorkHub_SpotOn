@@ -57,6 +57,7 @@ const AppRoutes = () => {
         <Route index element={<DashboardOverview />} />
         <Route path="usuarios" element={<AdminDashboard />} />
         <Route path="usuarios/:id/reservaciones" element={<AdminUserReservations />} />
+        <Route path="no-shows" element={<NoShowsPage />} />
         <Route path="floor-editor">
           <Route index element={<FloorEditorOffices />} />
           <Route path="edificios/:edificioSlug" element={<FloorEditorFloors />} />
