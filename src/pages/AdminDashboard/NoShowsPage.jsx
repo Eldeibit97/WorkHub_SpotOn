@@ -4,16 +4,31 @@ import { getFloorMap, getZonas } from '../../api/spaces'
 import NoShowHeatmapChart from './components/charts/NoShowHeatmapChart'
 import FloorNoShowMap from './components/charts/FloorNoShowMap'
 
+// ← fuera del componente, después de los imports
+function toISODate(d) {
+  return d.toISOString().split('T')[0]
+}
+
+const _today = new Date()
+const _thirtyDaysAgo = new Date()
+_thirtyDaysAgo.setDate(_today.getDate() - 29)
+
+const DEFAULT_FROM = toISODate(_thirtyDaysAgo)
+const DEFAULT_TO   = toISODate(_today)
+
+
 const EMPTY_TEMPORAL = { heatmap: [], total: 0, maxCount: 0 }
 const EMPTY_FLOOR    = { noShowsBySpace: [], total: 0, maxCount: 0 }
 
 export default function NoShowsPage() {
+  
   // Filtros compartidos
-  const [from, setFrom] = useState('')
-  const [to,   setTo]   = useState('')
+  const [from, setFrom] = useState(DEFAULT_FROM)
+  const [to, setTo] = useState(DEFAULT_TO)
 
+  
   // Tab activo
-  const [activeTab, setActiveTab] = useState('temporal')
+  const [activeTab, setActiveTab] = useState('espacial')
 
   // --- Vista temporal ---
   const [temporalData, setTemporalData] = useState(EMPTY_TEMPORAL)
@@ -28,13 +43,22 @@ export default function NoShowsPage() {
   const [floorLoading, setFloorLoading] = useState(false)
   const [floorError,   setFloorError]   = useState('')
 
+  
+
   // Cargar lista de zonas al montar
   useEffect(() => {
-    getZonas().then((zs) => {
-      setZonas(zs)
-      if (zs.length > 0) setZonaId(String(zs[0].id_zona))
-    }).catch(() => {})
-  }, [])
+  getZonas().then((zs) => {
+    setZonas(zs)
+    if (zs.length > 0) {
+      const pb = zs.find((z) =>
+        String(z.codigo_zona ?? z.codigoZona ?? z.nombre_zona ?? '')
+          .toUpperCase()
+          .includes('PB')
+      )
+      setZonaId(String(pb ? pb.id_zona : zs[0].id_zona))
+    }
+  }).catch(() => {})
+}, [])
 
   // Cargar datos temporales cuando cambien filtros o tab
   useEffect(() => {
@@ -106,10 +130,16 @@ export default function NoShowsPage() {
             <input type="date" className="admin-input admin-date-filter__input"
               value={to} onChange={e => setTo(e.target.value)} />
           </label>
-          {(from || to) && (
-            <button className="admin-btn admin-btn--secondary"
-              onClick={() => { setFrom(''); setTo('') }}>
-              Limpiar filtros
+          {(from !== DEFAULT_FROM || to !== DEFAULT_TO) && (
+            <button
+              className="admin-btn admin-btn--secondary"
+              style={{ fontWeight: 400 }}
+              onClick={() => {
+                setFrom(DEFAULT_FROM)
+                setTo(DEFAULT_TO)
+              }}
+            >
+              Restablecer fechas
             </button>
           )}
         </div>
@@ -118,16 +148,16 @@ export default function NoShowsPage() {
       {/* Tabs */}
       <div className="nsh-tabs">
         <button
-          className={`nsh-tab${activeTab === 'temporal'  ? ' nsh-tab--active' : ''}`}
-          onClick={() => setActiveTab('temporal')}
-        >
-          Por horario
-        </button>
-        <button
           className={`nsh-tab${activeTab === 'espacial' ? ' nsh-tab--active' : ''}`}
           onClick={() => setActiveTab('espacial')}
         >
           Por ubicación
+        </button>
+        <button
+          className={`nsh-tab${activeTab === 'temporal'  ? ' nsh-tab--active' : ''}`}
+          onClick={() => setActiveTab('temporal')}
+        >
+          Por horario
         </button>
       </div>
 
@@ -193,7 +223,7 @@ export default function NoShowsPage() {
             </article>
           </section>
 
-          <article className="admin-chart-card">
+          <article className="admin-chart-card admin-chart-card--map">
             <header className="admin-chart-card__header">
               <h3>Mapa de no shows por espacio</h3>
               <span className="admin-chart-card__subtitle">

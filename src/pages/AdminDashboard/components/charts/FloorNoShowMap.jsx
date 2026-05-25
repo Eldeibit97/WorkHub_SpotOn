@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useMemo } from 'react'
 
-// Escala de color igual que el heatmap temporal
 function spaceColor(count, maxCount) {
   if (!count || !maxCount) return 'rgba(161,0,255,0.08)'
   const intensity = Math.min(count / maxCount, 1)
@@ -9,60 +8,115 @@ function spaceColor(count, maxCount) {
 
 function spaceStroke(count, maxCount) {
   if (!count || !maxCount) return 'rgba(161,0,255,0.2)'
-  return `rgba(161,0,255,0.8)`
+  return 'rgba(161,0,255,0.8)'
+}
+
+const PADDING = 20  // margen alrededor del contenido real
+
+function computeBoundingBox(spaces) {
+  if (!spaces || spaces.length === 0) return null
+
+  let minX = Infinity, minY = Infinity
+  let maxX = -Infinity, maxY = -Infinity
+
+  for (const s of spaces) {
+    if (s.x == null || s.y == null) continue
+    if (s.shape === 'rect' && s.w != null && s.h != null) {
+      minX = Math.min(minX, s.x)
+      minY = Math.min(minY, s.y)
+      maxX = Math.max(maxX, s.x + s.w)
+      maxY = Math.max(maxY, s.y + s.h)
+    } else {
+      const r = s.r || 6
+      minX = Math.min(minX, s.x - r)
+      minY = Math.min(minY, s.y - r)
+      maxX = Math.max(maxX, s.x + r)
+      maxY = Math.max(maxY, s.y + r)
+    }
+  }
+
+  if (!Number.isFinite(minX)) return null
+
+  const contentW = maxX - minX
+  const contentH = maxY - minY
+
+  // Si el contenido ocupa más del 50% del viewBox original,
+  // aplicar un zoom extra del 15% recortando desde el centro
+  const originalW = 1440
+  const originalH = 810
+  const coverageX = contentW / originalW
+  const coverageY = contentH / originalH
+
+  let extraZoom = 0
+  if (coverageX > 0.5 || coverageY > 0.5) {
+    extraZoom = Math.min(contentW, contentH) * 0.08
+  }
+
+  return {
+    x:      minX - PADDING + extraZoom,
+    y:      minY - PADDING + extraZoom,
+    width:  contentW + PADDING * 2 - extraZoom * 2,
+    height: contentH + PADDING * 2 - extraZoom * 2,
+  }
 }
 
 export default function FloorNoShowMap({ floorMap, noShowsBySpace = [], maxCount = 0 }) {
-  const svgRef = useRef(null)
+  const countMap = useMemo(
+    () => new Map(noShowsBySpace.map((s) => [s.id_espacio, s.count])),
+    [noShowsBySpace]
+  )
 
-  // lookup O(1): id_espacio → count
-  const countMap = new Map(noShowsBySpace.map((s) => [s.id_espacio, s.count]))
+  const bbox = useMemo(
+    () => floorMap ? computeBoundingBox(floorMap.spaces) : null,
+    [floorMap]
+  )
 
   if (!floorMap) {
     return <p className="admin-chart__empty">Selecciona un piso para ver el mapa.</p>
   }
 
-  const { viewBox, background, spaces = [] } = floorMap
+  const { viewBox: originalViewBox, background, spaces = [] } = floorMap
+
+  // Si logramos calcular el bounding box real, lo usamos; si no, el original
+  const viewBox = bbox
+    ? `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`
+    : originalViewBox
+
+
 
   return (
     <div className="fnsh-wrapper">
       <svg
-        ref={svgRef}
-        viewBox={viewBox || '0 0 1440 810'}
+        viewBox={viewBox}
         className="fnsh-svg"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Imagen de fondo del piso */}
+        {/* Imagen de fondo — siempre con el viewBox original del piso */}
         {background && (
           <image
             href={background}
             x="0"
             y="0"
-            width="100%"
-            height="100%"
+            width="1440"
+            height="810"
             preserveAspectRatio="xMidYMid meet"
           />
         )}
 
-        {/* Overlay de espacios coloreados */}
         {spaces.map((space) => {
-          const count    = countMap.get(space.id_espacio) || 0
-          const fill     = spaceColor(count, maxCount)
-          const stroke   = spaceStroke(count, maxCount)
-          const label    = count > 0 ? String(count) : ''
+          const count  = countMap.get(space.id_espacio) || 0
+          const fill   = spaceColor(count, maxCount)
+          const stroke = spaceStroke(count, maxCount)
+          const label  = count > 0 ? String(count) : ''
 
           if (space.shape === 'rect') {
             return (
               <g key={space.id_espacio ?? space.codigo}>
                 <rect
-                  x={space.x}
-                  y={space.y}
-                  width={space.w}
-                  height={space.h}
-                  fill={fill}
-                  stroke={stroke}
-                  strokeWidth="1"
-                  rx="3"
+                  x={space.x} y={space.y}
+                  width={space.w} height={space.h}
+                  fill={fill} stroke={stroke}
+                  strokeWidth="1" rx="3"
                   className="fnsh-space"
                 >
                   <title>{`${space.nombre || space.codigo}: ${count} no show${count !== 1 ? 's' : ''}`}</title>
@@ -81,16 +135,12 @@ export default function FloorNoShowMap({ floorMap, noShowsBySpace = [], maxCount
             )
           }
 
-          // circle (default)
-          const r = (space.r || 6) + 3  // radio ligeramente más grande para visibilidad
+          const r = (space.r || 6) + 3
           return (
             <g key={space.id_espacio ?? space.codigo}>
               <circle
-                cx={space.x}
-                cy={space.y}
-                r={r}
-                fill={fill}
-                stroke={stroke}
+                cx={space.x} cy={space.y} r={r}
+                fill={fill} stroke={stroke}
                 strokeWidth="1"
                 className="fnsh-space"
               >
@@ -98,8 +148,7 @@ export default function FloorNoShowMap({ floorMap, noShowsBySpace = [], maxCount
               </circle>
               {label && (
                 <text
-                  x={space.x}
-                  y={space.y + 4}
+                  x={space.x} y={space.y + 4}
                   textAnchor="middle"
                   className="fnsh-label"
                 >
@@ -111,7 +160,6 @@ export default function FloorNoShowMap({ floorMap, noShowsBySpace = [], maxCount
         })}
       </svg>
 
-      {/* Leyenda */}
       <div className="nsh-legend" style={{ marginTop: '0.75rem' }}>
         <span className="nsh-legend__label">Sin no-shows</span>
         <div className="nsh-legend__scale">

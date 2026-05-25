@@ -754,10 +754,11 @@
 .fnsh-svg {
   width: 100%;
   height: auto;
-  max-height: 520px;
+  min-height: 480px;
+  max-height: 75vh;       /* ocupa hasta el 75% del alto de la pantalla */
   display: block;
   border-radius: 10px;
-  background: var(--surface);
+  background: transparent; /* elimina el gris oscuro del área vacía */
 }
 
 .fnsh-space {
@@ -807,4 +808,8 @@
   color: var(--acn-purple, #a100ff);
   border-bottom-color: var(--acn-purple, #a100ff);
   font-weight: 600;
+}
+
+.admin-chart-card--map {
+  padding-bottom: 1.5rem;
 }
