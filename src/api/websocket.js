@@ -11,6 +11,9 @@ let socket = null
 export function connectWebSocket(onAvailabilityChange) {
   // Si ya está conectado, retorna la instancia existente
   if (socket?.connected) {
+    if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+      console.debug('[WebSocket] Ya conectado, reutilizando conexión')
+    }
     return socket
   }
 
@@ -18,7 +21,9 @@ export function connectWebSocket(onAvailabilityChange) {
   const token = getStoredToken()
 
   if (!token) {
-    console.warn('[WebSocket] No token disponible, conexión rechazada')
+    if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+      console.debug('[WebSocket] No token, conexión rechazada')
+    }
     return null
   }
 
@@ -32,6 +37,9 @@ export function connectWebSocket(onAvailabilityChange) {
 
   // Evento cuando hay cambios de disponibilidad
   socket.on('availability:changed', (data) => {
+    if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+      console.debug('[WebSocket] Cambio de disponibilidad recibido:', data)
+    }
     if (onAvailabilityChange) {
       onAvailabilityChange(data)
     }
@@ -44,12 +52,17 @@ export function connectWebSocket(onAvailabilityChange) {
 
   // Evento de desconexión
   socket.on('disconnect', () => {
-    console.log('[WebSocket] Desconectado del servidor')
+    if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+      console.debug('[WebSocket] Desconectado')
+    }
   })
 
   // Evento de reconexión
   socket.on('connect', () => {
-    console.log('[WebSocket] Conectado al servidor')
+    if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+      console.debug('[WebSocket] Conectado. Socket ID:', socket.id)
+    }
+    localStorage.setItem('websocket_socket_id', socket.id)
   })
 
   return socket
@@ -61,12 +74,17 @@ export function connectWebSocket(onAvailabilityChange) {
  */
 export function subscribeToZona(zonaId) {
   if (!socket?.connected) {
-    console.warn('[WebSocket] No conectado, no se puede suscribir a zona', zonaId)
+    // Solo log en dev si está en modo debug
+    if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+      console.debug('[WebSocket] No conectado, intentando suscribir a zona', zonaId)
+    }
     return
   }
 
   socket.emit('join-zona', { zonaId })
-  console.log(`[WebSocket] Suscrito a zona ${zonaId}`)
+  if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+    console.log(`[WebSocket] Suscrito a zona ${zonaId}`)
+  }
 }
 
 /**
@@ -75,12 +93,14 @@ export function subscribeToZona(zonaId) {
  */
 export function unsubscribeFromZona(zonaId) {
   if (!socket?.connected) {
-    console.warn('[WebSocket] No conectado, no se puede desuscribir de zona', zonaId)
+    // Silent fail en producción y dev normal
     return
   }
 
   socket.emit('leave-zona', { zonaId })
-  console.log(`[WebSocket] Desuscrito de zona ${zonaId}`)
+  if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+    console.log(`[WebSocket] Desuscrito de zona ${zonaId}`)
+  }
 }
 
 /**
@@ -90,7 +110,9 @@ export function disconnectWebSocket() {
   if (socket) {
     socket.disconnect()
     socket = null
-    console.log('[WebSocket] Desconectado')
+    if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_WS')) {
+      console.debug('[WebSocket] Desconectado')
+    }
   }
 }
 

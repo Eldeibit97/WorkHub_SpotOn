@@ -14,6 +14,7 @@ import { toYyyyMmDd } from '../../../lib/dateFormat'
 import { formatCountdown, isSharedRoomType } from './seatMapHelpers'
 import { getInitialsFromEmail } from '../../../lib/userDisplay'
 import './Step2SeatMap.css'
+import { bloquearEspaciosTemporal, liberarEspaciosTemporal } from '../../../api/reserve'
 
 export default function Step2SeatMap({
   data,
@@ -24,6 +25,7 @@ export default function Step2SeatMap({
   editMode,
   bookerMail,
   bookerName,
+  onBlockSpaces,
 }) {
   const [floorMap, setFloorMap] = useState(null)
   const [availability, setAvailability] = useState({})
@@ -77,6 +79,8 @@ export default function Step2SeatMap({
     if (!editMode && expired) setExpiredDialogOpen(true)
   }, [editMode, expired])
 
+
+
   // WebSocket para actualizaciones en tiempo real
   useEffect(() => {
     if (!data.zonaId) return
@@ -92,7 +96,13 @@ export default function Step2SeatMap({
           const updated = { ...prev }
           if (wsData.espacios && Array.isArray(wsData.espacios)) {
             for (const esp of wsData.espacios) {
-              updated[esp.idEspacio] = esp.estado === 'OCUPADO' ? 'OCUPADO' : 'DISPONIBLE'
+              if (esp.estado === 'OCUPADO' || esp.estado === 'CHECKED_IN') {
+                updated[esp.idEspacio] = 'OCUPADO'
+              } else if (esp.estado === 'BLOQUEADO_TEMPORAL') {
+                updated[esp.idEspacio] = 'BLOQUEADO_TEMPORAL'
+              } else {
+                updated[esp.idEspacio] = 'DISPONIBLE'
+              }
             }
           }
           return updated
@@ -121,7 +131,7 @@ export default function Step2SeatMap({
     let ocupados = 0
     for (const s of floorMap.spaces) {
       const av = availability[s.id_espacio]
-      if (av === 'OCUPADO' || av === 'BLOQUEADO') ocupados++
+      if (av === 'OCUPADO' || av === 'BLOQUEADO' || av === 'BLOQUEADO_TEMPORAL' || av === 'CHECKED_IN') ocupados++
       else disponibles++
     }
     return { disponibles, ocupados, total: floorMap.spaces.length }
@@ -274,11 +284,7 @@ export default function Step2SeatMap({
   function toggleSelect(space) {
     if (editMode) return
     const state = availability[space.id_espacio]
-    if (state === 'OCUPADO' || state === 'BLOQUEADO') return
-    if (selectedById.has(space.id_espacio)) {
-      update({ selectedSpaces: data.selectedSpaces.filter((s) => s.id_espacio !== space.id_espacio) })
-      return
-    }
+    if (state === 'OCUPADO' || state === 'BLOQUEADO' || state === 'BLOQUEADO_TEMPORAL' || state === 'CHECKED_IN') return
 
     const sharedRoom = isSharedRoomType(space.tipo)
     const newEntry = {
@@ -346,12 +352,23 @@ export default function Step2SeatMap({
   function showTooltipFor(e, space) {
     const rect = mapWrapperRef.current?.getBoundingClientRect()
     if (!rect) return
-    const state = availability[space.id_espacio] || 'DISPONIBLE'
+    let state = availability[space.id_espacio] || 'DISPONIBLE'
+    
+    // Convertir nombres técnicos a legibles
+    const stateLabels = {
+      'DISPONIBLE': 'Disponible',
+      'OCUPADO': 'Ocupado',
+      'BLOQUEADO_TEMPORAL': 'Bloqueado temporal',
+      'BLOQUEADO': 'Bloqueado',
+      'CHECKED_IN': 'En uso',
+    }
+    const displayState = stateLabels[state] || state
+    
     setTooltip({
       x: e.clientX - rect.left, y: e.clientY - rect.top,
       title: space.codigo, subtitle: space.nombre,
       tipo: labelForTipo(space.tipo),
-      state,
+      state: displayState,
     })
     setHovered(space.id_espacio)
   }
@@ -373,6 +390,37 @@ export default function Step2SeatMap({
     if (diff < 60) return 'hace pocos segundos'
     if (diff < 3600) return `hace ${Math.floor(diff / 60)}m`
     return `hace ${Math.floor(diff / 3600)}h`
+  }
+
+  async function handleContinuar() {
+    // Bloquear espacios antes de ir a Step 3
+    const idEspacios = data.selectedSpaces.map(s => s.id_espacio)
+    if (idEspacios.length > 0 && data.zonaId) {
+      // Obtener socketId del WebSocket
+      const socketId = localStorage.getItem('websocket_socket_id')
+      
+      const bloqueado = await bloquearEspaciosTemporal(idEspacios, data.zonaId, socketId)
+      if (bloqueado) {
+        if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+          console.log('[Step2SeatMap] Espacios bloqueados temporalmente:', idEspacios)
+        }
+        // Notificar al padre que estos espacios están bloqueados
+        if (onBlockSpaces) {
+          onBlockSpaces(idEspacios)
+        }
+      } else {
+        console.warn('[Step2SeatMap] Advertencia: Fallo al bloquear espacios, continuando igual')
+      }
+    }
+
+    // Ir a Step 3
+    onNext()
+  }
+
+  async function handleAtras() {
+    // NO liberar espacios aquí - dejar que el padre maneje eso
+    // Ir atrás
+    onBack()
   }
 
   return (
@@ -425,6 +473,9 @@ export default function Step2SeatMap({
             </div>
             <div className="step2__sidebar-legend-item">
               <i className="seat-dot seat-dot--ocupado" />Ocupado
+            </div>
+            <div className="step2__sidebar-legend-item">
+              <i className="seat-dot seat-dot--bloqueado_temporal" />En selección
             </div>
             <div className="step2__sidebar-legend-item">
               <i className="seat-dot seat-dot--selected" />Tu selección
@@ -615,13 +666,13 @@ export default function Step2SeatMap({
       </div>
 
       <div className="wiz-actions">
-        <button type="button" className="wiz-btn wiz-btn--ghost" onClick={onBack}>← Atrás</button>
+        <button type="button" className="wiz-btn wiz-btn--ghost" onClick={handleAtras}>← Atrás</button>
         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
           <span className="step2__count">{effectiveSelectedCount} espacio(s) seleccionado(s)</span>
           <button
             type="button"
             className="wiz-btn wiz-btn--primary"
-            onClick={onNext}
+            onClick={handleContinuar}
             disabled={!canContinue || isExpiredBlocking}
           >
             Continuar
