@@ -1,6 +1,7 @@
 import { apiFetch } from './client'
 import { getStoredToken } from './auth'
 import { isPlausibleDbEspacioId } from './reserve'
+import { normalizeTipoEspacio } from '../lib/spaceTipo'
 
 import pbMap from '../data/floor-maps/pb.json'
 import mzMap from '../data/floor-maps/mz.json'
@@ -12,6 +13,21 @@ const LOCAL_MAPS = {
   2: mzMap,
   3: p3Map,
   4: p9Map,
+}
+
+/** Planos en `public/mapas/` + `import.meta.env.BASE_URL` (subcarpeta en deploy). */
+function resolveFloorBackgroundHref(floorMap) {
+  if (!floorMap?.background || typeof floorMap.background !== 'string') return floorMap
+  let bg = floorMap.background
+  if (/^https?:\/\//i.test(bg)) return floorMap
+  if (bg.startsWith('/src/assets/mapas/')) {
+    const file = bg.split('/').pop()
+    bg = `/mapas/${file}`
+  }
+  const base = import.meta.env.BASE_URL ?? '/'
+  const normalizedBase = base === '/' ? '' : base.replace(/\/$/, '')
+  if (bg.startsWith('/')) return { ...floorMap, background: `${normalizedBase}${bg}` }
+  return { ...floorMap, background: bg }
 }
 
 function authHeaders() {
@@ -158,10 +174,18 @@ function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   if (indexFallback) {
     mergedSpaces = local.spaces.map((s, i) => ({ ...s, id_espacio: apiSpaceId(apiSpaces[i]) }))
   } else {
+    const usedApiIds = new Set()
     mergedSpaces = local.spaces.map((s) => {
       for (const k of orderedLookupKeysForLocal(s)) {
         const realId = byKey.get(k)
-        if (realId != null && isPlausibleDbEspacioId(realId)) return { ...s, id_espacio: realId }
+        if (
+          realId != null &&
+          isPlausibleDbEspacioId(realId) &&
+          !usedApiIds.has(realId)
+        ) {
+          usedApiIds.add(realId)
+          return { ...s, id_espacio: realId }
+        }
       }
       return s
     })
@@ -171,13 +195,144 @@ function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
     const bad = mergedSpaces.filter((s) => !isPlausibleDbEspacioId(s.id_espacio))
     if (bad.length > 0) {
       console.warn(
-        '[getFloorMap] Tras fusionar con GET /api/spaces quedan %s marcador(es) sin id_espacio de BD. Revisa la red: forma del JSON, códigos/nombres alineados con el mapa local, o misma cantidad de espacios para el fallback por índice.',
+        '[getFloorMap] %s marcador(es) sin id_espacio de BD (códigos: %s). Revisa duplicados en el JSON local o alineación con GET /api/spaces.',
         bad.length,
+        bad.map((s) => s.codigo || s.nombre).join(', '),
       )
     }
   }
 
   return { ...local, spaces: mergedSpaces }
+}
+
+function normalizeZonaRow(zonaRow, local) {
+  if (!zonaRow) {
+    return {
+      codigoZona: local.codigoZona,
+      nombre: local.nombre,
+      edificio: local.edificio,
+      viewBox: local.viewBox,
+      background: local.background,
+    }
+  }
+  return {
+    codigoZona:
+      zonaRow.codigo_zona ??
+      zonaRow.codigoZona ??
+      zonaRow.nombre_zona ??
+      zonaRow.nombreZona ??
+      local.codigoZona,
+    nombre: zonaRow.descripcion ?? zonaRow.nombre ?? local.nombre,
+    edificio: zonaRow.edificio ?? local.edificio,
+    viewBox: zonaRow.view_box ?? zonaRow.viewBox ?? local.viewBox,
+    background: zonaRow.background ?? local.background,
+  }
+}
+
+function spaceHasGeometry(s) {
+  if (s.x == null || s.y == null) return false
+  if (s.shape === 'circle') return s.r != null
+  return s.w != null && s.h != null
+}
+
+/** Espacios legacy retirados del layout (p. ej. Media Scape 1 en PB). */
+function isExcludedEditorSpace(s) {
+  const codigo = String(s.codigo ?? s.codigo_espacio ?? s.codigoEspacio ?? '')
+    .trim()
+    .toUpperCase()
+  const nombre = String(s.nombre ?? s.nombre_espacio ?? s.nombreEspacio ?? '').trim()
+  if (codigo === 'PBMS-082') return true
+  if (/^media\s*scape\s*1$/i.test(nombre)) return true
+  return false
+}
+
+function partitionExcludedSpaces(spaces) {
+  const autoEliminarIds = []
+  const kept = spaces.filter((s) => {
+    if (!isExcludedEditorSpace(s)) return true
+    const id = s.id_espacio ?? apiSpaceId(s)
+    if (isPlausibleDbEspacioId(id)) autoEliminarIds.push(id)
+    return false
+  })
+  return { spaces: kept, autoEliminarIds }
+}
+
+/**
+ * Mapea un espacio del API al formato del editor de planos.
+ * @param {object} sp
+ * @returns {object}
+ */
+export function mapApiSpaceToEditor(sp) {
+  const id = apiSpaceId(sp)
+  const tipo = normalizeTipoEspacio(
+    sp.id_tipo_espacio ?? sp.idTipoEspacio ?? sp.tipo ?? 1,
+  )
+  const shape = sp.shape ?? (tipo === 1 ? 'circle' : 'rect')
+  const editor = {
+    id_espacio: isPlausibleDbEspacioId(id) ? id : null,
+    codigo: sp.codigo_espacio ?? sp.codigoEspacio ?? sp.codigo ?? '',
+    nombre: sp.nombre_espacio ?? sp.nombreEspacio ?? sp.nombre ?? '',
+    tipo,
+    shape,
+    x: sp.x != null ? Number(sp.x) : null,
+    y: sp.y != null ? Number(sp.y) : null,
+    r: sp.r != null ? Number(sp.r) : null,
+    w: sp.w != null ? Number(sp.w) : null,
+    h: sp.h != null ? Number(sp.h) : null,
+  }
+  if (shape === 'circle' && editor.r == null) editor.r = 6
+  if (shape === 'rect') {
+    if (editor.w == null) editor.w = 80
+    if (editor.h == null) editor.h = 60
+  }
+  return editor
+}
+
+/**
+ * @param {number} zonaId
+ * @param {object|null} zonaRow
+ * @param {Array<object>|null} apiSpaces
+ * @param {object} local
+ */
+function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local) {
+  const meta = normalizeZonaRow(zonaRow, local)
+  let spaces
+
+  if (Array.isArray(apiSpaces) && apiSpaces.length > 0) {
+    const fromApi = apiSpaces.map(mapApiSpaceToEditor)
+    const apiHasGeometry = fromApi.some(spaceHasGeometry)
+    if (apiHasGeometry) {
+      spaces = fromApi.filter((s) => s.codigo || s.nombre)
+    } else {
+      spaces = mergeLocalFloorMapWithApiSpaces(local, apiSpaces).spaces
+    }
+  } else {
+    spaces = local.spaces.map((s) => ({ ...s }))
+  }
+
+  const partitioned = partitionExcludedSpaces(spaces)
+
+  return resolveFloorBackgroundHref({
+    zonaId,
+    codigoZona: meta.codigoZona,
+    nombre: meta.nombre,
+    edificio: meta.edificio,
+    viewBox: meta.viewBox,
+    background: meta.background,
+    spaces: partitioned.spaces,
+    autoEliminarIds: partitioned.autoEliminarIds,
+  })
+}
+
+/**
+ * @param {number} zonaId
+ * @returns {Promise<object|null>}
+ */
+export async function getZonaById(zonaId) {
+  const zonas = await getZonas()
+  return (
+    zonas.find((z) => Number(z.id_zona ?? z.idZona) === Number(zonaId)) ?? null
+  )
 }
 
 /**
@@ -212,19 +367,27 @@ export async function getZonas() {
 export async function getFloorMap(zonaId) {
   const local = LOCAL_MAPS[zonaId]
   if (!local) throw new Error(`No floor map for zona ${zonaId}`)
+
+  let zonaRow = null
+  let apiSpaces = null
+
+  try {
+    zonaRow = await getZonaById(zonaId)
+  } catch {
+    // fall through
+  }
+
   try {
     const res = await apiFetch(`/api/spaces?zonaId=${zonaId}`, { headers: authHeaders() })
     if (res.ok) {
       const data = await safeJson(res)
-      const apiSpaces = extractSpacesArray(data)
-      if (apiSpaces && apiSpaces.length > 0) {
-        return mergeLocalFloorMapWithApiSpaces(local, apiSpaces)
-      }
+      apiSpaces = extractSpacesArray(data)
     }
   } catch {
     // fall through
   }
-  return local
+
+  return buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local)
 }
 
 /**

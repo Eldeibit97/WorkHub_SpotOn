@@ -4,12 +4,10 @@
   "nombre": "Mezanine",
   "edificio": "ATC Monterrey",
   "viewBox": "0 0 1440 810",
-  "background": "/src/assets/mapas/piso_MZ.svg",
+  "background": "/mapas/piso_MZ.svg",
   "tipoLabels": {
     "1": "Estacion de trabajo",
     "2": "Sala de juntas",
-    "3": "Phone Booth",
-    "4": "Media Scape",
     "5": "Area especial"
   },
   "spaces": [
@@ -1190,7 +1188,7 @@
       "id_espacio": 473,
       "codigo": "MZC1u-120",
       "nombre": "Cubículo MZ",
-      "tipo": 3,
+      "tipo": 5,
       "shape": "rect",
       "x": 1067,
       "y": 447,
@@ -1201,7 +1199,7 @@
       "id_espacio": 471,
       "codigo": "MZMS-119",
       "nombre": "Media Scape",
-      "tipo": 4,
+      "tipo": 5,
       "shape": "rect",
       "x": 1035,
       "y": 540,

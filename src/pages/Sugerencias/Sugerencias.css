@@ -36,9 +36,10 @@
 .info-box-title{
   color: rgba(168, 85, 247);
   font-weight: bold;
-  font-size: larger;
+  font-size: 22px;
   text-align: center;
   margin: 0.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .info-box-text{
@@ -72,13 +73,13 @@
 .info-box-bullet-title{
   color: rgba(168, 85, 247);
   font-weight: bold;
-  font-size: 15px;
+  font-size: 18px;
   margin: 0.6rem 0 0.1rem 0;
 }
 
 .info-box-bullet-text{
   color: rgba(255, 255, 255, 0.8);
-  font-size: 13px;
+  font-size: 16px;
   margin: 0 0 0.4rem 0;
   line-height: 1.4;
 }

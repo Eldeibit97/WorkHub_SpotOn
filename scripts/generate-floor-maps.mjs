@@ -27,31 +27,37 @@ const VIEWBOX = { w: 1440, h: 810 }
 const SHAPE_DEFAULTS = {
   1: { shape: 'circle', r: 11 }, // Estación de trabajo
   2: { shape: 'rect', w: 110, h: 80 }, // Sala de juntas
-  3: { shape: 'rect', w: 26, h: 26 }, // Phone Booth
-  4: { shape: 'rect', w: 90, h: 60 }, // Media Scape
   5: { shape: 'rect', w: 150, h: 100 }, // Área especial
+}
+
+const ACTIVE_TIPOS = new Set([1, 2, 5])
+
+function normalizeTipo(tipo) {
+  const n = Number(tipo)
+  if (n === 3 || n === 4) return 5
+  return n
 }
 
 // Per zona, define an approximate layout: where the desk grid starts and how
 // many columns it has (rough fit on each plano). The user will refine.
 const ZONA_LAYOUTS = {
   1: { // PB
-    background: '/src/assets/mapas/piso_PB.svg',
+    background: '/mapas/piso_PB.svg',
     deskGrid: { x: 110, y: 130, cols: 12, gapX: 70, gapY: 60 },
     rooms: { x: 1000, y: 140, perRow: 1, gapX: 0, gapY: 110 },
   },
   2: { // MZ
-    background: '/src/assets/mapas/piso_MZ.svg',
+    background: '/mapas/piso_MZ.svg',
     deskGrid: { x: 100, y: 110, cols: 14, gapX: 65, gapY: 55 },
     rooms: { x: 1080, y: 130, perRow: 1, gapX: 0, gapY: 110 },
   },
   3: { // P3
-    background: '/src/assets/mapas/piso_3.svg',
+    background: '/mapas/piso_3.svg',
     deskGrid: { x: 130, y: 150, cols: 9, gapX: 80, gapY: 70 },
     rooms: { x: 1050, y: 140, perRow: 1, gapX: 0, gapY: 130 },
   },
   4: { // P9
-    background: '/src/assets/mapas/piso_9.svg',
+    background: '/mapas/piso_9.svg',
     deskGrid: { x: 100, y: 110, cols: 13, gapX: 70, gapY: 55 },
     rooms: { x: 1090, y: 140, perRow: 1, gapX: 0, gapY: 110 },
   },
@@ -89,8 +95,8 @@ function parseLine(line) {
 }
 
 function makeSpaceMarker(esp, position) {
-  const tipo = Number(esp.id_tipo_espacio)
-  const defaults = SHAPE_DEFAULTS[tipo] || SHAPE_DEFAULTS[1]
+  const tipo = normalizeTipo(Number(esp.id_tipo_espacio))
+  const defaults = SHAPE_DEFAULTS[tipo] || SHAPE_DEFAULTS[5]
   const base = {
     id_espacio: Number(esp.id_espacio),
     codigo: esp.codigo_espacio,
@@ -146,7 +152,11 @@ function layoutZona(zona, espacios, tipos) {
     edificio: zona.edificio,
     viewBox: `0 0 ${VIEWBOX.w} ${VIEWBOX.h}`,
     background: layout.background,
-    tipoLabels: Object.fromEntries(tipos.map((t) => [t.id_tipo_espacio, t.nombre_tipo])),
+    tipoLabels: Object.fromEntries(
+      tipos
+        .filter((t) => ACTIVE_TIPOS.has(Number(t.id_tipo_espacio)))
+        .map((t) => [t.id_tipo_espacio, t.nombre_tipo]),
+    ),
     spaces,
   }
 }
