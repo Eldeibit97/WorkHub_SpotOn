@@ -77,3 +77,16 @@ export async function getNoShowHeatmap({ from, to } = {}) {
   const res = await apiFetch(path, { headers: authHeaders() })
   return parseResponse(res)
 }
+
+export async function getNoShowFloorHeatmap({ zonaId, from, to } = {}) {
+  const params = new URLSearchParams()
+  if (zonaId) params.set('zonaId', String(zonaId))
+  if (from)   params.set('from',   from)
+  if (to)     params.set('to',     to)
+
+  const res = await apiFetch(
+    `/api/admin/no-shows/floor-heatmap?${params.toString()}`,
+    { headers: authHeaders() }
+  )
+  return parseResponse(res)
+}
