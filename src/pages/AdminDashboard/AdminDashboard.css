@@ -813,3 +813,83 @@
 .admin-chart-card--map {
   padding-bottom: 1.5rem;
 }
+
+/* ==========================================================================
+   Tabla de No Shows por Usuario (HU#24)
+   ========================================================================== */
+.nsu-wrapper {
+  overflow-x: auto;
+}
+
+.nsu-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.nsu-th {
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.nsu-th--rank,
+.nsu-td--rank  { width: 40px; text-align: center; }
+
+.nsu-th--count,
+.nsu-td--count { width: 80px; text-align: center; font-weight: 600; }
+
+.nsu-th--bar,
+.nsu-td--bar   { width: 160px; }
+
+.nsu-th--email { color: var(--text-secondary); }
+
+.nsu-row {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.12s;
+}
+
+.nsu-row:last-child { border-bottom: none; }
+
+.nsu-row:hover { background: rgba(161, 0, 255, 0.05); }
+
+.nsu-td {
+  padding: 0.65rem 0.85rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.nsu-td--rank {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.nsu-td--email {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.nsu-td--count {
+  color: var(--acn-purple, #a100ff);
+  font-size: 1rem;
+  text-align: center;
+}
+
+.nsu-bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(161, 0, 255, 0.12);
+  overflow: hidden;
+}
+
+.nsu-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(161, 0, 255, 0.75);
+  transition: width 0.3s ease;
+}

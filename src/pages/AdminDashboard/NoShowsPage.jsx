@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { getNoShowHeatmap, getNoShowFloorHeatmap } from '../../api/admin'
+import { getNoShowHeatmap, getNoShowFloorHeatmap, getNoShowByUser } from '../../api/admin'
 import { getFloorMap, getZonas } from '../../api/spaces'
 import NoShowHeatmapChart from './components/charts/NoShowHeatmapChart'
 import FloorNoShowMap from './components/charts/FloorNoShowMap'
+import NoShowUserTable from './components/charts/NoShowUserTable'
 
-// ← fuera del componente, después de los imports
 function toISODate(d) {
   return d.toISOString().split('T')[0]
 }
@@ -19,6 +19,9 @@ const DEFAULT_TO   = toISODate(_today)
 
 const EMPTY_TEMPORAL = { heatmap: [], total: 0, maxCount: 0 }
 const EMPTY_FLOOR    = { noShowsBySpace: [], total: 0, maxCount: 0 }
+const EMPTY_USERS = { users: [], total: 0 }
+
+
 
 export default function NoShowsPage() {
   
@@ -43,7 +46,10 @@ export default function NoShowsPage() {
   const [floorLoading, setFloorLoading] = useState(false)
   const [floorError,   setFloorError]   = useState('')
 
-  
+  // --- Vista por usuarios ---
+  const [userData, setUserData] = useState(EMPTY_USERS)
+  const [userLoading, setUserLoading] = useState(false)
+  const [userError, setUserError] = useState('')
 
   // Cargar lista de zonas al montar
   useEffect(() => {
@@ -108,6 +114,26 @@ export default function NoShowsPage() {
     return () => { cancelled = true }
   }, [activeTab, zonaId, from, to])
 
+  useEffect(() => {
+    if (activeTab !== 'usuarios') return
+    let cancelled = false
+
+    async function load() {
+      setUserLoading(true)
+      setUserError('')
+      try {
+        const result = await getNoShowByUser({ from: from || undefined, to: to || undefined })
+        if (!cancelled) setUserData(result)
+      } catch (err) {
+        if (!cancelled) { setUserError(err.message || 'Error al cargar.'); setUserData(EMPTY_USERS) }
+      } finally {
+        if (!cancelled) setUserLoading(false)
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [activeTab, from, to])
+
   return (
     <div className="admin-page">
       {/* Header con filtros compartidos */}
@@ -152,6 +178,12 @@ export default function NoShowsPage() {
           onClick={() => setActiveTab('espacial')}
         >
           Por ubicación
+        </button>
+        <button
+          className={`nsh-tab${activeTab === 'usuarios' ? ' nsh-tab--active' : ''}`}
+          onClick={() => setActiveTab('usuarios')}
+        >
+          Por usuario
         </button>
         <button
           className={`nsh-tab${activeTab === 'temporal'  ? ' nsh-tab--active' : ''}`}
@@ -237,6 +269,41 @@ export default function NoShowsPage() {
                   noShowsBySpace={floorData.noShowsBySpace}
                   maxCount={floorData.maxCount}
                 />
+            }
+          </article>
+        </>
+      )}
+
+      {/* ── Vista por usuarios ── */}
+      {activeTab === 'usuarios' && (
+        <>
+          {userError && <div className="admin-feedback admin-feedback--error">{userError}</div>}
+
+          <section className="admin-kpi-grid" style={{ marginBottom: '1.5rem' }}>
+            <article className="admin-kpi-card">
+              <span className="admin-kpi-card__label">Total no shows</span>
+              <span className="admin-kpi-card__value">
+                {userLoading ? '…' : userData.total}
+              </span>
+            </article>
+            <article className="admin-kpi-card">
+              <span className="admin-kpi-card__label">Usuarios con no shows</span>
+              <span className="admin-kpi-card__value">
+                {userLoading ? '…' : userData.users.length}
+              </span>
+            </article>
+          </section>
+
+          <article className="admin-chart-card">
+            <header className="admin-chart-card__header">
+              <h3>Ranking de no shows por usuario</h3>
+              <span className="admin-chart-card__subtitle">
+                Ordenado de mayor a menor cantidad
+              </span>
+            </header>
+            {userLoading
+              ? <div className="admin-chart__loading" style={{ height: 320 }} />
+              : <NoShowUserTable users={userData.users} />
             }
           </article>
         </>

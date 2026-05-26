@@ -90,3 +90,15 @@ export async function getNoShowFloorHeatmap({ zonaId, from, to } = {}) {
   )
   return parseResponse(res)
 }
+
+export async function getNoShowByUser({ from, to } = {}) {
+  const params = new URLSearchParams()
+  if (from) params.set('from', from)
+  if (to)   params.set('to',   to)
+
+  const res = await apiFetch(
+    `/api/admin/no-shows/by-user?${params.toString()}`,
+    { headers: authHeaders() }
+  )
+  return parseResponse(res)
+}
