@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-google-maps/api": "^2.20.8",
+    "@vis.gl/react-google-maps": "^1.8.3",
     "bootstrap": "^5.3.8",
     "react": "^19.2.4",
     "react-bootstrap": "^2.10.10",
