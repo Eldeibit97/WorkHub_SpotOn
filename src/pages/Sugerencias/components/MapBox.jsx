@@ -1,51 +1,55 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import useGeoPosition from '../../../hooks/useGeoPosition'
-import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps'
+import useRoute from '../../../hooks/useRoute'
+import { APIProvider, Map } from '@vis.gl/react-google-maps'
+import MapContent from './MapContent'
 import '../sugerencias.css'
 import './mapbox.css'
 
 const MapBox = () => {
-  const officePos = { key: 'Accenture Office', lat: 25.670002013961874, lng: -100.37771014077546 };
-  const [allowMap, setAllowMap] = useState(null);
-  const { loading, error, coords } = useGeoPosition();
+  const officeData = {
+    key: 'AccentureOffice',
+    coords: {
+      lat: 25.670002013961874,
+      lng: -100.37771014077546
+    }
+  };
+  const { loading: geoPosLoading, error: geoPosError, data: geoPosData } = useGeoPosition();
+  const { loading: routeLoading, error: routeError, data: routeData } = useRoute(geoPosData?.coords, officeData.coords);
 
-
-  if (loading) {
+  if (geoPosLoading || routeLoading) {
     return (
       <div>
-        <p>Cargando mapa</p>
+        <p>{routeLoading ? 'Encontrando Ubicación' : 'Trazando ruta'}</p>
       </div>
     );
-  } else if (error) {
-    return (
-      <div>
-        <p>No se pudo cargar el mapa, intentalo denuevo despues {error} </p>
-      </div>
-    );
-  } else {
-    return (
-      <div className='info-box'>
-        <APIProvider apiKey={import.meta.env.VITE_MAPS_API_KEY} onLoad={() => console.log('La API cargo correctamente, ahora se mostrara el mapa')}>
-          <Map
-            className='map'
-            MapId='Office Route'
-            defaultCenter={{ lat: coords.lat, lng: coords.lng }}
-            defaultZoom={12}>
-              <AdvancedMarker
-                Key={coords.key}
-                position={{lat: coords.lat, lng: coords.lng}}>
-                <Pin background='pin' glyphColor='pin-extras' borderColor='pin-extras' />
-              </AdvancedMarker>
-              <AdvancedMarker
-                Key={officePos.key}
-                position={{lat: officePos.lat, lng: officePos.lng}}>
-                <Pin background='pin' glyphColor='pin-extras' borderColor='pin-extras' />
-              </AdvancedMarker>
-          </Map>
-        </APIProvider>
-      </div>
-    )
   }
+  if (geoPosError || routeError) {
+    console.log('Geo position error ',geoPosError);
+    console.log('Route tracing error', routeError);
+    return (
+      <div>
+        <p> {geoPosError ? 'No se pudo cargar tu posición' : 'No se pudo trazar la ruta'}, intentalo de nuevo despues {geoPosError ? geoPosError : routeError} </p>
+      </div>
+    );
+  }
+  return (
+    <div className='info-box'>
+      <APIProvider
+        apiKey={import.meta.env.VITE_MAPS_API_KEY}
+        onLoad={() => console.log('API cargada correctamente')}
+      >
+        <Map
+          className='map'
+          mapId='OfficeRoute'
+          defaultCenter={geoPosData.coords}
+          defaultZoom={11}
+        >
+          <MapContent officeData={officeData} geoPosData={geoPosData} routeData={routeData} />
+        </Map>
+      </APIProvider>
+    </div>
+  );
 }
 
 export default MapBox

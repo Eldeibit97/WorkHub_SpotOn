@@ -4,17 +4,19 @@ const useGeoPosition = () => {
   const [state, setState] = useState({
     loading: true,
     error: null,
-    coords: null
+    data: null
   });
 
   const onSuccess = useCallback(({ coords }) => {
     setState({
       loading: false,
       error: null,
-      coords: {
-        key: 'User Pos',
-        lat: coords.latitude,
-        lng: coords.longitude
+      data: {
+        key: 'UserPos',
+        coords: {
+          lat: coords.latitude,
+          lng: coords.longitude
+        }
       }
     });
   }, []);
@@ -23,7 +25,7 @@ const useGeoPosition = () => {
     setState({
       loading: false,
       error: error,
-      coords: null
+      data: null
     });
   }, []);
 
