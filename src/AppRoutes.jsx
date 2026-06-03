@@ -16,6 +16,7 @@ import FloorEditorOffices from './pages/FloorEditor/FloorEditorOffices'
 import FloorEditorFloors from './pages/FloorEditor/FloorEditorFloors'
 import RequireRole from './components/RequireRole'
 import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
+import NoShowsPage from './pages/AdminDashboard/NoShowsPage'
 
 import EditarReservaWorkplace from "./pages/ManageReservations/components/EditarReservaWorkplace";
 
@@ -56,6 +57,7 @@ const AppRoutes = () => {
         <Route index element={<DashboardOverview />} />
         <Route path="usuarios" element={<AdminDashboard />} />
         <Route path="usuarios/:id/reservaciones" element={<AdminUserReservations />} />
+        <Route path="no-shows" element={<NoShowsPage />} />
         <Route path="floor-editor">
           <Route index element={<FloorEditorOffices />} />
           <Route path="edificios/:edificioSlug" element={<FloorEditorFloors />} />
