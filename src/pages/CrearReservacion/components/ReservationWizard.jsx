@@ -139,7 +139,7 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
     }
   }, [editMode, step])
 
-  // Liberar espacios SOLO cuando vuelve de Step 3 (atrás) o se desmonta definitivamente
+  // Liberar espacios SOLO cuando vuelve de Step 3 (atrás)
   useEffect(() => {
     // Si el usuario está en Step 3, el bloqueo debe mantenerse
     // Si vuelve atrás FROM Step 3, liberar
@@ -148,8 +148,10 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
         try {
           const socketId = localStorage.getItem('websocket_socket_id')
           await liberarEspaciosTemporal(blockedSpaces, data.zonaId, socketId)
+          // Limpiar local también para que UI se actualice
+          setBlockedSpaces(null)
           if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
-            console.log('[ReservationWizard] Espacios bloqueados liberados al volver de Step 3')
+            console.log('[ReservationWizard] Espacios liberados al volver de Step 3')
           }
         } catch (err) {
           console.error('[ReservationWizard] Error liberando espacios:', err)
@@ -165,56 +167,52 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
     const handleBeforeUnload = () => {
       if (blockedSpaces && blockedSpaces.length > 0 && data.zonaId) {
         const socketId = localStorage.getItem('websocket_socket_id')
-        const payload = JSON.stringify({
-          espacios: blockedSpaces,
-          zonaId: data.zonaId,
-          socketId
-        })
+        const token = sessionStorage.getItem('token') || localStorage.getItem('token')
         
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5500'
         const endpoint = `${apiUrl}/api/reservas/liberar-temporal`
         
-        // Intentar con sendBeacon (confiable para cierre de pestaña)
-        const beaconSuccessful = navigator.sendBeacon(endpoint, payload)
-        
-        if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
-          console.log('[ReservationWizard] beforeunload: sendBeacon', beaconSuccessful ? 'exitoso' : 'falló', endpoint)
+        // Usar Blob para sendBeacon (más confiable que FormData)
+        const payload = {
+          espacios: blockedSpaces,
+          zonaId: data.zonaId,
+          socketId: socketId || '',
+          token: token || ''
         }
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
         
-        // Si sendBeacon falla, intentar con fetch (pero probablemente no se enviará si la página cierra)
-        if (!beaconSuccessful) {
-          try {
-            fetch(endpoint, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: payload,
-              keepalive: true // Importante para que se envíe incluso si la página se cierra
-            }).catch(() => {
-              // Silent fail - no hay tiempo para esperar en beforeunload
-            })
-          } catch {
-            // Silent fail
+        try {
+          const sent = navigator.sendBeacon(endpoint, blob)
+          if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+            console.log('[ReservationWizard] beforeunload: beacon enviado', sent)
+          }
+        } catch (err) {
+          if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+            console.error('[ReservationWizard] Error en sendBeacon:', err)
           }
         }
       }
     }
 
-    // Agregar listener para beforeunload
+    // Agregar listener para beforeunload (cierre tab/navegador)
     window.addEventListener('beforeunload', handleBeforeUnload)
 
     // Cleanup: remover listener y liberar si se desmonta sin cerrar pestaña
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload)
       
-      // Liberar al desmontar (navegación a otra página)
+      // Liberar al desmontar (navegación a otra página del sitio)
       if (blockedSpaces && blockedSpaces.length > 0 && data.zonaId) {
         const socketId = localStorage.getItem('websocket_socket_id')
-        liberarEspaciosTemporal(blockedSpaces, data.zonaId, socketId).catch((err) => {
-          console.error('[ReservationWizard] Error al desmontar:', err)
-        })
-        if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
-          console.log('[ReservationWizard] unmount: liberados espacios al navegar a otra página')
-        }
+        liberarEspaciosTemporal(blockedSpaces, data.zonaId, socketId)
+          .then(() => {
+            if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+              console.log('[ReservationWizard] Espacios liberados al navegar a otra página')
+            }
+          })
+          .catch((err) => {
+            console.error('[ReservationWizard] Error liberando espacios al desmontar:', err)
+          })
       }
     }
   }, [blockedSpaces, data.zonaId])
