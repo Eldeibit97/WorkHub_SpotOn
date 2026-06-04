@@ -35,7 +35,7 @@ export function formatDateLongEsMx(date) {
   })
 }
 
-const MONTHS_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+export const MONTHS_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 
 /** Cabecera tipo tira de fecha: "lunes, 12 mayo" (sin año; mismo texto que DateStrip antes del extract). */
 export function formatDateWeekdayDayMonthEs(date) {
