@@ -54,10 +54,6 @@ const CrearReservacion = () => {
     };
   };
 
-  const handleParkingConfirm = (data) => {
-    console.log('Parking reservation:', data);
-  };
-
   return (
     <div className="reservation-container">
       {view === 'selector' && (
@@ -78,10 +74,7 @@ const CrearReservacion = () => {
           <button className="res-back-btn" onClick={() => setView('selector')}>
             ← Volver
           </button>
-          <EstacionamientoForms
-            dateData={getCurrentDate()}
-            onConfirm={handleParkingConfirm}
-          />
+          <EstacionamientoForms/>
         </>
       )}
     </div>

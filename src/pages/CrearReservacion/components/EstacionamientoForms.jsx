@@ -1,99 +1,106 @@
 import React from 'react'
 import { useState } from 'react';
 import './EstacionamientoForms.css';
-import DateSelector from '../../ManageReservations/components/DateSelector';
+import DateStrip from './DateStrip';
 import TimeSelector from './TimeSelector';
 
-const EstacionamientoForms = ({ dateData, onConfirm }) => {
+const ZONES = [
+  { id: 1, nombre: "Zona 1", disponibles: 0, total: 0, colorClass: "dotZona1", badgeClass: "badgeZona1" },
+  { id: 2, nombre: "Zona 2", disponibles: 0, total: 0, colorClass: "dotZona2", badgeClass: "badgeZona2" },
+  { id: 3, nombre: "Zona 3", disponibles: 0, total: 0, colorClass: "dotZona3", badgeClass: "badgeZona3" },
+];
+
+const EstacionamientoForms = () => {
   const [reservationData, setReservationData] = useState({
     mail: '',
-    idEspacio: 163,
-    fechaReserva: dateData.dateObj,
-    horaInicio: '08:00',
-    horaSalida: '13:00',
+    fechaReserva: new Date(),
+    horaInicio: '00:00',
+    horaSalida: '00:00',
     fechaCreacion: new Date(),
-    //parkingLot: 'South Parking Lot',
-    //level: '2nd Level',
     tipoReserva: 'ESTACIONAMIENTO',
-    //reservationID: 'PK9021'
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleDateChange = (newDate) => {
-    setReservationData({ ...reservationData, fechaReserva: newDate });
+  const handleChange = (patch) => {
+    setReservationData(prev => ({ ...prev , ...patch}));
   };
-
-  const handleTimeChange = (start, end) => {
-    setReservationData({
-      ...reservationData,
-      horaInicio: start,
-      horaSalida: end
-    });
-  };
-
-  const handleChange = (e) => {
-    setReservationData({ ...reservationData, [e.target.name]: e.target.value });
-  };
-
-  const handleConfirm = () =>{
-    const finalData = {
-      ...reservationData,
-      fechaReserva: reservationData.fechaReserva.toISOString(),
-      fechaCreacion: reservationData.fechaCreacion.toISOString(),
-    };
-    onConfirm(finalData);
-  }
 
   return (
-    <>
-      <div className="main-grid">
-        <div className="parking-map-container parking-map-container--carousel">
-          <div className="parking-map-placeholder">
-            <h3>Mapa de estacionamiento</h3>
-            <p>El selector visual estará disponible próximamente.</p>
+    <div className="main-layout">
+      <div className="panel panelLeft">
+        <p className="panelTitle">Nueva reserva de estacionamiento</p>
+ 
+        <div className="fieldGroup">
+          <label className="fieldLabel" htmlFor="fecha">
+            Fecha de reserva
+          </label>
+          <p className="fieldSublabel">Selecciona el dia ha reservar</p>
+          <div className="inputWrapper">
+            <DateStrip value={reservationData.fechaReserva} onChange={(date) => handleChange({fechaReserva: date})}></DateStrip>
           </div>
         </div>
-
-        <div className="reservation-panel">
-          <h3>New Reservation</h3>
-
-          <DateSelector
-            selectedDate={reservationData.fechaReserva}
-            onDateChange={handleDateChange}
-          />
-
-          <TimeSelector
-            horaInicio={reservationData.horaInicio}
-            horaSalida={reservationData.horaSalida}
-            onTimeChange={handleTimeChange}
-          />
-          {/*
-          <div className="location-display">
-            {reservationData.parkingLot}
+ 
+        <div className="fieldGroup">
+          <label className="fieldLabel" htmlFor="hora">
+            Tiempo de reserva
+          </label>
+          <p className="fieldSublabel">Hora estimada de llegada y salida</p>
+          <div className="inputWrapper">
+            <TimeSelector horaInicio={reservationData.horaInicio} horaSalida={reservationData.horaSalida} onTimeChange={(inicio, fin) => handleChange({horaInicio: inicio, horaSalida: fin})}></TimeSelector>
           </div>
-          */}
-          <select className="level-dropdown" name='level' value={reservationData.level} onChange={handleChange}>
-            <option>1st Level</option>
-            <option>2nd Level</option>
-            <option>3rd Level</option>
-            <option>4th Level</option>
-          </select>
-          <div className="email-container">
+        </div>
+ 
+        <div className="fieldGroup">
+          <label className="fieldLabel" htmlFor="correo">
+            Correo del responsable
+          </label>
+          <div className="inputWrapper">
+            <span className="inputIcon">✉️</span>
             <input
+              id="correo"
               type="email"
-              name='mail'
-              className="email-input"
+              placeholder="ejemplo@correo.com"
+              className="input inputWithIcon"
               value={reservationData.mail}
-              onChange={handleChange}
-              placeholder="Email address"
+              onChange={(e) => handleChange({mail: e.target.value})}
             />
-            <button className="add-guest-btn" title="Add guest">+</button>
           </div>
-          <button className="confirm-btn" onClick={handleConfirm}>
-            Confirm Reservation
-          </button>
         </div>
+          <button
+            className="confirm-btn"
+            onClick={""}
+            disabled={loading}
+          >
+            {loading ? (<p> Confirmando reserva... </p>) : (<p> Confirmar </p>)}
+          </button>
       </div>
-    </>
+ 
+      <div className="panel panelRight">
+        <div>
+          <p className="availabilityTitle">Disponibilidad de zonas</p>
+          <p className="availabilitySubtitle">Actualizado en tiempo real</p>
+        </div>
+ 
+        <div className="zonesCard">
+          {ZONES.map((zona, idx) => (
+            <div key={zona.id}>
+              <div className="zoneRow">
+                <div className="zoneName">
+                  <span className={`$"zoneDot} ${zona.colorClass}`} />
+                  {zona.nombre}
+                </div>
+                <span className={`$"zoneBadge} ${zona.badgeClass}`}>
+                  {zona.disponibles} / {zona.total}
+                </span>
+              </div>
+              {idx < ZONES.length - 1 && <div className="zoneDivider" style={{ marginTop: 12 }} />}
+            </div>
+          ))}
+        </div>
+ 
+        <p className="legendNote">ℹ️ Disponibles / Total por zona</p>
+      </div>
+    </div>
   );
 }
 
