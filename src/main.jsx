@@ -6,6 +6,6 @@ import EstacionamientoForms from './pages/CrearReservacion/components/Estacionam
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <EstacionamientoForms />
+    <App />
   </StrictMode>,
 )

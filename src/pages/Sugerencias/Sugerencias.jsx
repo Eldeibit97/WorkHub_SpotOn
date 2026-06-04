@@ -53,7 +53,7 @@ const Sugerencias = () => {
         return;
       }
       setSuggestion(parsedResult);
-      setHasPending(true);
+      setHasPending(result.pending);
       setLoadingSuggestion(false);
     };
 

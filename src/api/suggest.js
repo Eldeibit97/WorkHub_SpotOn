@@ -10,13 +10,13 @@ export async function suggest(promptData) {
   try {
     let hasPending = false;
     try {
-      const pendiente = await apiFetch('/api/reservas/tieneReserva', { method: 'POST', body: promptData });
+      const pendiente = await apiFetch(`/api/reservas/tieneReserva/${promptData.user_id}?current_date=${promptData.today}&range=${promptData.rango}`, {method: 'GET'});
       if (pendiente.ok) {
         const marcador = await pendiente.text();
         hasPending = JSON.parse(marcador).pendiente ?? false;
       }
     } catch {
-      // endpoint not available; default to no pending reservation
+      throw new Error('Hubo un error al obtener información de reservas pendientes')
     }
     promptData = {
       ...promptData, query: hasPending
@@ -41,7 +41,6 @@ export async function suggest(promptData) {
       mensaje = JSON.parse(respuesta);
       mensaje = {...mensaje, pending: hasPending}
     }
-    console.log(mensaje);
     return mensaje;
   } catch {
     return { message: 'Hubo un error al obtener la sugerencia' };
