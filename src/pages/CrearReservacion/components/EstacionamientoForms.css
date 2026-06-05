@@ -121,7 +121,9 @@
   height: 40px;
   border-radius: 8px;
   border: none;
-  background: #2c2c2a;
+  background: var(--acn-gradient);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.25);
   color: #ffffff;
   font-size: 14px;
   font-weight: 500;
@@ -144,6 +146,8 @@
 
 .confirm-btn:disabled {
   opacity: 0.4;
+  background: #2c2c2a;
+  box-shadow: none;
   cursor: not-allowed;
 }
 

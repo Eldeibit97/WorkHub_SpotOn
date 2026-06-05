@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './EstacionamientoForms.css';
 import DateStrip from './DateStrip';
 import TimeSelector from './TimeSelector';
@@ -10,46 +10,58 @@ const ZONES = [
   { id: 3, nombre: "Zona 3", disponibles: 0, total: 0, colorClass: "dotZona3", badgeClass: "badgeZona3" },
 ];
 
+const startData = {
+  mail: '',
+  fechaReserva: new Date(),
+  horaInicio: '00:00',
+  horaSalida: '00:00',
+  fechaCreacion: new Date(),
+  tipoReserva: 'ESTACIONAMIENTO'
+};
+
 const EstacionamientoForms = () => {
-  const [reservationData, setReservationData] = useState({
-    mail: '',
-    fechaReserva: new Date(),
-    horaInicio: '00:00',
-    horaSalida: '00:00',
-    fechaCreacion: new Date(),
-    tipoReserva: 'ESTACIONAMIENTO',
-  });
+  const [reservationData, setReservationData] = useState(startData);
+  const [allowConfirm, setAllowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (patch) => {
-    setReservationData(prev => ({ ...prev , ...patch}));
+    setReservationData(prev => ({ ...prev, ...patch }));
   };
+
+  const emailRegex = /^[a-z0-9._]+@[a-z]+\.[a-z]{3,6}$/i;
+  useEffect(() => {
+    if (emailRegex.test(reservationData.mail) && reservationData.horaInicio !== '00:00' && reservationData.horaSalida !== '00:00') {
+      setAllowConfirm(true);
+    } else {
+      setAllowConfirm(false);
+    };
+  }, [reservationData.mail, reservationData.horaInicio, reservationData.horaSalida]);
 
   return (
     <div className="main-layout">
       <div className="panel panelLeft">
         <p className="panelTitle">Nueva reserva de estacionamiento</p>
- 
+
         <div className="fieldGroup">
           <label className="fieldLabel" htmlFor="fecha">
             Fecha de reserva
           </label>
           <p className="fieldSublabel">Selecciona el dia ha reservar</p>
           <div className="inputWrapper">
-            <DateStrip value={reservationData.fechaReserva} onChange={(date) => handleChange({fechaReserva: date})}></DateStrip>
+            <DateStrip value={reservationData.fechaReserva} onChange={(date) => handleChange({ fechaReserva: date })}></DateStrip>
           </div>
         </div>
- 
+
         <div className="fieldGroup">
           <label className="fieldLabel" htmlFor="hora">
             Tiempo de reserva
           </label>
           <p className="fieldSublabel">Hora estimada de llegada y salida</p>
           <div className="inputWrapper">
-            <TimeSelector horaInicio={reservationData.horaInicio} horaSalida={reservationData.horaSalida} onTimeChange={(inicio, fin) => handleChange({horaInicio: inicio, horaSalida: fin})}></TimeSelector>
+            <TimeSelector horaInicio={reservationData.horaInicio} horaSalida={reservationData.horaSalida} onTimeChange={(inicio, fin) => handleChange({ horaInicio: inicio, horaSalida: fin })}></TimeSelector>
           </div>
         </div>
- 
+
         <div className="fieldGroup">
           <label className="fieldLabel" htmlFor="correo">
             Correo del responsable
@@ -62,25 +74,24 @@ const EstacionamientoForms = () => {
               placeholder="ejemplo@correo.com"
               className="input inputWithIcon"
               value={reservationData.mail}
-              onChange={(e) => handleChange({mail: e.target.value})}
+              onChange={(e) => handleChange({ mail: e.target.value })}
             />
           </div>
         </div>
-          <button
-            className="confirm-btn"
-            onClick={""}
-            disabled={loading}
-          >
-            {loading ? (<p> Confirmando reserva... </p>) : (<p> Confirmar </p>)}
-          </button>
+        <button
+          className="confirm-btn"
+          disabled={loading || !allowConfirm}
+        >
+          {loading ? (<p> Confirmando reserva... </p>) : (<p> Confirmar </p>)}
+        </button>
       </div>
- 
+
       <div className="panel panelRight">
         <div>
           <p className="availabilityTitle">Disponibilidad de zonas</p>
           <p className="availabilitySubtitle">Actualizado en tiempo real</p>
         </div>
- 
+
         <div className="zonesCard">
           {ZONES.map((zona, idx) => (
             <div key={zona.id}>
@@ -97,7 +108,7 @@ const EstacionamientoForms = () => {
             </div>
           ))}
         </div>
- 
+
         <p className="legendNote">ℹ️ Disponibles / Total por zona</p>
       </div>
     </div>
