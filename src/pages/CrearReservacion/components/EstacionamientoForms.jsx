@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import './EstacionamientoForms.css';
 import DateStrip from './DateStrip';
 import TimeSelector from './TimeSelector';
@@ -78,12 +79,13 @@ const EstacionamientoForms = () => {
             />
           </div>
         </div>
-        <button
-          className="confirm-btn"
-          disabled={loading || !allowConfirm}
+        <NavLink
+          className={({ isActive }) =>
+            `confirm-btn ${(isActive) ? "active" : ""} ${(loading || !allowConfirm) ? "disabled" : ""}`}
+          to={'/Econfirmacion'}
         >
           {loading ? (<p> Confirmando reserva... </p>) : (<p> Confirmar </p>)}
-        </button>
+        </NavLink>
       </div>
 
       <div className="panel panelRight">

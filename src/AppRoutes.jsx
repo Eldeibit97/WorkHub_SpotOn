@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import CrearReservacion from './pages/CrearReservacion/CrearReservacion'
 import Confirmacion from './pages/Confirmacion/Confirmacion'
+import EstacionamientoConfirm from './pages/CrearReservacion/components/EstacionamientoConfirm'
 import Sugerencias from './pages/Sugerencias/Sugerencias'
 import Error from './pages/Error/Error'
 import LandingPage from './pages/LandingPage/LandingPage'
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="/sugerencias" element={<Sugerencias />} />
         <Route path="/reservar" element={<CrearReservacion />} />
         <Route path="/confirmacion" element={<Confirmacion />} />
+        <Route path='/Econfirmacion' element={<EstacionamientoConfirm/>}/>
         <Route path="/cancelar" element={<ManageReservationsPage />} />
         
         {/* RUTA ÚNICA PARA MODIFICAR WORKPLACE */}

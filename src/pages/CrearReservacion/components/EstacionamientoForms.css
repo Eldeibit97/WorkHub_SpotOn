@@ -127,6 +127,7 @@
   color: #ffffff;
   font-size: 14px;
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -140,15 +141,16 @@
   opacity: 0.85;
 }
 
-.confirm-btn:active {
+.confirm-btn.active {
   transform: scale(0.98);
 }
 
-.confirm-btn:disabled {
+.confirm-btn.disabled {
   opacity: 0.4;
   background: #2c2c2a;
   box-shadow: none;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 .availabilityTitle {
