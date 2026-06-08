@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
+import { usePurplePoints } from '../../../context/PurplePointsContext'
 import {
   reservarBatch,
   toBatchReservaItem,
@@ -97,6 +98,7 @@ function makeInitialStep(editMode) {
 
 export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
   const { user } = useAuth()
+  const { refreshBalance } = usePurplePoints()
   const navigate = useNavigate()
 
   const [editMode] = useState(readEditModeFromUrlOrStorage)
@@ -224,6 +226,8 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
                   estado: 'PENDIENTE',
                 })),
         })
+        // Refrescar saldo de PP (el backend otorga +50 PP / reserva workplace o +30 PP / estacionamiento)
+        refreshBalance().catch(() => {})
         goNext()
       } else {
         setSubmitError(

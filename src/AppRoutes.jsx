@@ -7,6 +7,8 @@ import Error from './pages/Error/Error'
 import LandingPage from './pages/LandingPage/LandingPage'
 import SignInPage from './pages/SignInPage/SignInPage'
 import ManageReservationsPage from './pages/ManageReservations/ManageReservationsPage'
+import MercadoPage from './pages/Mercado/MercadoPage'
+import PerfilPage from './pages/Perfil/PerfilPage'
 import AdminLayout from './pages/AdminDashboard/AdminLayout'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
@@ -40,7 +42,8 @@ const AppRoutes = () => {
         <Route path="/reservar" element={<CrearReservacion />} />
         <Route path="/confirmacion" element={<Confirmacion />} />
         <Route path="/cancelar" element={<ManageReservationsPage />} />
-        
+        <Route path="/mercado" element={<MercadoPage />} />
+        <Route path="/perfil" element={<PerfilPage />} />
         {/* RUTA ÚNICA PARA MODIFICAR WORKPLACE */}
         <Route path="/edit-workplace/:id" element={<EditarReservaWorkplace />} />
       </Route>
