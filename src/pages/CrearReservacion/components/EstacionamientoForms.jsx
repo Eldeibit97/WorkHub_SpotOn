@@ -17,6 +17,7 @@ const startData = {
   horaInicio: '00:00',
   horaSalida: '00:00',
   fechaCreacion: new Date(),
+  placa: '',
   tipoReserva: 'ESTACIONAMIENTO'
 };
 
@@ -30,13 +31,14 @@ const EstacionamientoForms = () => {
   };
 
   const emailRegex = /^[a-z0-9._]+@[a-z]+\.[a-z]{3,6}$/i;
+  const plaqueRegex = /^[A-Z]{3}-?[0-9]{3}-?[A-Z]$/;
   useEffect(() => {
-    if (emailRegex.test(reservationData.mail) && reservationData.horaInicio !== '00:00' && reservationData.horaSalida !== '00:00') {
+    if (emailRegex.test(reservationData.mail) && plaqueRegex.test(reservationData.placa) && reservationData.horaInicio !== '00:00' && reservationData.horaSalida !== '00:00') {
       setAllowConfirm(true);
     } else {
       setAllowConfirm(false);
     };
-  }, [reservationData.mail, reservationData.horaInicio, reservationData.horaSalida]);
+  }, [reservationData.mail, reservationData.placa, reservationData.horaInicio, reservationData.horaSalida]);
 
   return (
     <div className="main-layout">
@@ -52,7 +54,6 @@ const EstacionamientoForms = () => {
             <DateStrip value={reservationData.fechaReserva} onChange={(date) => handleChange({ fechaReserva: date })}></DateStrip>
           </div>
         </div>
-
         <div className="fieldGroup">
           <label className="fieldLabel" htmlFor="hora">
             Tiempo de reserva
@@ -68,17 +69,32 @@ const EstacionamientoForms = () => {
             Correo del responsable
           </label>
           <div className="inputWrapper">
-            <span className="inputIcon">✉️</span>
             <input
               id="correo"
               type="email"
               placeholder="ejemplo@correo.com"
-              className="input inputWithIcon"
+              className="input"
               value={reservationData.mail}
               onChange={(e) => handleChange({ mail: e.target.value })}
             />
           </div>
         </div>
+
+         <div className="fieldGroup">
+          <label className="fieldLabel" htmlFor="correo">
+            Placa del vehiculo
+          </label>
+          <div className="inputWrapper">
+            <input
+              id="placa"
+              placeholder="AAA-000-A"
+              className="input"
+              value={reservationData.placa}
+              onChange={(e) => handleChange({ placa: e.target.value })}
+            />
+          </div>
+        </div>
+
         <NavLink
           className={({ isActive }) =>
             `confirm-btn ${(isActive) ? "active" : ""} ${(loading || !allowConfirm) ? "disabled" : ""}`}

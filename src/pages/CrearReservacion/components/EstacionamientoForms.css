@@ -104,18 +104,6 @@
   align-items: center;
 }
 
-.inputIcon {
-  position: absolute;
-  left: 12px;
-  font-size: 15px;
-  color: #b4b2a9;
-  pointer-events: none;
-}
-
-.inputWithIcon {
-  padding-left: 36px;
-}
-
 .confirm-btn {
   margin-top: auto;
   height: 40px;
