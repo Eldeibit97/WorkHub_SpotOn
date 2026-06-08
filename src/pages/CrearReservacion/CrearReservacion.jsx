@@ -4,6 +4,7 @@ import ReservationWizard from './components/ReservationWizard';
 import EstacionamientoForms from './components/EstacionamientoForms';
 import workplaceImg from '../../assets/floors/workplace-view.png';
 import parkingImg from '../../assets/floors/parking-view.png';
+import { liberarEspaciosTemporal } from '../../api/reserve';
 
 const ReservationTypeSelector = ({ onSelect }) => (
   <div className="res-type-selector">
