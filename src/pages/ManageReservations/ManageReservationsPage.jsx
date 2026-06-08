@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { usePurplePoints } from '../../context/PurplePointsContext'
 import { apiFetch } from '../../api/client'
 import { getStoredToken } from '../../api/auth'
 import ReservationList from './components/ReservationList.jsx'
@@ -51,6 +52,7 @@ function toCardFormat(r) {
 
 export default function ManageReservationsPage() {
   const { user } = useAuth()
+  const { refreshBalance } = usePurplePoints()
   const userId = user?.sub
 
   const [reservations, setReservations] = useState([])
@@ -130,6 +132,8 @@ export default function ManageReservationsPage() {
         setReservations(prev =>
           prev.map(r => r.id === id ? { ...r, estado_reserva: 'COMPLETADO' } : r)
         )
+        // Refrescar saldo de PP (el backend otorga bonus al completar la visita)
+        refreshBalance().catch(() => {})
       } else {
         const data = await res.json()
         setError(data.message || 'No se pudo hacer check-out')
