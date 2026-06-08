@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { PurplePointsProvider } from './context/PurplePointsContext'
 import AppRoutes from './AppRoutes'
 
 function App() {
@@ -8,11 +9,13 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <AppRoutes />
+          <PurplePointsProvider>
+            <AppRoutes />
+          </PurplePointsProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   )
 }
 
-export default App;
+export default App

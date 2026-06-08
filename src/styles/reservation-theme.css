@@ -1,3 +1,8 @@
+@import './themes/dracula.css';
+@import './themes/neon.css';
+@import './themes/abyssal.css';
+@import './themes/amethyst.css';
+
 /* Shared tokens: reservation flow, cancelación, shell compartido */
 :root {
   --acn-purple: #a100ff;

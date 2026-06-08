@@ -330,6 +330,28 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
+/* Neutral nav links inside the dropdown (non-destructive actions) */
+.admin-profile-dropdown__nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  text-align: left;
+}
+
+.admin-profile-dropdown__nav-link:hover {
+  background: var(--accent-purple-05, rgba(161, 0, 255, 0.08));
+  color: var(--res-purple);
+}
+
 @media (max-width: 720px) {
   .admin-topbar__inner {
     flex-wrap: wrap;
@@ -341,4 +363,93 @@
     width: 100%;
     justify-content: flex-start;
   }
+}
+
+/* ─── Purple Points chip (topbar) ─────────────────────────────────────── */
+.pp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--accent-purple-05, rgba(161, 0, 255, 0.12));
+  border: 1px solid var(--res-border-soft, rgba(168, 85, 247, 0.22));
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem 0.3rem 0.5rem;
+  cursor: default;
+  user-select: none;
+}
+
+.pp-chip__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--acn-gradient);
+  flex-shrink: 0;
+}
+
+.pp-chip__amount {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.pp-chip__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--res-purple);
+  letter-spacing: 0.05em;
+}
+
+/* ─── Avatar image variant ─────────────────────────────────────────────── */
+.admin-topbar__avatar--img {
+  object-fit: cover;
+  border: 2px solid var(--border-subtle);
+}
+
+/* ─── Dropdown: banner + avatar overlay ────────────────────────────────── */
+.pp-dropdown__banner {
+  height: 80px;
+  background: var(--acn-gradient);
+  background-size: cover;
+  background-position: center;
+  border-radius: 0;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0;
+  overflow: visible;
+  margin: -1px -1px 0;
+}
+
+.pp-dropdown__avatar-img,
+.pp-dropdown__avatar-initials {
+  position: absolute;
+  bottom: -22px;
+  left: 1rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+}
+
+.pp-dropdown__avatar-img {
+  object-fit: cover;
+}
+
+.pp-dropdown__avatar-initials {
+  background: var(--acn-gradient);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ─── Dropdown: PP balance row ──────────────────────────────────────────── */
+.pp-dropdown__balance {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem 0.35rem;
+  font-size: 0.88rem;
 }
