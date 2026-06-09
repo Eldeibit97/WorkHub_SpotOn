@@ -21,7 +21,7 @@ const startData = {
   tipoReserva: 'ESTACIONAMIENTO'
 };
 
-const EstacionamientoForms = () => {
+const EstacionamientoForms = ({onConfirm}) => {
   const [reservationData, setReservationData] = useState(startData);
   const [allowConfirm, setAllowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -95,13 +95,13 @@ const EstacionamientoForms = () => {
           </div>
         </div>
 
-        <NavLink
-          className={({ isActive }) =>
-            `confirm-btn ${(isActive) ? "active" : ""} ${(loading || !allowConfirm) ? "disabled" : ""}`}
-          to={'/Econfirmacion'}
+        <button
+          className='confirm-btn'
+          onClick={() => onConfirm(reservationData)}
+          disabled={loading || !allowConfirm}
         >
           {loading ? (<p> Confirmando reserva... </p>) : (<p> Confirmar </p>)}
-        </NavLink>
+        </button>
       </div>
 
       <div className="panel panelRight">
@@ -126,7 +126,6 @@ const EstacionamientoForms = () => {
             </div>
           ))}
         </div>
-
         <p className="legendNote">ℹ️ Disponibles / Total por zona</p>
       </div>
     </div>

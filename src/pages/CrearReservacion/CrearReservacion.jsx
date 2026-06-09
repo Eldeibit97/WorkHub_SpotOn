@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './CrearReservacion.css';
 import ReservationWizard from './components/ReservationWizard';
-import EstacionamientoForms from './components/EstacionamientoForms';
+import EstacionamientoWizard from './components/EstacionamientoWizard';
 import workplaceImg from '../../assets/floors/workplace-view.png';
 import parkingImg from '../../assets/floors/parking-view.png';
 
@@ -74,7 +74,7 @@ const CrearReservacion = () => {
           <button className="res-back-btn" onClick={() => setView('selector')}>
             ← Volver
           </button>
-          <EstacionamientoForms/>
+          <EstacionamientoWizard/>
         </>
       )}
     </div>
