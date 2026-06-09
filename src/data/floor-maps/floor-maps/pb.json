@@ -1,0 +1,758 @@
+{
+  "zonaId": 1,
+  "codigoZona": "PB",
+  "nombre": "Planta Baja",
+  "edificio": "ATC Monterrey",
+  "viewBox": "0 0 1440 810",
+  "background": "/mapas/piso_PB.svg",
+  "tipoLabels": {
+    "1": "Estacion de trabajo",
+    "2": "Sala de juntas",
+    "5": "Area especial"
+  },
+  "spaces": [
+    {
+      "id_espacio": 1778101369892,
+      "codigo": "PB001",
+      "nombre": "Estación PB001",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 511.9,
+      "y": 357.4,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101454405,
+      "codigo": "PB002",
+      "nombre": "Estación PB002",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 527,
+      "y": 356.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101474240,
+      "codigo": "PB003",
+      "nombre": "Estación PB003",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 542.3,
+      "y": 356.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101516776,
+      "codigo": "PB004",
+      "nombre": "Estación PB004",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 557.5,
+      "y": 356.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101535657,
+      "codigo": "PB005",
+      "nombre": "Estación PB005",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 572.7,
+      "y": 356.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101552657,
+      "codigo": "PB006",
+      "nombre": "Estación PB006",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 588.4,
+      "y": 356.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101580693,
+      "codigo": "PB007",
+      "nombre": "Estación PB007",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 603.3,
+      "y": 356.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101608438,
+      "codigo": "PB008",
+      "nombre": "Estación PB008",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 527.1,
+      "y": 378.2,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101626264,
+      "codigo": "PB009",
+      "nombre": "Estación PB009",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 542.5,
+      "y": 379,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101640094,
+      "codigo": "Estación PB010",
+      "nombre": "Nuevo asiento",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 557.4,
+      "y": 379.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101699667,
+      "codigo": "PB011",
+      "nombre": "Estación PB011",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 572.6,
+      "y": 379.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101727274,
+      "codigo": "PB012",
+      "nombre": "Estación PB012",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 588.1,
+      "y": 379.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101779209,
+      "codigo": "PBSJ-076",
+      "nombre": "FUNDIDORA",
+      "tipo": 2,
+      "shape": "rect",
+      "x": 674.3,
+      "y": 417.4,
+      "w": 46.7,
+      "h": 36.5
+    },
+    {
+      "id_espacio": 1778101930166,
+      "codigo": "PB017",
+      "nombre": "Estación PB017",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 587.9,
+      "y": 401.4,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778101964682,
+      "codigo": "PBSJ-075",
+      "nombre": "MONTERREY",
+      "tipo": 2,
+      "shape": "rect",
+      "x": 842.3,
+      "y": 344.3,
+      "w": 68.8,
+      "h": 66.1
+    },
+    {
+      "id_espacio": 1778102316399,
+      "codigo": "PB016",
+      "nombre": "Estación PB016",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 572.4,
+      "y": 401.4,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102402065,
+      "codigo": "PB015",
+      "nombre": "Estación PB015",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 557.5,
+      "y": 401.7,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102415934,
+      "codigo": "PB014",
+      "nombre": "Estación PB014",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 542.5,
+      "y": 400.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102432004,
+      "codigo": "PB013",
+      "nombre": "Estación PB013",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 527.1,
+      "y": 400.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102457982,
+      "codigo": "PB018",
+      "nombre": "Estación PB018",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 554,
+      "y": 429.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102471763,
+      "codigo": "PB019",
+      "nombre": "Estación PB019",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 569.2,
+      "y": 429.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102506069,
+      "codigo": "PB020",
+      "nombre": "Estación PB020",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 584.5,
+      "y": 430.5,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102600465,
+      "codigo": "PB021",
+      "nombre": "Estación PB021",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 554.3,
+      "y": 451.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102622244,
+      "codigo": "PB022",
+      "nombre": "Estación PB022",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 569.1,
+      "y": 452.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102634726,
+      "codigo": "PB023",
+      "nombre": "Estación PB023",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 584.7,
+      "y": 452.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102650536,
+      "codigo": "PB024",
+      "nombre": "Estación PB024",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 581,
+      "y": 476.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102699886,
+      "codigo": "PB025",
+      "nombre": "Estación PB025",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 596.4,
+      "y": 476.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102758912,
+      "codigo": "PB026",
+      "nombre": "Estación PB026",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 611.3,
+      "y": 476.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102778339,
+      "codigo": "PB027",
+      "nombre": "Estación PB027",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 627.1,
+      "y": 476.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102796425,
+      "codigo": "PB040",
+      "nombre": "Estación PB040",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 581.2,
+      "y": 498.2,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102856736,
+      "codigo": "PB041",
+      "nombre": "Estación PB041",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 596.4,
+      "y": 497.7,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102872755,
+      "codigo": "PB042",
+      "nombre": "Estación PB042",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 611.9,
+      "y": 498.2,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102887641,
+      "codigo": "PB043",
+      "nombre": "Estación PB043",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 627.3,
+      "y": 497.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102923818,
+      "codigo": "PBSJ-077",
+      "nombre": "LA HUASTECA",
+      "tipo": 2,
+      "shape": "rect",
+      "x": 776.9,
+      "y": 416.9,
+      "w": 62.7,
+      "h": 37.6
+    },
+    {
+      "id_espacio": 1778102966868,
+      "codigo": "PB028",
+      "nombre": "Estación PB028",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 654.8,
+      "y": 476.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778102988254,
+      "codigo": "PB029",
+      "nombre": "Estación PB029",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 670.3,
+      "y": 476.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103015168,
+      "codigo": "PB030",
+      "nombre": "Estación PB030",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 686,
+      "y": 476.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103125169,
+      "codigo": "PB031",
+      "nombre": "Estación PB031",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 700.7,
+      "y": 476.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103147285,
+      "codigo": "PB032",
+      "nombre": "Estación PB032",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 731.6,
+      "y": 476.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103162877,
+      "codigo": "PB033",
+      "nombre": "Estación PB033",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 746.8,
+      "y": 476.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103183574,
+      "codigo": "PB034",
+      "nombre": "Estación PB034",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 761.7,
+      "y": 476.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103198752,
+      "codigo": "PB035",
+      "nombre": "Estación PB035",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 777.5,
+      "y": 476.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103217976,
+      "codigo": "PB036",
+      "nombre": "Estación PB036",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 804.9,
+      "y": 476.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103263060,
+      "codigo": "PB037",
+      "nombre": "Estación PB037",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 820.4,
+      "y": 476.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103275659,
+      "codigo": "PB038",
+      "nombre": "Estación PB038",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 835.3,
+      "y": 477.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103295226,
+      "codigo": "PB039",
+      "nombre": "Estación PB039",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 850.8,
+      "y": 476.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103311234,
+      "codigo": "PB044",
+      "nombre": "Estación PB044",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 654.6,
+      "y": 497.9,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103327089,
+      "codigo": "PB045",
+      "nombre": "Estación PB045",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 670.4,
+      "y": 498.5,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103341839,
+      "codigo": "PB046",
+      "nombre": "Estación PB046",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 685.5,
+      "y": 498.2,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103394299,
+      "codigo": "PB047",
+      "nombre": "Estación PB047",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 700.6,
+      "y": 497.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103408873,
+      "codigo": "PB048",
+      "nombre": "Estación PB048",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 731.4,
+      "y": 497.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103424902,
+      "codigo": "PB049",
+      "nombre": "Estación PB049",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 746.6,
+      "y": 497.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103442338,
+      "codigo": "PB050",
+      "nombre": "Estación PB050",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 761.9,
+      "y": 497.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103457075,
+      "codigo": "PB051",
+      "nombre": "Estación PB051",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 777.1,
+      "y": 498.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103476477,
+      "codigo": "PB052",
+      "nombre": "Estación PB052",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 804.9,
+      "y": 497.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103502446,
+      "codigo": "PB053",
+      "nombre": "Estación PB053",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 820.6,
+      "y": 497.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103519101,
+      "codigo": "PB054",
+      "nombre": "Estación PB054",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 835.9,
+      "y": 497.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103541020,
+      "codigo": "PB055",
+      "nombre": "Estación PB055",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 851.1,
+      "y": 497.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103557557,
+      "codigo": "PB056",
+      "nombre": "Estación PB056",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 654.6,
+      "y": 521.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103573959,
+      "codigo": "PB057",
+      "nombre": "Estación PB057",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 669.9,
+      "y": 520.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103596682,
+      "codigo": "PB058",
+      "nombre": "Estación PB058",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 685.4,
+      "y": 520.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103611989,
+      "codigo": "PB059",
+      "nombre": "Estación PB059",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 700.6,
+      "y": 520.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103639959,
+      "codigo": "PB060",
+      "nombre": "Estación PB060",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 731.6,
+      "y": 521.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103661658,
+      "codigo": "PB061",
+      "nombre": "Estación PB061",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 746.9,
+      "y": 521.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103680308,
+      "codigo": "PB062",
+      "nombre": "Estación PB062",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 761.9,
+      "y": 520.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103699015,
+      "codigo": "PB063",
+      "nombre": "Estación PB063",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 776.9,
+      "y": 521.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103718152,
+      "codigo": "PB064",
+      "nombre": "Estación PB064",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 654.9,
+      "y": 541.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103732838,
+      "codigo": "PB065",
+      "nombre": "Estación PB065",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 669.9,
+      "y": 541.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103754315,
+      "codigo": "PB066",
+      "nombre": "Estación PB066",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 685.6,
+      "y": 541.8,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103783559,
+      "codigo": "PB067",
+      "nombre": "Estación PB067",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 700.9,
+      "y": 542.1,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103802319,
+      "codigo": "PB068",
+      "nombre": "Estación PB068",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 731.6,
+      "y": 541.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103819544,
+      "codigo": "PB069",
+      "nombre": "Estación PB069",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 746.6,
+      "y": 541.6,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103834659,
+      "codigo": "PB070",
+      "nombre": "Estación PB070",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 762.1,
+      "y": 541.3,
+      "r": 3
+    },
+    {
+      "id_espacio": 1778103851699,
+      "codigo": "PB071",
+      "nombre": "Estación PB071",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 777.1,
+      "y": 541.8,
+      "r": 3
+    }
+  ]
+}

@@ -3,18 +3,6 @@ import { getStoredToken } from './auth'
 import { isPlausibleDbEspacioId } from './reserve'
 import { normalizeTipoEspacio } from '../lib/spaceTipo'
 
-import pbMap from '../data/floor-maps/pb.json'
-import mzMap from '../data/floor-maps/mz.json'
-import p3Map from '../data/floor-maps/p3.json'
-import p9Map from '../data/floor-maps/p9.json'
-
-const LOCAL_MAPS = {
-  1: pbMap,
-  2: mzMap,
-  3: p3Map,
-  4: p9Map,
-}
-
 /** Planos en `public/mapas/` + `import.meta.env.BASE_URL` (subcarpeta en deploy). */
 function resolveFloorBackgroundHref(floorMap) {
   if (!floorMap?.background || typeof floorMap.background !== 'string') return floorMap
@@ -205,27 +193,18 @@ function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   return { ...local, spaces: mergedSpaces }
 }
 
-function normalizeZonaRow(zonaRow, local) {
-  if (!zonaRow) {
-    return {
-      codigoZona: local.codigoZona,
-      nombre: local.nombre,
-      edificio: local.edificio,
-      viewBox: local.viewBox,
-      background: local.background,
-    }
-  }
+function normalizeZonaRow(zonaRow) {
   return {
     codigoZona:
       zonaRow.codigo_zona ??
       zonaRow.codigoZona ??
       zonaRow.nombre_zona ??
       zonaRow.nombreZona ??
-      local.codigoZona,
-    nombre: zonaRow.descripcion ?? zonaRow.nombre ?? local.nombre,
-    edificio: zonaRow.edificio ?? local.edificio,
-    viewBox: zonaRow.view_box ?? zonaRow.viewBox ?? local.viewBox,
-    background: zonaRow.background ?? local.background,
+      null,
+    nombre: zonaRow.descripcion ?? zonaRow.nombre ?? null,
+    edificio: zonaRow.edificio ?? null,
+    viewBox: zonaRow.view_box ?? zonaRow.viewBox ?? null,
+    background: zonaRow.background ?? null,
   }
 }
 
@@ -294,8 +273,8 @@ export function mapApiSpaceToEditor(sp) {
  * @param {Array<object>|null} apiSpaces
  * @param {object} local
  */
-function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local) {
-  const meta = normalizeZonaRow(zonaRow, local)
+function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces) {
+  const meta = normalizeZonaRow(zonaRow)
   let spaces
   console.log("API SPACES", apiSpaces)
  
@@ -336,17 +315,11 @@ export async function getZonas() {
     const res = await apiFetch('/api/zonas', { headers: authHeaders() })
     if (res.ok) {
       const data = await safeJson(res)
-      if (Array.isArray(data) && data.length > 0) return data
+      if (Array.isArray(data)) return data
     }
   } catch {
-    // fall through to local fallback
+    console.error('Error fetching zonas')
   }
-  return Object.values(LOCAL_MAPS).map((m) => ({
-    id_zona: m.zonaId,
-    nombre_zona: m.codigoZona,
-    descripcion: m.nombre,
-    edificio: m.edificio,
-  }))
 }
 
 /**
@@ -358,8 +331,6 @@ export async function getZonas() {
  * @param {number} zonaId
  */
 export async function getFloorMap(zonaId) {
-  const local = LOCAL_MAPS[zonaId]
-  if (!local) throw new Error(`No floor map for zona ${zonaId}`)
 
   let zonaRow = null
   let apiSpaces = null
@@ -367,7 +338,7 @@ export async function getFloorMap(zonaId) {
   try {
     zonaRow = await getZonaById(zonaId)
   } catch {
-    // fall through
+    console.error(`Error fetching zona ${zonaId}`)
   }
 
   try {
@@ -378,10 +349,10 @@ export async function getFloorMap(zonaId) {
       apiSpaces = extractSpacesArray(data)
     }
   } catch {
-    // fall through
+    console.error(`Error fetching spaces for zona ${zonaId}`)
   }
 
-  return buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local)
+  return buildFloorMapFromSources(zonaId, zonaRow, apiSpaces)
 }
 
 /**
@@ -409,12 +380,6 @@ export async function getAvailability({ zonaId, fecha, horaInicio, horaFin }) {
       if (data && typeof data === 'object') return data
     }
   } catch {
-    // fall through
+    console.error('Error fetching space availability')
   }
-  // Fallback: assume everything is available so the UI works without backend.
-  const local = LOCAL_MAPS[zonaId]
-  if (!local) return {}
-  const map = {}
-  for (const s of local.spaces) map[s.id_espacio] = 'DISPONIBLE'
-  return map
 }

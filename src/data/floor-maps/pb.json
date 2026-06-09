@@ -1,0 +1,13 @@
+{
+  "zonaId": 1,
+  "codigoZona": "PB",
+  "nombre": "Planta Baja",
+  "edificio": "ATC Monterrey",
+  "viewBox": "0 0 1440 810",
+  "background": "/mapas/piso_PB.svg",
+  "tipoLabels": {
+    "1": "Estacion de trabajo",
+    "2": "Sala de juntas",
+    "5": "Area especial"
+  }
+}
