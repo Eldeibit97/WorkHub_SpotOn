@@ -297,18 +297,11 @@ export function mapApiSpaceToEditor(sp) {
 function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local) {
   const meta = normalizeZonaRow(zonaRow, local)
   let spaces
-
-  if (Array.isArray(apiSpaces) && apiSpaces.length > 0) {
-    const fromApi = apiSpaces.map(mapApiSpaceToEditor)
-    const apiHasGeometry = fromApi.some(spaceHasGeometry)
-    if (apiHasGeometry) {
-      spaces = fromApi.filter((s) => s.codigo || s.nombre)
-    } else {
-      spaces = mergeLocalFloorMapWithApiSpaces(local, apiSpaces).spaces
-    }
-  } else {
-    spaces = local.spaces.map((s) => ({ ...s }))
-  }
+  console.log("API SPACES", apiSpaces)
+ 
+  const fromApi = apiSpaces.map(mapApiSpaceToEditor)
+  const apiHasGeometry = fromApi.some(spaceHasGeometry)
+  spaces = fromApi.filter((s) => s.codigo || s.nombre)
 
   const partitioned = partitionExcludedSpaces(spaces)
 
@@ -381,6 +374,7 @@ export async function getFloorMap(zonaId) {
     const res = await apiFetch(`/api/spaces?zonaId=${zonaId}`, { headers: authHeaders() })
     if (res.ok) {
       const data = await safeJson(res)
+      console.log("DATA",data)
       apiSpaces = extractSpacesArray(data)
     }
   } catch {
