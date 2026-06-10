@@ -79,25 +79,73 @@ export default function ImportCsvModal({ onClose, onImport, loading }) {
     }
   }
 
-  const previewRows = useMemo(() => rows.slice(0, 8), [rows])
+  const previewRows = useMemo(() => rows, [rows])
 
   return (
     <div className="admin-modal-backdrop" role="presentation">
-      <div className="admin-modal admin-modal--wide" role="dialog" aria-modal="true">
+      <div className="admin-modal admin-modal--wide admin-modal--scrollable" role="dialog" aria-modal="true">
         <button className="admin-modal-close" onClick={onClose} aria-label="Cerrar importación">
           x
         </button>
-        <h3>Import Data</h3>
-        <p className="admin-helper-text">
-          Carga un CSV de usuarios para previsualizar antes de importar.
-        </p>
+        <div className="admin-modal__body">
+          <h3>Import Data</h3>
+          <p className="admin-helper-text">
+            Carga un CSV de usuarios para previsualizar antes de importar.
+          </p>
+          <div className="admin-csv-format">
+          <p className="admin-csv-format__title">Formato requerido del CSV</p>
+          <p className="admin-helper-text admin-csv-format__intro">
+            Primera fila: encabezados exactos (minúsculas, separados por coma). Si el correo ya
+            existe, se actualiza el usuario; si no, se crea uno nuevo.
+          </p>
+          <div className="admin-table-scroll">
+            <table className="admin-table admin-table--compact admin-csv-format__table">
+              <thead>
+                <tr>
+                  <th>Columna</th>
+                  <th>Obligatoria</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>nombre</code></td>
+                  <td>Sí</td>
+                  <td>Nombre del usuario</td>
+                </tr>
+                <tr>
+                  <td><code>apellido</code></td>
+                  <td>Sí</td>
+                  <td>Apellido del usuario</td>
+                </tr>
+                <tr>
+                  <td><code>correo_institucional</code></td>
+                  <td>Sí</td>
+                  <td>Correo institucional (se guarda en minúsculas)</td>
+                </tr>
+                <tr>
+                  <td><code>rol</code></td>
+                  <td>Sí</td>
+                  <td>
+                    Rol del usuario. Valores válidos: <code>admin</code>, <code>employee</code>
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>password</code></td>
+                  <td>No</td>
+                  <td>Contraseña en texto plano (mínimo 8 caracteres)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <input className="admin-input" type="file" accept=".csv,text/csv" onChange={onFileChange} />
         {fileName && <p className="admin-helper-text">Archivo: {fileName}</p>}
         {error && <p className="admin-error">{error}</p>}
 
         {!!previewRows.length && (
-          <div className="admin-table-scroll">
+          <div className="admin-table-scroll admin-table-scroll--preview">
             <table className="admin-table admin-table--compact">
               <thead>
                 <tr>
@@ -122,6 +170,7 @@ export default function ImportCsvModal({ onClose, onImport, loading }) {
             </table>
           </div>
         )}
+        </div>
 
         <div className="admin-modal-actions">
           <button className="admin-btn admin-btn--secondary" onClick={onClose} disabled={loading}>
