@@ -46,7 +46,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.72rem;
   font-weight: 900;
   flex-shrink: 0;
@@ -167,11 +167,11 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--on-accent);
   z-index: 2;
 }
 
-.mercado-card__badge--equipped { background: #22c55e; }
+.mercado-card__badge--equipped { background: var(--success); }
 .mercado-card__badge--owned { background: var(--res-purple); }
 
 /* ─── Avatar / banner preview ─── */
@@ -206,7 +206,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--on-accent);
   font-size: 1.6rem;
   font-weight: 700;
 }
@@ -286,7 +286,7 @@
 
 .mercado-card__btn--buy {
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .mercado-card__btn--buy:hover:not(:disabled) {
@@ -301,9 +301,9 @@
 }
 
 .mercado-card__btn--equipped {
-  background: #22c55e22;
-  color: #22c55e;
-  border: 1px solid #22c55e44;
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success-border);
   cursor: default;
 }
 
@@ -317,8 +317,8 @@
 }
 
 .mercado-card__btn--unequip:hover {
-  color: #ef4444;
-  border-color: #ef444444;
+  color: var(--danger);
+  border-color: var(--danger-border);
 }
 
 /* ─── Insufficient funds toast ─── */
@@ -327,8 +327,8 @@
   bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  background: #ef4444;
-  color: #fff;
+  background: var(--danger);
+  color: var(--on-accent);
   border-radius: 12px;
   padding: 0.65rem 1.5rem;
   font-size: 0.9rem;
@@ -411,7 +411,7 @@
   border-radius: 10px;
   border: none;
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 700;
   cursor: pointer;
 }

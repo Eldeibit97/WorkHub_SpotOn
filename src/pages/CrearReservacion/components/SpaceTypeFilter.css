@@ -3,6 +3,6 @@
 .space-filter__chips { display: flex; flex-wrap: wrap; gap: 0.35rem; flex: 1; }
 .space-filter__chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.28rem 0.6rem; border-radius: 999px; border: 1.5px solid var(--border-subtle); background: var(--white); color: var(--text-secondary); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: border-color 120ms, background 120ms; }
 .space-filter__chip:hover:not(.space-filter__chip--active) { border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.06); }
-.space-filter__chip--active { background: #a855f7; border-color: #a855f7; color: #fff; }
+.space-filter__chip--active { background: var(--res-purple); border-color: var(--res-purple); color: var(--on-accent); }
 .space-filter__chip-count { padding: 0 0.3rem; border-radius: 999px; background: var(--surface); margin-left: 0.2rem; font-size: 0.65rem; }
-.space-filter__clear { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.28rem 0.65rem; border-radius: 999px; border: 1.5px solid rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.06); color: #ef4444; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+.space-filter__clear { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.28rem 0.65rem; border-radius: 999px; border: 1.5px solid var(--danger-border); background: var(--danger-bg); color: var(--danger); font-size: 0.75rem; font-weight: 700; cursor: pointer; }

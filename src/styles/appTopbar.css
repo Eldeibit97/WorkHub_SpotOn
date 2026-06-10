@@ -100,7 +100,7 @@
   align-items: center;
   justify-content: center;
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -157,12 +157,12 @@
 }
 
 .admin-icon-btn--danger {
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .admin-icon-btn--danger:hover {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .admin-role-pill {
@@ -176,12 +176,12 @@
 
 .admin-role-pill--admin {
   background: rgba(168, 85, 247, 0.18);
-  color: #c084fc;
+  color: var(--acn-purple-light);
 }
 
 .admin-role-pill--employee {
-  background: rgba(16, 185, 129, 0.18);
-  color: #34d399;
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .admin-role-pill--neutral {
@@ -191,10 +191,6 @@
 
 [data-theme='light'] .admin-role-pill--admin {
   color: #7c3aed;
-}
-
-[data-theme='light'] .admin-role-pill--employee {
-  color: #047857;
 }
 
 .admin-topbar__profile-wrapper {
@@ -266,7 +262,7 @@
   height: 46px;
   border-radius: 50%;
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 700;
   font-size: 1rem;
   display: inline-flex;
@@ -318,7 +314,7 @@
   padding: 0.75rem 1rem;
   border: none;
   background: transparent;
-  color: #ef4444;
+  color: var(--danger);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -327,7 +323,7 @@
 }
 
 .admin-profile-dropdown__logout:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--danger-bg);
 }
 
 /* Neutral nav links inside the dropdown (non-destructive actions) */
@@ -420,6 +416,12 @@
   margin: -1px -1px 0;
 }
 
+/* Cuando la cabecera va tras el banner (UserTopBar), el avatar superpuesto sobresale
+   ~22px; damos espacio arriba para que el nombre no quede debajo del avatar. */
+.pp-dropdown__banner + .admin-profile-dropdown__header {
+  padding-top: 2rem;
+}
+
 .pp-dropdown__avatar-img,
 .pp-dropdown__avatar-initials {
   position: absolute;
@@ -437,7 +439,7 @@
 
 .pp-dropdown__avatar-initials {
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;

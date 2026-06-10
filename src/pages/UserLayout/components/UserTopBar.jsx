@@ -183,7 +183,7 @@ export default function UserTopBar() {
                   )}
                 </div>
 
-                <div className="admin-profile-dropdown__header" style={{ paddingTop: '0.65rem' }}>
+                <div className="admin-profile-dropdown__header">
                   <div className="admin-profile-dropdown__info">
                     <span className="admin-profile-dropdown__name">{fullName}</span>
                     {email && (
