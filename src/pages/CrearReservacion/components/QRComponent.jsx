@@ -4,7 +4,7 @@ import './QRComponent.css'
 
 const QRComponent = ({reservationId}) => {
   // Generar URL que incluya el login + reservaId como parámetro
-  const loginUrl = `${window.location.origin}/login/reservationCheck?reservaId=${reservationId}`
+  const loginUrl = `${window.location.origin}/login/detalles/${reservationId}`
   
   return (
     <div className='QRContainer'>
