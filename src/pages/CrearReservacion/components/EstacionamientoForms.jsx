@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { toMinutes } from '../../../lib/dateFormat';
 import './EstacionamientoForms.css';
 import DateStrip from './DateStrip';
 import TimeSelector from './TimeSelector';
@@ -13,32 +14,40 @@ const ZONES = [
 
 const startData = {
   mail: '',
+  idEspacio: 498,
   fechaReserva: new Date(),
   horaInicio: '00:00',
   horaSalida: '00:00',
   fechaCreacion: new Date(),
-  placa: '',
   tipoReserva: 'ESTACIONAMIENTO'
 };
 
-const EstacionamientoForms = ({onConfirm}) => {
+const EstacionamientoForms = ({ onConfirm }) => {
   const [reservationData, setReservationData] = useState(startData);
   const [allowConfirm, setAllowConfirm] = useState(false);
+  const [timesError, setTimesError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (patch) => {
     setReservationData(prev => ({ ...prev, ...patch }));
   };
 
-  const emailRegex = /^[a-z0-9._]+@[a-z]+\.[a-z]{3,6}$/i;
-  const plaqueRegex = /^[A-Z]{3}-?[0-9]{3}-?[A-Z]$/;
   useEffect(() => {
-    if (emailRegex.test(reservationData.mail) && plaqueRegex.test(reservationData.placa) && reservationData.horaInicio !== '00:00' && reservationData.horaSalida !== '00:00') {
+    if (toMinutes(reservationData.horaInicio) >= toMinutes(reservationData.horaSalida) && !(reservationData.horaInicio === '00:00' && reservationData.horaSalida === '00:00')) {
+      setTimesError(true);
+      return;
+    }
+    setTimesError(false);
+  }, [reservationData.horaInicio, reservationData.horaSalida]);
+
+  const emailRegex = /^[a-z0-9._]+@[a-z]+\.[a-z]{3,6}$/i;
+  useEffect(() => {
+    if (emailRegex.test(reservationData.mail) && (reservationData.horaInicio !== '00:00' && reservationData.horaSalida !== '00:00')) {
       setAllowConfirm(true);
     } else {
       setAllowConfirm(false);
     };
-  }, [reservationData.mail, reservationData.placa, reservationData.horaInicio, reservationData.horaSalida]);
+  }, [reservationData.mail, reservationData.horaInicio, reservationData.horaSalida]);
 
   return (
     <div className="main-layout">
@@ -58,6 +67,7 @@ const EstacionamientoForms = ({onConfirm}) => {
           <label className="fieldLabel" htmlFor="hora">
             Tiempo de reserva
           </label>
+          {timesError ? <p className='error-text'> La hora de llegada a la reserva no puede ser antes o igual a la hora de salida</p> : ''}
           <p className="fieldSublabel">Hora estimada de llegada y salida</p>
           <div className="inputWrapper">
             <TimeSelector horaInicio={reservationData.horaInicio} horaSalida={reservationData.horaSalida} onTimeChange={(inicio, fin) => handleChange({ horaInicio: inicio, horaSalida: fin })}></TimeSelector>
@@ -76,21 +86,6 @@ const EstacionamientoForms = ({onConfirm}) => {
               className="input"
               value={reservationData.mail}
               onChange={(e) => handleChange({ mail: e.target.value })}
-            />
-          </div>
-        </div>
-
-         <div className="fieldGroup">
-          <label className="fieldLabel" htmlFor="correo">
-            Placa del vehiculo
-          </label>
-          <div className="inputWrapper">
-            <input
-              id="placa"
-              placeholder="AAA-000-A"
-              className="input"
-              value={reservationData.placa}
-              onChange={(e) => handleChange({ placa: e.target.value })}
             />
           </div>
         </div>

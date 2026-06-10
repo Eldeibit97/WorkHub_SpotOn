@@ -68,3 +68,21 @@ export function formatDateChipEs(date) {
   const d = date instanceof Date ? date : new Date(date)
   return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })
 }
+
+export function normalizeTimeLabel(t) {
+  if (t == null) return '';
+  if (typeof t !== 'string' && typeof t !== 'number') return '';
+  const trimmed = String(t).trim();
+  const parts = trimmed.split(':');
+  if (parts.length < 2) return '';
+  const h = String(parseInt(parts[0], 10)).padStart(2, '0');
+  const m = String(parseInt(parts[1], 10)).padStart(2, '0');
+  return `${h}:${m}`;
+}
+
+export function toMinutes(timeLabel) {
+  const n = normalizeTimeLabel(timeLabel);
+  if (!n) return NaN;
+  const [h, m] = n.split(':').map((x) => parseInt(x, 10));
+  return h * 60 + m;
+}

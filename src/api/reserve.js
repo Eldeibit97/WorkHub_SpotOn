@@ -93,20 +93,23 @@ export function parseBatchCreateResponse(data, fallbackItems = []) {
 }
 
 /**
- * @param {Object} datosReserva - Datos de la reserva (legacy /api/reservando)
+ * POST /api/reservarEstacionamiento — cuerpo `{ datosReserva: [ ... ] }` (array no vacío).
+ *
+ * @param {Array<object>} items - Objetos con campos camelCase o snake_case.
+ * @returns {Promise<{ success :boolean, message:text, data:any }>}
  */
-export async function reservar(datosReserva) {
+export async function reservarEstacionamiento(datosReserva) {
   try {
-    const res = await apiFetch('/api/reservando', { method: 'POST', body: datosReserva });
+    const res = await apiFetch('/api/reservarEstacionamiento', { method: 'POST', headers: authHeaders(), body: datosReserva });
     const respuesta = await res.text();
-    let mensaje = {};
-    if (respuesta) {
-      mensaje = JSON.parse(respuesta);
+    let data = null;
+    if(respuesta){
+      data = JSON.parse(respuesta);
     }
-    console.log('Mensaje', mensaje);
-    return mensaje;
-  } catch {
-    return { message: 'Hubo un error al completar' };
+    return data;
+  } catch(error){
+    console.log(error);
+    return {success: false, error: error};
   }
 }
 
@@ -128,4 +131,9 @@ export async function reservarBatch(items) {
     try { data = JSON.parse(text); } catch { data = { message: text }; }
   }
   return { ok: res.ok, status: res.status, data };
+}
+
+export async function getReservaDetails(id_reserva){
+
+  
 }

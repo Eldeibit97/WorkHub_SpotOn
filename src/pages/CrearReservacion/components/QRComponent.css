@@ -24,6 +24,7 @@
 
 .description-text{
   margin: 12px 0px;
+  padding: 0px 12px;
   text-align: center;
   color: rgb(153, 153, 153);
 }
