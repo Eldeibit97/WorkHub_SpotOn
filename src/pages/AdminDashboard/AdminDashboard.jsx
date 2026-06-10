@@ -132,7 +132,7 @@ export default function AdminDashboard() {
 
   async function saveUser(formData) {
     setSaving(true)
-    setError('')
+    setModalError('')
     try {
       if (formMode === 'create') {
         await createUser({
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
       closeUserModal()
       fetchUsuarios()
     } catch (saveError) {
-      setError(saveError.message || 'No se pudo guardar el usuario')
+      setModalError(saveError.message || 'No se pudo guardar el usuario')
     } finally {
       setSaving(false)
     }
