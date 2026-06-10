@@ -192,9 +192,24 @@ export default function ManageReservationsPage() {
           </p>
         )}
         {loading ? (
-          <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>
-            Cargando reservaciones...
-          </p>
+          <div className="reservation-list">
+            {[0, 1, 2].map((i) => (
+              <div className="skeleton-res-card" key={i}>
+                <div className="skeleton-res-header">
+                  <div className="skeleton-res-line skeleton-res-badge" />
+                  <div className="skeleton-res-line skeleton-res-type" />
+                </div>
+                <div className="skeleton-res-line skeleton-res-row skeleton-res-row-medium" />
+                <div className="skeleton-res-line skeleton-res-row skeleton-res-row-short" />
+                <div className="skeleton-res-line skeleton-res-row skeleton-res-row-long" />
+                <div className="skeleton-res-line skeleton-res-row skeleton-res-row-medium" />
+                <div className="skeleton-res-actions">
+                  <div className="skeleton-res-line skeleton-res-btn" />
+                  <div className="skeleton-res-line skeleton-res-btn" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
           <ReservationList
             reservations={reservations}
