@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getFloorMap } from '../../../api/spaces'
+import { getZonaById } from '../../../api/spaces'
 import { formatDateLongEsMx } from '../../../lib/dateFormat'
 import { TIPO_ICON, labelForTipo } from '../../../lib/spaceTipo'
 import './Step3Summary.css'
@@ -18,7 +18,16 @@ export default function Step3Summary({
   useEffect(() => {
     if (!data.zonaId) return
     let cancelled = false
-    getFloorMap(data.zonaId).then((m) => { if (!cancelled) setFloorMap(m) })
+    getZonaById(data.zonaId)
+      .then((z) => {
+        if (cancelled || !z) return
+        setFloorMap({
+          codigoZona: z.codigo_zona ?? z.codigoZona ?? z.nombre_zona ?? z.nombreZona ?? '',
+          nombre: z.descripcion ?? z.nombre ?? '',
+          edificio: z.edificio ?? '',
+        })
+      })
+      .catch(() => { /* sin metadatos de zona */ })
     return () => { cancelled = true }
   }, [data.zonaId])
 

@@ -16,7 +16,7 @@ const LOCAL_MAPS = {
 }
 
 /** Planos en `public/mapas/` + `import.meta.env.BASE_URL` (subcarpeta en deploy). */
-function resolveFloorBackgroundHref(floorMap) {
+export function resolveFloorBackgroundHref(floorMap) {
   if (!floorMap?.background || typeof floorMap.background !== 'string') return floorMap
   let bg = floorMap.background
   if (/^https?:\/\//i.test(bg)) return floorMap
@@ -56,7 +56,7 @@ function nombreNormKey(s) {
   return String(s).trim().replace(/\s+/g, ' ').toLowerCase()
 }
 
-function apiSpaceId(sp) {
+export function apiSpaceId(sp) {
   const raw = sp.idEspacio ?? sp.id_espacio ?? sp.id
   const n = Number(raw)
   return Number.isFinite(n) ? Math.trunc(n) : NaN
@@ -67,7 +67,7 @@ function apiSpaceId(sp) {
  * @param {unknown} data
  * @returns {Array<object>|null}
  */
-function extractSpacesArray(data) {
+export function extractSpacesArray(data) {
   if (data == null) return null
   if (Array.isArray(data)) return data
   if (Array.isArray(data.spaces)) return data.spaces
@@ -139,7 +139,7 @@ function orderedLookupKeysForLocal(s) {
  * Construye mapa clave → id_espacio solo con ids que parecen de BD.
  * @param {Array<object>} apiSpaces
  */
-function buildApiIdLookup(apiSpaces) {
+export function buildApiIdLookup(apiSpaces) {
   /** @type {Map<string, number>} */
   const byKey = new Map()
   for (const sp of apiSpaces) {
@@ -159,7 +159,7 @@ function buildApiIdLookup(apiSpaces) {
  * @param {Array<object>} apiSpaces
  * @returns {object}
  */
-function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
+export function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   if (!Array.isArray(apiSpaces) || apiSpaces.length === 0) return local
 
   const byKey = buildApiIdLookup(apiSpaces)
@@ -205,6 +205,18 @@ function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   return { ...local, spaces: mergedSpaces }
 }
 
+/**
+ * El backend a veces entrega `background` como color (p. ej. "#eee") o vacío en vez de
+ * una ruta de imagen. Solo aceptamos URLs/rutas/archivos de imagen; si no, usamos el local.
+ * @param {unknown} bg
+ */
+export function isUsableBackgroundHref(bg) {
+  if (typeof bg !== 'string') return false
+  const s = bg.trim()
+  if (!s || s.startsWith('#')) return false
+  return /^https?:\/\//i.test(s) || s.startsWith('/') || /\.(svg|png|jpe?g|webp|gif)$/i.test(s)
+}
+
 function normalizeZonaRow(zonaRow, local) {
   if (!zonaRow) {
     return {
@@ -212,6 +224,7 @@ function normalizeZonaRow(zonaRow, local) {
       nombre: local.nombre,
       edificio: local.edificio,
       viewBox: local.viewBox,
+      mapViewBox: local.mapViewBox,
       background: local.background,
     }
   }
@@ -225,18 +238,19 @@ function normalizeZonaRow(zonaRow, local) {
     nombre: zonaRow.descripcion ?? zonaRow.nombre ?? local.nombre,
     edificio: zonaRow.edificio ?? local.edificio,
     viewBox: zonaRow.view_box ?? zonaRow.viewBox ?? local.viewBox,
-    background: zonaRow.background ?? local.background,
+    mapViewBox: zonaRow.map_view_box ?? zonaRow.mapViewBox ?? local.mapViewBox,
+    background: isUsableBackgroundHref(zonaRow.background) ? zonaRow.background : local.background,
   }
 }
 
-function spaceHasGeometry(s) {
+export function spaceHasGeometry(s) {
   if (s.x == null || s.y == null) return false
   if (s.shape === 'circle') return s.r != null
   return s.w != null && s.h != null
 }
 
 /** Espacios legacy retirados del layout (p. ej. Media Scape 1 en PB). */
-function isExcludedEditorSpace(s) {
+export function isExcludedEditorSpace(s) {
   const codigo = String(s.codigo ?? s.codigo_espacio ?? s.codigoEspacio ?? '')
     .trim()
     .toUpperCase()
@@ -300,7 +314,11 @@ function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local) {
 
   if (Array.isArray(apiSpaces) && apiSpaces.length > 0) {
     const fromApi = apiSpaces.map(mapApiSpaceToEditor)
-    const apiHasGeometry = fromApi.some(spaceHasGeometry)
+    // Solo usamos la geometría del API si la trae la mayoría de los espacios. Si apenas
+    // unos pocos la tienen (p. ej. MZ: 1 de 120), conservamos la geometría del JSON local
+    // y solo sustituimos los `id_espacio` reales por coincidencia de código.
+    const geoCount = fromApi.filter(spaceHasGeometry).length
+    const apiHasGeometry = geoCount > 0 && geoCount >= fromApi.length / 2
     if (apiHasGeometry) {
       spaces = fromApi.filter((s) => s.codigo || s.nombre)
     } else {
@@ -318,6 +336,7 @@ function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local) {
     nombre: meta.nombre,
     edificio: meta.edificio,
     viewBox: meta.viewBox,
+    mapViewBox: meta.mapViewBox,
     background: meta.background,
     spaces: partitioned.spaces,
     autoEliminarIds: partitioned.autoEliminarIds,
@@ -417,10 +436,7 @@ export async function getAvailability({ zonaId, fecha, horaInicio, horaFin }) {
   } catch {
     // fall through
   }
-  // Fallback: assume everything is available so the UI works without backend.
-  const local = LOCAL_MAPS[zonaId]
-  if (!local) return {}
-  const map = {}
-  for (const s of local.spaces) map[s.id_espacio] = 'DISPONIBLE'
-  return map
+  // Fallback: sin disponibilidad del backend devolvemos {}. La UI trata la ausencia
+  // de un id como 'DISPONIBLE', así que no necesitamos los mapas locales (JSON) aquí.
+  return {}
 }
