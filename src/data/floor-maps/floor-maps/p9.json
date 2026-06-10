@@ -1,0 +1,971 @@
+{
+  "zonaId": 4,
+  "codigoZona": "P9",
+  "nombre": "Piso 9",
+  "edificio": "ATC Monterrey",
+  "viewBox": "0 0 1440 810",
+  "mapViewBox": "429 264 562 361",
+  "background": "/mapas/piso_9.svg",
+  "tipoLabels": {
+    "1": "Estacion de trabajo",
+    "2": "Sala de juntas",
+    "5": "Area especial"
+  },
+  "spaces": [
+    {
+      "id_espacio": 339,
+      "codigo": "9001",
+      "nombre": "Estación 9001",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 100,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 340,
+      "codigo": "9002",
+      "nombre": "Estación 9002",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 170,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 341,
+      "codigo": "9003",
+      "nombre": "Estación 9003",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 240,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 342,
+      "codigo": "9004",
+      "nombre": "Estación 9004",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 310,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 343,
+      "codigo": "9005",
+      "nombre": "Estación 9005",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 380,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 344,
+      "codigo": "9006",
+      "nombre": "Estación 9006",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 450,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 345,
+      "codigo": "9007",
+      "nombre": "Estación 9007",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 520,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 346,
+      "codigo": "9008",
+      "nombre": "Estación 9008",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 590,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 347,
+      "codigo": "9009",
+      "nombre": "Estación 9009",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 660,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 348,
+      "codigo": "9010",
+      "nombre": "Estación 9010",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 730,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 349,
+      "codigo": "9011",
+      "nombre": "Estación 9011",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 800,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 350,
+      "codigo": "9012",
+      "nombre": "Estación 9012",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 870,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 351,
+      "codigo": "9013",
+      "nombre": "Estación 9013",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 940,
+      "y": 110,
+      "r": 11
+    },
+    {
+      "id_espacio": 352,
+      "codigo": "9014",
+      "nombre": "Estación 9014",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 100,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 353,
+      "codigo": "9015",
+      "nombre": "Estación 9015",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 170,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 354,
+      "codigo": "9016",
+      "nombre": "Estación 9016",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 240,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 355,
+      "codigo": "9017",
+      "nombre": "Estación 9017",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 310,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 356,
+      "codigo": "9018",
+      "nombre": "Estación 9018",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 380,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 357,
+      "codigo": "9019",
+      "nombre": "Estación 9019",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 450,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 358,
+      "codigo": "9020",
+      "nombre": "Estación 9020",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 520,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 359,
+      "codigo": "9021",
+      "nombre": "Estación 9021",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 590,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 360,
+      "codigo": "9022",
+      "nombre": "Estación 9022",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 660,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 361,
+      "codigo": "9023",
+      "nombre": "Estación 9023",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 730,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 362,
+      "codigo": "9024",
+      "nombre": "Estación 9024",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 800,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 363,
+      "codigo": "9025",
+      "nombre": "Estación 9025",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 870,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 364,
+      "codigo": "9026",
+      "nombre": "Estación 9026",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 940,
+      "y": 165,
+      "r": 11
+    },
+    {
+      "id_espacio": 365,
+      "codigo": "9027",
+      "nombre": "Estación 9027",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 100,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 366,
+      "codigo": "9028",
+      "nombre": "Estación 9028",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 170,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 367,
+      "codigo": "9029",
+      "nombre": "Estación 9029",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 240,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 368,
+      "codigo": "9030",
+      "nombre": "Estación 9030",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 310,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 369,
+      "codigo": "9031",
+      "nombre": "Estación 9031",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 380,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 370,
+      "codigo": "9032",
+      "nombre": "Estación 9032",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 450,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 371,
+      "codigo": "9033",
+      "nombre": "Estación 9033",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 520,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 372,
+      "codigo": "9034",
+      "nombre": "Estación 9034",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 590,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 373,
+      "codigo": "9035",
+      "nombre": "Estación 9035",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 660,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 374,
+      "codigo": "9036",
+      "nombre": "Estación 9036",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 730,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 375,
+      "codigo": "9037",
+      "nombre": "Estación 9037",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 800,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 376,
+      "codigo": "9038",
+      "nombre": "Estación 9038",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 870,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 377,
+      "codigo": "9039",
+      "nombre": "Estación 9039",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 940,
+      "y": 220,
+      "r": 11
+    },
+    {
+      "id_espacio": 378,
+      "codigo": "9040",
+      "nombre": "Estación 9040",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 100,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 379,
+      "codigo": "9041",
+      "nombre": "Estación 9041",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 170,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 380,
+      "codigo": "9042",
+      "nombre": "Estación 9042",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 240,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 381,
+      "codigo": "9043",
+      "nombre": "Estación 9043",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 310,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 382,
+      "codigo": "9044",
+      "nombre": "Estación 9044",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 380,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 383,
+      "codigo": "9045",
+      "nombre": "Estación 9045",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 450,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 384,
+      "codigo": "9046",
+      "nombre": "Estación 9046",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 520,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 385,
+      "codigo": "9047",
+      "nombre": "Estación 9047",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 590,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 386,
+      "codigo": "9048",
+      "nombre": "Estación 9048",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 660,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 387,
+      "codigo": "9049",
+      "nombre": "Estación 9049",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 730,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 388,
+      "codigo": "9050",
+      "nombre": "Estación 9050",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 800,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 389,
+      "codigo": "9051",
+      "nombre": "Estación 9051",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 870,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 390,
+      "codigo": "9052",
+      "nombre": "Estación 9052",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 940,
+      "y": 275,
+      "r": 11
+    },
+    {
+      "id_espacio": 391,
+      "codigo": "9053",
+      "nombre": "Estación 9053",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 100,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 392,
+      "codigo": "9054",
+      "nombre": "Estación 9054",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 170,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 393,
+      "codigo": "9055",
+      "nombre": "Estación 9055",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 240,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 394,
+      "codigo": "9056",
+      "nombre": "Estación 9056",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 310,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 395,
+      "codigo": "9057",
+      "nombre": "Estación 9057",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 380,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 396,
+      "codigo": "9058",
+      "nombre": "Estación 9058",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 450,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 397,
+      "codigo": "9059",
+      "nombre": "Estación 9059",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 520,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 398,
+      "codigo": "9060",
+      "nombre": "Estación 9060",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 590,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 399,
+      "codigo": "9061",
+      "nombre": "Estación 9061",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 660,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 400,
+      "codigo": "9062",
+      "nombre": "Estación 9062",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 730,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 401,
+      "codigo": "9063",
+      "nombre": "Estación 9063",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 800,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 402,
+      "codigo": "9064",
+      "nombre": "Estación 9064",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 870,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 403,
+      "codigo": "9065",
+      "nombre": "Estación 9065",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 940,
+      "y": 330,
+      "r": 11
+    },
+    {
+      "id_espacio": 404,
+      "codigo": "9066",
+      "nombre": "Estación 9066",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 100,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 405,
+      "codigo": "9067",
+      "nombre": "Estación 9067",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 170,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 406,
+      "codigo": "9068",
+      "nombre": "Estación 9068",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 240,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 407,
+      "codigo": "9069",
+      "nombre": "Estación 9069",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 310,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 408,
+      "codigo": "9070",
+      "nombre": "Estación 9070",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 380,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 409,
+      "codigo": "9071",
+      "nombre": "Estación 9071",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 450,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 410,
+      "codigo": "9072",
+      "nombre": "Estación 9072",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 520,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 411,
+      "codigo": "9073",
+      "nombre": "Estación 9073",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 590,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 412,
+      "codigo": "9074",
+      "nombre": "Estación 9074",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 660,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 413,
+      "codigo": "9075",
+      "nombre": "Estación 9075",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 730,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 414,
+      "codigo": "9076",
+      "nombre": "Estación 9076",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 800,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 415,
+      "codigo": "9077",
+      "nombre": "Estación 9077",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 870,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 416,
+      "codigo": "9078",
+      "nombre": "Estación 9078",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 940,
+      "y": 385,
+      "r": 11
+    },
+    {
+      "id_espacio": 417,
+      "codigo": "9079",
+      "nombre": "Estación 9079",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 100,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 418,
+      "codigo": "9080",
+      "nombre": "Estación 9080",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 170,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 419,
+      "codigo": "9081",
+      "nombre": "Estación 9081",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 240,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 420,
+      "codigo": "9082",
+      "nombre": "Estación 9082",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 310,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 421,
+      "codigo": "9083",
+      "nombre": "Estación 9083",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 380,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 422,
+      "codigo": "9084",
+      "nombre": "Estación 9084",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 450,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 423,
+      "codigo": "9085",
+      "nombre": "Estación 9085",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 520,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 424,
+      "codigo": "9086",
+      "nombre": "Estación 9086",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 590,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 425,
+      "codigo": "9087",
+      "nombre": "Estación 9087",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 660,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 426,
+      "codigo": "9088",
+      "nombre": "Estación 9088",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 730,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 427,
+      "codigo": "9089",
+      "nombre": "Estación 9089",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 800,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 428,
+      "codigo": "9090",
+      "nombre": "Estación 9090",
+      "tipo": 1,
+      "shape": "circle",
+      "x": 870,
+      "y": 440,
+      "r": 11
+    },
+    {
+      "id_espacio": 482,
+      "codigo": "SJ-9087",
+      "nombre": "Estanzuela",
+      "tipo": 2,
+      "shape": "rect",
+      "x": 1035,
+      "y": 100,
+      "w": 110,
+      "h": 80
+    },
+    {
+      "id_espacio": 483,
+      "codigo": "SJ-9088",
+      "nombre": "Área D.T.",
+      "tipo": 2,
+      "shape": "rect",
+      "x": 1035,
+      "y": 210,
+      "w": 110,
+      "h": 80
+    },
+    {
+      "id_espacio": 484,
+      "codigo": "WL-9089",
+      "nombre": "Work Lab 01",
+      "tipo": 5,
+      "shape": "rect",
+      "x": 1015,
+      "y": 310,
+      "w": 150,
+      "h": 100
+    },
+    {
+      "id_espacio": 485,
+      "codigo": "WL-9090",
+      "nombre": "Work Lab 02",
+      "tipo": 5,
+      "shape": "rect",
+      "x": 1015,
+      "y": 420,
+      "w": 150,
+      "h": 100
+    },
+    {
+      "id_espacio": 486,
+      "codigo": "AC-9091",
+      "nombre": "Área Colaborativa",
+      "tipo": 5,
+      "shape": "rect",
+      "x": 1015,
+      "y": 530,
+      "w": 150,
+      "h": 100
+    }
+  ]
+}
