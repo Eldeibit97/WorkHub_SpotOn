@@ -828,7 +828,8 @@ export default function FloorEditor() {
                   />
                 )}
 
-                {spaces.map((space) => {
+                {
+                spaces.map((space) => {
                   const uid = spaceUid(space)
                   const isSelected = selectedIds.has(uid)
                   const tipo = normalizeTipoEspacio(space.tipo)

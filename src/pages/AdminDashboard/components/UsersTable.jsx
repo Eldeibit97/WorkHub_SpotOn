@@ -144,7 +144,10 @@ export default function UsersTable({
                   <div className="admin-row-actions">
                     <button
                       className="admin-icon-btn admin-icon-btn--ghost"
-                      onClick={() => { e.stopPropagation(); onEdit(user) }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onEdit(user)
+                      }}
                       aria-label={`Editar ${getDisplayName(user)}`}
                       title="Editar"
                     >
@@ -155,7 +158,10 @@ export default function UsersTable({
                     </button>
                     <button
                       className="admin-icon-btn admin-icon-btn--danger"
-                      onClick={() => { e.stopPropagation(); onDelete?.(user) }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDelete?.(user)
+                      }}
                       aria-label={`Eliminar ${getDisplayName(user)}`}
                       title="Eliminar"
                     >
@@ -176,7 +182,7 @@ export default function UsersTable({
 
       <footer className="admin-pagination">
         <span className="admin-pagination__info">
-          Showing <strong>{showingFrom}-{showingTo}</strong> of {totalLabel} usuarios
+          Mostrando <strong>{showingFrom}-{showingTo}</strong> de {totalLabel} usuarios
         </span>
         <div className="admin-pagination__controls">
           <button

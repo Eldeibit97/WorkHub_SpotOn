@@ -1,3 +1,9 @@
+/* Temas premium del Mercado — cargados globalmente para que data-theme funcione en cualquier página */
+@import './styles/themes/dracula.css';
+@import './styles/themes/neon.css';
+@import './styles/themes/abyssal.css';
+@import './styles/themes/amethyst.css';
+
 /* Reseteo básico para quitar los bordes blancos/negros del navegador */
 * {
   margin: 0;

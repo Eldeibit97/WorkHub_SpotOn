@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getZonas, getFloorMap } from '../../../api/spaces'
+import { getZonas } from '../../../api/spaces'
+import { getReservationFloorMap } from '../../../api/reservationFloorMap'
 import FLOOR_INTERIOR_IMAGES from '../../../assets/floors/index.js'
 import './Step1DateFloor.css'
 
@@ -19,7 +20,7 @@ export default function Step1DateFloor({ data, update, onNext, canContinue }) {
       const result = {}
       await Promise.all(
         sorted.map(async (z) => {
-          const map = await getFloorMap(z.id_zona)
+          const map = await getReservationFloorMap(z.id_zona)
           result[z.id_zona] = map.spaces?.length ?? 0
         }),
       )

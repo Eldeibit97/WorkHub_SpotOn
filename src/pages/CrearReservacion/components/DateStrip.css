@@ -93,8 +93,8 @@
 }
 
 .date-strip__day--active {
-  background: #a855f7;
-  border: 1.5px solid #a855f7;
+  background: var(--res-purple);
+  border: 1.5px solid var(--res-purple);
   border-radius: 10px;
 }
 
@@ -125,7 +125,7 @@
   background: none;
   -webkit-background-clip: unset;
   background-clip: unset;
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .date-strip__popover {
@@ -239,9 +239,9 @@
 }
 
 .date-strip__month-day--selected {
-  background: #a855f7;
-  border-color: #a855f7;
-  color: #fff;
+  background: var(--res-purple);
+  border-color: var(--res-purple);
+  color: var(--on-accent);
 }
 
 .date-strip__month-day--selected:hover:not(:disabled) {

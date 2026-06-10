@@ -5,6 +5,17 @@ import UsersByRolePie from './components/charts/UsersByRolePie'
 import ReservationsLast7DaysBar from './components/charts/ReservationsLast7DaysBar'
 import OccupancyByZoneDonut from './components/charts/OccupancyByZoneDonut'
 
+function toISODate(d) {
+  return d.toISOString().split('T')[0]
+}
+
+const _today = new Date()
+const _thirtyDaysAgo = new Date()
+_thirtyDaysAgo.setDate(_today.getDate() - 29)
+
+const DEFAULT_FROM = toISODate(_thirtyDaysAgo)
+const DEFAULT_TO   = toISODate(_today)
+
 const EMPTY_STATS = {
   totals: {
     users: 0,
@@ -29,8 +40,8 @@ export default function DashboardOverview() {
   const [stats, setStats] = useState(EMPTY_STATS)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [from, setFrom] = useState('')
-  const [to, setTo] = useState('')
+  const [from, setFrom] = useState(DEFAULT_FROM)
+  const [to, setTo] = useState(DEFAULT_TO)
 
   useEffect(() => {
     let cancelled = false
@@ -96,12 +107,16 @@ export default function DashboardOverview() {
               onChange={e => setTo(e.target.value)}
             />
           </label>
-          {(from || to) && (
+          {(from !== DEFAULT_FROM || to !== DEFAULT_TO) && (
             <button
               className="admin-btn admin-btn--secondary"
-              onClick={() => { setFrom(''); setTo('') }}
+              style={{ fontWeight: 400 }}
+              onClick={() => {
+                setFrom(DEFAULT_FROM)
+                setTo(DEFAULT_TO)
+              }}
             >
-              Limpiar filtros
+              Restablecer fechas
             </button>
           )}
         </div>

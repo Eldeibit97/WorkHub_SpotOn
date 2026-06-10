@@ -8,6 +8,7 @@ import AccentureLogo from '../../../components/AccentureLogo'
 const TABS = [
   { to: '/admin', label: 'Dashboard', end: true },
   { to: '/admin/usuarios', label: 'Usuarios', end: false },
+  { to: '/admin/no-shows', label: 'No Shows', end: false },
   { to: '/admin/floor-editor', label: 'Editor de pisos', end: false },
 ]
 

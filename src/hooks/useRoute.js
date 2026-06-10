@@ -1,23 +1,24 @@
 import { useState, useEffect } from "react";
+import { useApiIsLoaded } from "@vis.gl/react-google-maps";
 
 const useRoute = (origin, destination) => {
+  const apiLoaded = useApiIsLoaded();
   const [state, setState] = useState({
     loading: false,
     error: null,
-    data: null
+    data: null,
+    settled: false,
   });
 
   useEffect(() => {
-    if (!origin || !destination) return;
+    if (!origin || !destination || !apiLoaded) return;
     async function fetchRoute() {
-      setState({ loading: true, error: null, data: null });
-      console.log('loading route')
+      setState({ loading: true, error: null, data: null, settled: false });
       try {
         const { Route } = await google.maps.importLibrary('routes');
-
         const request = {
-          origin: origin,
-          destination: destination,
+          origin,
+          destination,
           travelMode: 'DRIVING',
           routingPreference: 'TRAFFIC_AWARE',
           extraComputations: ['TRAFFIC_ON_POLYLINE'],
@@ -30,15 +31,14 @@ const useRoute = (origin, destination) => {
           ]
         };
         const { routes } = await Route.computeRoutes(request);
-        console.log('Finalizing route loading');
-        setState({loading: false, error: null, data: routes[0]});
-      } catch(error){
+        setState({ loading: false, error: null, data: routes[0], settled: true });
+      } catch (error) {
         console.log('Error: ', error);
-        setState({loading: false, error: error, data: null});
-      };
+        setState({ loading: false, error, data: null, settled: true });
+      }
     }
     fetchRoute();
-  }, [origin]);
+  }, [origin, apiLoaded]);
 
   return state;
 };

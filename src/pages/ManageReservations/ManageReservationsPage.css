@@ -55,9 +55,9 @@
 }
 
 .manage-nav-link-secondary {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: #a09ba6;
+  border-color: var(--border-subtle);
+  background: var(--surface);
+  color: var(--text-secondary);
 }
 
 .manage-nav-link-secondary:hover {
@@ -190,20 +190,20 @@
 }
 
 .status-today {
-  background-color: rgba(46, 213, 115, 0.15);
-  color: #2ed573;
-  border: 1px solid rgba(46, 213, 115, 0.3);
+  background-color: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success-border);
 }
 
 .status-upcoming {
-  background-color: rgba(255, 164, 2, 0.15);
-  color: #ffa502;
-  border: 1px solid rgba(255, 164, 2, 0.3);
+  background-color: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid var(--warning-border);
 }
 
 .status-past {
-  background-color: rgba(164, 176, 190, 0.15);
-  color: #a4b0be;
+  background-color: var(--neutral-bg);
+  color: var(--neutral);
   border: 1px solid rgba(164, 176, 190, 0.3);
 }
 
@@ -230,7 +230,7 @@
 }
 
 .btn-cancel-outline:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface);
   border-color: var(--text-muted);
 }
 
@@ -255,7 +255,7 @@
 
 .btn-primary-danger {
   background: var(--brand-gradient);
-  color: white;
+  color: var(--on-accent);
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
@@ -271,9 +271,9 @@
 }
 
 .btn-checkin {
-  background: rgba(46, 213, 115, 0.1);
-  color: #2ed573;
-  border: 1px solid #2ed573;
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success);
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
@@ -282,8 +282,8 @@
 }
 
 .btn-checkin:hover:not(:disabled) {
-  background: #2ed573;
-  color: #0a0510;
+  background: var(--success);
+  color: var(--on-accent);
   box-shadow: 0 0 15px rgba(46, 213, 115, 0.4);
 }
 
@@ -328,7 +328,7 @@ button:disabled,
 }
 
 .modal-title {
-  color: white;
+  color: var(--text-primary);
   margin-bottom: 15px;
   font-size: 22px;
 }
@@ -341,7 +341,7 @@ button:disabled,
 }
 
 .modal-reservation-summary {
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--surface);
   border: 1px solid var(--border-color);
   padding: 15px;
   border-radius: 8px;
@@ -370,7 +370,7 @@ button:disabled,
 }
 
 .btn-secondary:hover {
-  color: white;
+  color: var(--text-primary);
   border-color: var(--text-muted);
 }
 
@@ -421,4 +421,85 @@ button:disabled,
   .reservation-list {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* =========================================
+   SKELETON LOADING CARDS
+   ========================================= */
+@keyframes res-shimmer {
+  0%   { background-position: -800px 0; }
+  100% { background-position:  800px 0; }
+}
+
+.skeleton-res-line {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--border-color) 25%,
+    color-mix(in srgb, var(--border-color) 40%, var(--bg-card)) 50%,
+    var(--border-color) 75%
+  );
+  background-size: 800px 100%;
+  animation: res-shimmer 1.6s infinite linear;
+}
+
+.skeleton-res-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.skeleton-res-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(59, 29, 92, 0.5);
+  margin-bottom: 16px;
+}
+
+.skeleton-res-badge {
+  height: 22px;
+  width: 72px;
+  border-radius: 20px;
+}
+
+.skeleton-res-type {
+  height: 14px;
+  width: 90px;
+}
+
+.skeleton-res-row {
+  height: 15px;
+  margin-bottom: 10px;
+}
+
+.skeleton-res-row-short {
+  width: 55%;
+}
+
+.skeleton-res-row-medium {
+  width: 75%;
+}
+
+.skeleton-res-row-long {
+  width: 90%;
+}
+
+.skeleton-res-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.skeleton-res-btn {
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
 }

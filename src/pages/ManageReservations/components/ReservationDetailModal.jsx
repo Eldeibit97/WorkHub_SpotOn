@@ -27,9 +27,9 @@ export default function ReservationDetailModal({ reservation, onClose }) {
     const diffTimeDays = resDateOnly - todayOnly;
     const diffDays = Math.ceil(diffTimeDays / (1000 * 60 * 60 * 24));
 
-    let statusData = { text: 'Pasado', color: '#a4b0be' }; // Gris
-    if (diffDays === 0) statusData = { text: 'Hoy', color: '#2ed573' }; // Verde
-    else if (diffDays > 0) statusData = { text: 'Próximo', color: '#ffa502' }; // Naranja
+    let statusData = { text: 'Pasado', color: 'var(--neutral)' }; // Gris
+    if (diffDays === 0) statusData = { text: 'Hoy', color: 'var(--success)' }; // Verde
+    else if (diffDays > 0) statusData = { text: 'Próximo', color: 'var(--warning)' }; // Naranja
 
     return { status: statusData };
   };
@@ -44,10 +44,10 @@ export default function ReservationDetailModal({ reservation, onClose }) {
 
   if (reservation.estado_reserva === 'COMPLETADO') {
     finalStatusText = 'Completado';
-    finalStatusColor = '#a4b0be'; // Gris
+    finalStatusColor = 'var(--neutral)'; // Gris
   } else if (reservation.estado_reserva === 'CHECKED_IN') {
     finalStatusText = 'Check-in Realizado';
-    finalStatusColor = '#2ed573'; // Verde
+    finalStatusColor = 'var(--success)'; // Verde
   } else if (status) {
     finalStatusText = status.text;
     finalStatusColor = status.color;
@@ -55,10 +55,10 @@ export default function ReservationDetailModal({ reservation, onClose }) {
 
   // Coloreamos los íconos (relojito, calendario, ubicación) del mismo color que el estatus
   const getIconColor = (estado) => {
-    if (estado === 'CHECKED_IN') return '#2ed573';
-    if (estado === 'COMPLETADO' || status?.text === 'Pasado') return '#a4b0be';
-    if (status?.text === 'Próximo') return '#ffa502';
-    if (status?.text === 'Hoy') return '#2ed573';
+    if (estado === 'CHECKED_IN') return 'var(--success)';
+    if (estado === 'COMPLETADO' || status?.text === 'Pasado') return 'var(--neutral)';
+    if (status?.text === 'Próximo') return 'var(--warning)';
+    if (status?.text === 'Hoy') return 'var(--success)';
     return 'var(--accent-purple)';
   };
 

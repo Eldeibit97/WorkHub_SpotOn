@@ -170,9 +170,6 @@ export default function SignInPage() {
             </span>
           </label>
 
-          <a href="#" className="signin-forgot" onClick={(e) => e.preventDefault()}>
-            Forgot Password?
-          </a>
 
           <button type="submit" className="signin-submit" disabled={submitting}>
             {submitting ? 'Signing in…' : 'Sign In'}

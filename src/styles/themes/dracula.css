@@ -1,0 +1,50 @@
+/* ── Drácula theme ─────────────────────────────────────────────────────────
+   Clásico fondo slate con rosa brillante, púrpura suave y cyan.
+   Referencia visual: imagen 1 (Obsidian Drácula).
+──────────────────────────────────────────────────────────────────────────── */
+:root[data-theme='dracula'] {
+  --page-bg: #282a36;
+  --page-bg-image:
+    radial-gradient(circle at 80% 20%, rgba(189, 147, 249, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 10% 80%, rgba(255, 121, 198, 0.08) 0%, transparent 40%);
+
+  --text-primary: #f8f8f2;
+  --text-secondary: #6272a4;
+  --text-muted: #44475a;
+
+  --white: #373844;
+  --black: #f8f8f2;
+  --surface: #44475a;
+  --border-subtle: rgba(98, 114, 164, 0.3);
+
+  --acn-purple: #bd93f9;
+  --acn-purple-light: #d0b0ff;
+  --acn-gradient: linear-gradient(135deg, #bd93f9, #ff79c6);
+  --res-purple: #bd93f9;
+  --res-magenta: #ff79c6;
+  --res-gradient-btn: #bd93f9;
+  --res-border: rgba(189, 147, 249, 0.45);
+  --res-border-soft: rgba(189, 147, 249, 0.22);
+  --res-card-bg: rgba(40, 42, 54, 0.85);
+
+  --accent-purple-05: rgba(189, 147, 249, 0.12);
+  --accent-purple-30: rgba(189, 147, 249, 0.4);
+
+  --bg-dark: #21222c;
+  --bg-card: #282a36;
+  --border-color: #6272a4;
+  --accent-pink: #ff79c6;
+  --accent-purple: #bd93f9;
+  --brand-gradient: linear-gradient(135deg, #bd93f9, #ff79c6);
+  --text-main: #f8f8f2;
+
+  --info: #8be9fd;
+  --available: #50fa7b;
+  --claimable: #ffb86c;
+
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 4px 22px rgba(0, 0, 0, 0.62);
+  --shadow-lg: 0 8px 36px rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}

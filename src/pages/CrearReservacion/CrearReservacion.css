@@ -220,14 +220,14 @@ body {
 .page-title {
   font-size: 30px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   margin-bottom: 6px;
   letter-spacing: -0.3px;
 }
 
 .page-subtitle {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-secondary);
   margin: 0;
 }
 

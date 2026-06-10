@@ -1,0 +1,50 @@
+/* ── Neon theme ────────────────────────────────────────────────────────────
+   Negro profundo con destellos magenta, cyan eléctrico y verde neón.
+   Referencia visual: imagen 2 (Obsidian Neon/Cyberpunk).
+──────────────────────────────────────────────────────────────────────────── */
+:root[data-theme='neon'] {
+  --page-bg: #0d0d0f;
+  --page-bg-image:
+    radial-gradient(circle at 75% 25%, rgba(255, 0, 255, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 20% 75%, rgba(0, 255, 255, 0.08) 0%, transparent 45%);
+
+  --text-primary: #e8e8ff;
+  --text-secondary: #8888cc;
+  --text-muted: #555577;
+
+  --white: #13131a;
+  --black: #e8e8ff;
+  --surface: #1a1a2e;
+  --border-subtle: rgba(0, 255, 255, 0.15);
+
+  --acn-purple: #ff00ff;
+  --acn-purple-light: #ff79ff;
+  --acn-gradient: linear-gradient(135deg, #ff00ff, #00ffff);
+  --res-purple: #b400ff;
+  --res-magenta: #ff00ff;
+  --res-gradient-btn: #ff00ff;
+  --res-border: rgba(255, 0, 255, 0.45);
+  --res-border-soft: rgba(0, 255, 255, 0.22);
+  --res-card-bg: rgba(13, 13, 20, 0.88);
+
+  --accent-purple-05: rgba(255, 0, 255, 0.1);
+  --accent-purple-30: rgba(255, 0, 255, 0.4);
+
+  --bg-dark: #09090d;
+  --bg-card: #0d0d14;
+  --border-color: rgba(0, 255, 255, 0.35);
+  --accent-pink: #ff6ec7;
+  --accent-purple: #b400ff;
+  --brand-gradient: linear-gradient(135deg, #ff00ff, #00ffff);
+  --text-main: #e8e8ff;
+
+  --info: #00ffff;
+  --available: #39ff14;
+  --claimable: #ffff00;
+
+  --shadow-sm: 0 2px 10px rgba(255, 0, 255, 0.2);
+  --shadow-md: 0 4px 22px rgba(255, 0, 255, 0.25);
+  --shadow-lg: 0 8px 36px rgba(0, 255, 255, 0.2);
+
+  color-scheme: dark;
+}

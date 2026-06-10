@@ -7,6 +7,8 @@ import Error from './pages/Error/Error'
 import LandingPage from './pages/LandingPage/LandingPage'
 import SignInPage from './pages/SignInPage/SignInPage'
 import ManageReservationsPage from './pages/ManageReservations/ManageReservationsPage'
+import MercadoPage from './pages/Mercado/MercadoPage'
+import PerfilPage from './pages/Perfil/PerfilPage'
 import AdminLayout from './pages/AdminDashboard/AdminLayout'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
@@ -18,6 +20,8 @@ import RequireRole from './components/RequireRole'
 import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
 import Verificacion from './pages/GuardView/Verificacion'
 import GuardOverView from './pages/GuardView/GuardOverView'
+import NoShowsPage from './pages/AdminDashboard/NoShowsPage'
+
 import EditarReservaWorkplace from "./pages/ManageReservations/components/EditarReservaWorkplace";
 
 const AppRoutes = () => {
@@ -41,7 +45,8 @@ const AppRoutes = () => {
         <Route path="/reservar" element={<CrearReservacion />} />
         <Route path="/confirmacion" element={<Confirmacion />} />
         <Route path="/cancelar" element={<ManageReservationsPage />} />
-        
+        <Route path="/mercado" element={<MercadoPage />} />
+        <Route path="/perfil" element={<PerfilPage />} />
         {/* RUTA ÚNICA PARA MODIFICAR WORKPLACE */}
         <Route path="/edit-workplace/:id" element={<EditarReservaWorkplace />} />
       </Route>
@@ -67,6 +72,7 @@ const AppRoutes = () => {
         <Route index element={<DashboardOverview />} />
         <Route path="usuarios" element={<AdminDashboard />} />
         <Route path="usuarios/:id/reservaciones" element={<AdminUserReservations />} />
+        <Route path="no-shows" element={<NoShowsPage />} />
         <Route path="floor-editor">
           <Route index element={<FloorEditorOffices />} />
           <Route path="edificios/:edificioSlug" element={<FloorEditorFloors />} />

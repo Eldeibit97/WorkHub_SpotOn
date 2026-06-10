@@ -3,20 +3,8 @@ import { getStoredToken } from './auth'
 import { isPlausibleDbEspacioId } from './reserve'
 import { normalizeTipoEspacio } from '../lib/spaceTipo'
 
-import pbMap from '../data/floor-maps/pb.json'
-import mzMap from '../data/floor-maps/mz.json'
-import p3Map from '../data/floor-maps/p3.json'
-import p9Map from '../data/floor-maps/p9.json'
-
-const LOCAL_MAPS = {
-  1: pbMap,
-  2: mzMap,
-  3: p3Map,
-  4: p9Map,
-}
-
 /** Planos en `public/mapas/` + `import.meta.env.BASE_URL` (subcarpeta en deploy). */
-function resolveFloorBackgroundHref(floorMap) {
+export function resolveFloorBackgroundHref(floorMap) {
   if (!floorMap?.background || typeof floorMap.background !== 'string') return floorMap
   let bg = floorMap.background
   if (/^https?:\/\//i.test(bg)) return floorMap
@@ -56,7 +44,7 @@ function nombreNormKey(s) {
   return String(s).trim().replace(/\s+/g, ' ').toLowerCase()
 }
 
-function apiSpaceId(sp) {
+export function apiSpaceId(sp) {
   const raw = sp.idEspacio ?? sp.id_espacio ?? sp.id
   const n = Number(raw)
   return Number.isFinite(n) ? Math.trunc(n) : NaN
@@ -67,7 +55,7 @@ function apiSpaceId(sp) {
  * @param {unknown} data
  * @returns {Array<object>|null}
  */
-function extractSpacesArray(data) {
+export function extractSpacesArray(data) {
   if (data == null) return null
   if (Array.isArray(data)) return data
   if (Array.isArray(data.spaces)) return data.spaces
@@ -139,7 +127,7 @@ function orderedLookupKeysForLocal(s) {
  * Construye mapa clave → id_espacio solo con ids que parecen de BD.
  * @param {Array<object>} apiSpaces
  */
-function buildApiIdLookup(apiSpaces) {
+export function buildApiIdLookup(apiSpaces) {
   /** @type {Map<string, number>} */
   const byKey = new Map()
   for (const sp of apiSpaces) {
@@ -159,7 +147,7 @@ function buildApiIdLookup(apiSpaces) {
  * @param {Array<object>} apiSpaces
  * @returns {object}
  */
-function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
+export function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   if (!Array.isArray(apiSpaces) || apiSpaces.length === 0) return local
 
   const byKey = buildApiIdLookup(apiSpaces)
@@ -205,38 +193,42 @@ function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   return { ...local, spaces: mergedSpaces }
 }
 
-function normalizeZonaRow(zonaRow, local) {
-  if (!zonaRow) {
-    return {
-      codigoZona: local.codigoZona,
-      nombre: local.nombre,
-      edificio: local.edificio,
-      viewBox: local.viewBox,
-      background: local.background,
-    }
-  }
+/**
+ * El backend a veces entrega `background` como color (p. ej. "#eee") o vacío en vez de
+ * una ruta de imagen. Solo aceptamos URLs/rutas/archivos de imagen; si no, usamos el local.
+ * @param {unknown} bg
+ */
+export function isUsableBackgroundHref(bg) {
+  if (typeof bg !== 'string') return false
+  const s = bg.trim()
+  if (!s || s.startsWith('#')) return false
+  return /^https?:\/\//i.test(s) || s.startsWith('/') || /\.(svg|png|jpe?g|webp|gif)$/i.test(s)
+}
+
+function normalizeZonaRow(zonaRow) {
   return {
     codigoZona:
       zonaRow.codigo_zona ??
       zonaRow.codigoZona ??
       zonaRow.nombre_zona ??
       zonaRow.nombreZona ??
-      local.codigoZona,
-    nombre: zonaRow.descripcion ?? zonaRow.nombre ?? local.nombre,
-    edificio: zonaRow.edificio ?? local.edificio,
-    viewBox: zonaRow.view_box ?? zonaRow.viewBox ?? local.viewBox,
-    background: zonaRow.background ?? local.background,
+      null,
+    nombre: zonaRow.descripcion ?? zonaRow.nombre ?? null,
+    edificio: zonaRow.edificio ?? null,
+    viewBox: zonaRow.view_box ?? zonaRow.viewBox ?? null,
+    mapViewBox: zonaRow.map_view_box ?? zonaRow.mapViewBox ?? null,
+    background: isUsableBackgroundHref(zonaRow.background) ? zonaRow.background : null,
   }
 }
 
-function spaceHasGeometry(s) {
+export function spaceHasGeometry(s) {
   if (s.x == null || s.y == null) return false
   if (s.shape === 'circle') return s.r != null
   return s.w != null && s.h != null
 }
 
 /** Espacios legacy retirados del layout (p. ej. Media Scape 1 en PB). */
-function isExcludedEditorSpace(s) {
+export function isExcludedEditorSpace(s) {
   const codigo = String(s.codigo ?? s.codigo_espacio ?? s.codigoEspacio ?? '')
     .trim()
     .toUpperCase()
@@ -294,21 +286,13 @@ export function mapApiSpaceToEditor(sp) {
  * @param {Array<object>|null} apiSpaces
  * @param {object} local
  */
-function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local) {
-  const meta = normalizeZonaRow(zonaRow, local)
+function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces) {
+  const meta = normalizeZonaRow(zonaRow)
   let spaces
-
-  if (Array.isArray(apiSpaces) && apiSpaces.length > 0) {
-    const fromApi = apiSpaces.map(mapApiSpaceToEditor)
-    const apiHasGeometry = fromApi.some(spaceHasGeometry)
-    if (apiHasGeometry) {
-      spaces = fromApi.filter((s) => s.codigo || s.nombre)
-    } else {
-      spaces = mergeLocalFloorMapWithApiSpaces(local, apiSpaces).spaces
-    }
-  } else {
-    spaces = local.spaces.map((s) => ({ ...s }))
-  }
+ 
+  const fromApi = apiSpaces.map(mapApiSpaceToEditor)
+  const apiHasGeometry = fromApi.some(spaceHasGeometry)
+  spaces = fromApi.filter((s) => s.codigo || s.nombre)
 
   const partitioned = partitionExcludedSpaces(spaces)
 
@@ -318,6 +302,7 @@ function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local) {
     nombre: meta.nombre,
     edificio: meta.edificio,
     viewBox: meta.viewBox,
+    mapViewBox: meta.mapViewBox,
     background: meta.background,
     spaces: partitioned.spaces,
     autoEliminarIds: partitioned.autoEliminarIds,
@@ -343,17 +328,11 @@ export async function getZonas() {
     const res = await apiFetch('/api/zonas', { headers: authHeaders() })
     if (res.ok) {
       const data = await safeJson(res)
-      if (Array.isArray(data) && data.length > 0) return data
+      if (Array.isArray(data)) return data
     }
   } catch {
-    // fall through to local fallback
+    console.error('Error fetching zonas')
   }
-  return Object.values(LOCAL_MAPS).map((m) => ({
-    id_zona: m.zonaId,
-    nombre_zona: m.codigoZona,
-    descripcion: m.nombre,
-    edificio: m.edificio,
-  }))
 }
 
 /**
@@ -365,8 +344,6 @@ export async function getZonas() {
  * @param {number} zonaId
  */
 export async function getFloorMap(zonaId) {
-  const local = LOCAL_MAPS[zonaId]
-  if (!local) throw new Error(`No floor map for zona ${zonaId}`)
 
   let zonaRow = null
   let apiSpaces = null
@@ -374,7 +351,7 @@ export async function getFloorMap(zonaId) {
   try {
     zonaRow = await getZonaById(zonaId)
   } catch {
-    // fall through
+    console.error(`Error fetching zona ${zonaId}`)
   }
 
   try {
@@ -384,10 +361,10 @@ export async function getFloorMap(zonaId) {
       apiSpaces = extractSpacesArray(data)
     }
   } catch {
-    // fall through
+    console.error(`Error fetching spaces for zona ${zonaId}`)
   }
 
-  return buildFloorMapFromSources(zonaId, zonaRow, apiSpaces, local)
+  return buildFloorMapFromSources(zonaId, zonaRow, apiSpaces)
 }
 
 /**
@@ -415,12 +392,7 @@ export async function getAvailability({ zonaId, fecha, horaInicio, horaFin }) {
       if (data && typeof data === 'object') return data
     }
   } catch {
-    // fall through
+    console.error('Error fetching space availability')
   }
-  // Fallback: assume everything is available so the UI works without backend.
-  const local = LOCAL_MAPS[zonaId]
-  if (!local) return {}
-  const map = {}
-  for (const s of local.spaces) map[s.id_espacio] = 'DISPONIBLE'
-  return map
+  return {}
 }

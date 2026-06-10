@@ -1,12 +1,3 @@
-/**
- * websocket.js — versión actualizada
- *
- * Cambios respecto a la versión anterior:
- *   - Se agrega un Map de listeners por evento (listeners)
- *   - Se exponen onParkingEvent(), subscribeToParkingZona(), unsubscribeFromParkingZona()
- *   - Todo lo existente (connectWebSocket, subscribeToZona, etc.) queda intacto
- */
-
 import io from 'socket.io-client'
 import { getStoredToken } from './auth'
 
@@ -52,6 +43,7 @@ export function connectWebSocket(onAvailabilityChange) {
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5500'
   const token = getStoredToken()
+
   if (!token) return null
 
   // Si existe pero no está conectado, desconectar limpiamente
@@ -87,6 +79,7 @@ export function connectWebSocket(onAvailabilityChange) {
   })
 
   socket.on('connect', () => {
+    // Guardar socketId de forma confiable
     localStorage.setItem('websocket_socket_id', socket.id)
   })
 
@@ -125,6 +118,7 @@ export function unsubscribeFromParkingZona(id_zona) {
 
 export function disconnectWebSocket() {
   // No desconectar el socket global aquí — solo limpia si realmente se desmonta todo
+  // Si quieres desconectar al salir de la página, hazlo desde el componente raíz
 }
 
 export function forceDisconnect() {

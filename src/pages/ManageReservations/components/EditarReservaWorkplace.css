@@ -16,7 +16,7 @@
   border: 1px solid rgba(168, 85, 247, 0.25);
   border-radius: 999px;
   padding: 0.5rem 1.1rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -26,15 +26,15 @@
 }
 
 .erw-back-btn:hover {
-  color: white;
+  color: var(--text-primary);
   border-color: rgba(168, 85, 247, 0.55);
   background: rgba(168, 85, 247, 0.1);
 }
 
 /* ─── Main panel ─── */
 .erw-panel {
-  background: linear-gradient(135deg, rgba(20, 11, 31, 0.97) 0%, rgba(30, 15, 52, 0.95) 100%);
-  border: 1px solid rgba(168, 85, 247, 0.35);
+  background: var(--res-card-bg);
+  border: 1px solid var(--res-border);
   border-radius: 20px;
   padding: 36px;
   box-shadow:
@@ -64,7 +64,7 @@
 .erw-panel-title {
   font-size: 22px;
   font-weight: 700;
-  color: #a855f7;
+  color: var(--res-purple);
   margin: 0;
   letter-spacing: -0.3px;
 }
@@ -78,7 +78,7 @@
   border: 1px solid rgba(46, 213, 115, 0.28);
   border-radius: 10px;
   padding: 12px 16px;
-  color: #2ed573;
+  color: var(--success);
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 24px;
@@ -93,7 +93,7 @@
   border: 1px solid rgba(226, 75, 74, 0.28);
   border-radius: 10px;
   padding: 12px 16px;
-  color: #e24b4a;
+  color: var(--danger);
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 24px;
@@ -115,7 +115,7 @@
   width: 36px;
   height: 36px;
   border: 3px solid rgba(168, 85, 247, 0.15);
-  border-top-color: #a855f7;
+  border-top-color: var(--res-purple);
   border-radius: 50%;
   animation: erw-spin 0.8s linear infinite;
 }
@@ -162,7 +162,7 @@
 
 /* ─── Time selector wrapper ─── */
 .erw-time-wrapper {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface);
   border: 1px solid rgba(168, 85, 247, 0.2);
   border-radius: 12px;
   padding: 12px 14px;
@@ -175,7 +175,7 @@
   border: 1px solid rgba(168, 85, 247, 0.3);
   border-radius: 10px;
   padding: 11px 36px 11px 14px;
-  color: white;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
@@ -195,8 +195,8 @@
 }
 
 .erw-dropdown option {
-  background: #1a0b2e;
-  color: white;
+  background: var(--white);
+  color: var(--text-primary);
 }
 
 /* ─── Location display box ─── */
@@ -208,7 +208,7 @@
   border: 1px solid rgba(168, 85, 247, 0.18);
   border-radius: 10px;
   padding: 11px 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -229,18 +229,18 @@
 
 .erw-email-input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface);
   border: 1px solid rgba(168, 85, 247, 0.25);
   border-radius: 10px;
   padding: 11px 14px;
-  color: white;
+  color: var(--text-primary);
   font-size: 14px;
   font-family: inherit;
   transition: border-color 0.2s, background 0.2s;
 }
 
 .erw-email-input::placeholder {
-  color: rgba(255, 255, 255, 0.28);
+  color: var(--text-muted);
 }
 
 .erw-email-input:focus {
@@ -259,7 +259,7 @@
   background: rgba(168, 85, 247, 0.1);
   border: 1px solid rgba(168, 85, 247, 0.35);
   border-radius: 10px;
-  color: #a855f7;
+  color: var(--res-purple);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -276,8 +276,8 @@
   padding: 15px;
   border: none;
   border-radius: 12px;
-  background: #a855f7;
-  color: white;
+  background: var(--res-purple);
+  color: var(--on-accent);
   font-size: 16px;
   font-weight: 700;
   font-family: inherit;
