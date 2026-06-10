@@ -71,6 +71,23 @@ const Sugerencias = () => {
     fetchSuggestion();
   }, [userId, CACHE_KEY]);
 
+  const renderSkeletonCards = () => (
+    <div className="suggestions-container">
+      {[0, 1, 2].map((i) => (
+        <div className="skeleton-card" key={i}>
+          <div className="skeleton-line skeleton-title" />
+          {[0, 1, 2].map((j) => (
+            <div key={j}>
+              <div className="skeleton-line skeleton-item-title" />
+              <div className="skeleton-line skeleton-item-text" />
+              <div className="skeleton-line skeleton-item-text-short" />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+
   const renderSuggestionBox = (suggestion) => {
     return (
       <div className="info-box" key={suggestion.box_title}>
@@ -111,9 +128,11 @@ const Sugerencias = () => {
         <p className='greeting'>Buenos dias ...</p>
         <p className='date'>{getCurrentDate()}</p>
       </div>
-      {suggestionError
-        ? <div className='no-suggestions'><p>{suggestionError}</p></div>
-        : renderAllSuggestions(suggestion)
+      {loadingSuggestion
+        ? renderSkeletonCards()
+        : suggestionError
+          ? <div className='no-suggestions'><p>{suggestionError}</p></div>
+          : renderAllSuggestions(suggestion)
       }
     </div>
   )
