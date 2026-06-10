@@ -45,6 +45,10 @@ export function AuthProvider({ children }) {
       }
       clearStoredToken()
       clearReservationWizardStorage()
+      // Clear cached suggestions so they are regenerated on next login
+      Object.keys(sessionStorage)
+        .filter(k => k.startsWith('suggestions_cache_'))
+        .forEach(k => sessionStorage.removeItem(k))
       setUser(null)
       navigate('/login', { replace: true })
     } finally {

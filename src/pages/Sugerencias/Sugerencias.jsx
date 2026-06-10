@@ -24,9 +24,22 @@ const Sugerencias = () => {
     return `${dayName}, ${monthName} ${String(day).padStart(2, '0')} de ${year}`;
   };
 
+  const CACHE_KEY = `suggestions_cache_${userId}`;
+
   useEffect(() => {
     if (!userId || hasFetched.current) return;
     hasFetched.current = true;
+
+    const cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        setSuggestion(JSON.parse(cached));
+        setLoadingSuggestion(false);
+        return;
+      } catch {
+        sessionStorage.removeItem(CACHE_KEY);
+      }
+    }
 
     const rangoFecha = new Date();
     rangoFecha.setDate(rangoFecha.getDate() + 7);
@@ -50,12 +63,13 @@ const Sugerencias = () => {
         setLoadingSuggestion(false);
         return;
       }
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(parsedResult));
       setSuggestion(parsedResult);
       setLoadingSuggestion(false);
     };
 
     fetchSuggestion();
-  }, [userId]);
+  }, [userId, CACHE_KEY]);
 
   const renderSuggestionBox = (suggestion) => {
     return (
