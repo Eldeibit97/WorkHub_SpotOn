@@ -682,9 +682,6 @@ export default function Step2SeatMap({
                       preserveAspectRatio="xMidYMid meet"
                       onMouseLeave={clearTooltip}
                     >
-<<<<<<< HEAD
-                      {effectiveSpaces.map((space) => {
-=======
                       <image
                         href={floorMap.background}
                         width="1440"
@@ -693,7 +690,6 @@ export default function Step2SeatMap({
                       />
                       {/* --- MAPEO CON FILTROS (filteredSpaces) --- */}
                       {filteredSpaces.map((space) => {
->>>>>>> 52cddcbf88b5fe038c21f3c2e7e028623a8c3148
                         const state = availability[space.id_espacio] || 'DISPONIBLE'
                         const sel = selectedById.get(space.id_espacio)
                         const isHovered = hovered === space.id_espacio
