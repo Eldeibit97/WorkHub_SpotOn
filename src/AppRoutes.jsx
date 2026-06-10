@@ -2,7 +2,6 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import CrearReservacion from './pages/CrearReservacion/CrearReservacion'
 import Confirmacion from './pages/Confirmacion/Confirmacion'
-import EstacionamientoConfirm from './pages/CrearReservacion/components/EstacionamientoConfirm'
 import Sugerencias from './pages/Sugerencias/Sugerencias'
 import Error from './pages/Error/Error'
 import LandingPage from './pages/LandingPage/LandingPage'
@@ -17,7 +16,8 @@ import FloorEditorOffices from './pages/FloorEditor/FloorEditorOffices'
 import FloorEditorFloors from './pages/FloorEditor/FloorEditorFloors'
 import RequireRole from './components/RequireRole'
 import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
-
+import Verificacion from './pages/GuardView/Verificacion'
+import GuardOverView from './pages/GuardView/GuardOverView'
 import EditarReservaWorkplace from "./pages/ManageReservations/components/EditarReservaWorkplace";
 
 const AppRoutes = () => {
@@ -26,6 +26,7 @@ const AppRoutes = () => {
       {/* Rutas públicas sin layout de usuario */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<SignInPage />} />
+      <Route path='/login/reservationCheck/:reservaId' element={<SignInPage/>}/>
       <Route path="/error" element={<Error />} />
 
       {/* Rutas de usuario con UserTopBar compartido */}
@@ -39,7 +40,6 @@ const AppRoutes = () => {
         <Route path="/sugerencias" element={<Sugerencias />} />
         <Route path="/reservar" element={<CrearReservacion />} />
         <Route path="/confirmacion" element={<Confirmacion />} />
-        <Route path='/Econfirmacion' element={<EstacionamientoConfirm/>}/>
         <Route path="/cancelar" element={<ManageReservationsPage />} />
         
         {/* RUTA ÚNICA PARA MODIFICAR WORKPLACE */}
@@ -47,6 +47,15 @@ const AppRoutes = () => {
       </Route>
 
       {/* Rutas exclusivas para admins (layout con top bar de pestañas) */}
+      <Route
+        element={
+          <RequireRole allowedRoles={['guard']} >
+            <GuardOverView/>
+          </RequireRole>
+        }>
+          <Route path='/verificacion/:reservaId' element={<Verificacion></Verificacion>}></Route>
+      </Route>
+
       <Route
         path="/admin"
         element={
