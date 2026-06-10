@@ -4,7 +4,7 @@ import { isPlausibleDbEspacioId } from './reserve'
 import { normalizeTipoEspacio } from '../lib/spaceTipo'
 
 /** Planos en `public/mapas/` + `import.meta.env.BASE_URL` (subcarpeta en deploy). */
-function resolveFloorBackgroundHref(floorMap) {
+export function resolveFloorBackgroundHref(floorMap) {
   if (!floorMap?.background || typeof floorMap.background !== 'string') return floorMap
   let bg = floorMap.background
   if (/^https?:\/\//i.test(bg)) return floorMap
@@ -44,7 +44,7 @@ function nombreNormKey(s) {
   return String(s).trim().replace(/\s+/g, ' ').toLowerCase()
 }
 
-function apiSpaceId(sp) {
+export function apiSpaceId(sp) {
   const raw = sp.idEspacio ?? sp.id_espacio ?? sp.id
   const n = Number(raw)
   return Number.isFinite(n) ? Math.trunc(n) : NaN
@@ -55,7 +55,7 @@ function apiSpaceId(sp) {
  * @param {unknown} data
  * @returns {Array<object>|null}
  */
-function extractSpacesArray(data) {
+export function extractSpacesArray(data) {
   if (data == null) return null
   if (Array.isArray(data)) return data
   if (Array.isArray(data.spaces)) return data.spaces
@@ -127,7 +127,7 @@ function orderedLookupKeysForLocal(s) {
  * Construye mapa clave → id_espacio solo con ids que parecen de BD.
  * @param {Array<object>} apiSpaces
  */
-function buildApiIdLookup(apiSpaces) {
+export function buildApiIdLookup(apiSpaces) {
   /** @type {Map<string, number>} */
   const byKey = new Map()
   for (const sp of apiSpaces) {
@@ -147,7 +147,7 @@ function buildApiIdLookup(apiSpaces) {
  * @param {Array<object>} apiSpaces
  * @returns {object}
  */
-function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
+export function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   if (!Array.isArray(apiSpaces) || apiSpaces.length === 0) return local
 
   const byKey = buildApiIdLookup(apiSpaces)
@@ -193,6 +193,18 @@ function mergeLocalFloorMapWithApiSpaces(local, apiSpaces) {
   return { ...local, spaces: mergedSpaces }
 }
 
+/**
+ * El backend a veces entrega `background` como color (p. ej. "#eee") o vacío en vez de
+ * una ruta de imagen. Solo aceptamos URLs/rutas/archivos de imagen; si no, usamos el local.
+ * @param {unknown} bg
+ */
+export function isUsableBackgroundHref(bg) {
+  if (typeof bg !== 'string') return false
+  const s = bg.trim()
+  if (!s || s.startsWith('#')) return false
+  return /^https?:\/\//i.test(s) || s.startsWith('/') || /\.(svg|png|jpe?g|webp|gif)$/i.test(s)
+}
+
 function normalizeZonaRow(zonaRow) {
   return {
     codigoZona:
@@ -204,18 +216,19 @@ function normalizeZonaRow(zonaRow) {
     nombre: zonaRow.descripcion ?? zonaRow.nombre ?? null,
     edificio: zonaRow.edificio ?? null,
     viewBox: zonaRow.view_box ?? zonaRow.viewBox ?? null,
-    background: zonaRow.background ?? null,
+    mapViewBox: zonaRow.map_view_box ?? zonaRow.mapViewBox ?? null,
+    background: isUsableBackgroundHref(zonaRow.background) ? zonaRow.background : null,
   }
 }
 
-function spaceHasGeometry(s) {
+export function spaceHasGeometry(s) {
   if (s.x == null || s.y == null) return false
   if (s.shape === 'circle') return s.r != null
   return s.w != null && s.h != null
 }
 
 /** Espacios legacy retirados del layout (p. ej. Media Scape 1 en PB). */
-function isExcludedEditorSpace(s) {
+export function isExcludedEditorSpace(s) {
   const codigo = String(s.codigo ?? s.codigo_espacio ?? s.codigoEspacio ?? '')
     .trim()
     .toUpperCase()
@@ -290,6 +303,7 @@ function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces) {
     nombre: meta.nombre,
     edificio: meta.edificio,
     viewBox: meta.viewBox,
+    mapViewBox: meta.mapViewBox,
     background: meta.background,
     spaces: partitioned.spaces,
     autoEliminarIds: partitioned.autoEliminarIds,

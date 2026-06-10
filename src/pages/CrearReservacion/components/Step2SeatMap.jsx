@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { getFloorMap, getAvailability } from '../../../api/spaces'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { getAvailability } from '../../../api/spaces'
+import { getReservationFloorMap } from '../../../api/reservationFloorMap'
 import { apiFetch } from '../../../api/client'
 import { getStoredToken } from '../../../api/auth'
 import { connectWebSocket, subscribeToZona, unsubscribeFromZona, disconnectWebSocket } from '../../../api/websocket'
@@ -180,15 +181,22 @@ export default function Step2SeatMap({
     let cancelled = false
     setLoading(true)
     async function load() {
-      const map = await getFloorMap(data.zonaId)
-      if (cancelled) return
-      const fechaStr = toYyyyMmDd(data.fecha)
-      const av = await getAvailability({ zonaId: data.zonaId, fecha: fechaStr, horaInicio: data.horaInicio, horaFin: data.horaFin })
-      if (cancelled) return
-      setFloorMap(map)
-      setAvailability(av)
-      setDraftPositions(null)
-      setLoading(false)
+      try {
+        const map = await getReservationFloorMap(data.zonaId)
+        if (cancelled) return
+        const fechaStr = toYyyyMmDd(data.fecha)
+        const av = await getAvailability({ zonaId: data.zonaId, fecha: fechaStr, horaInicio: data.horaInicio, horaFin: data.horaFin })
+        if (cancelled) return
+        setFloorMap(map)
+        setAvailability(av)
+        setDraftPositions(null)
+      } catch (err) {
+        if (cancelled) return
+        console.error('[Step2SeatMap] No se pudo cargar el plano de la zona', data.zonaId, err)
+        setFloorMap(null)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
     load()
     return () => { 
@@ -386,6 +394,43 @@ export default function Step2SeatMap({
   function clearTooltip() { setTooltip(null); setHovered(null) }
 
   const floorImage = FLOOR_INTERIOR_IMAGES[data.zonaId]
+  const mapBackground = floorMap?.background ?? null
+
+  /**
+   * JSON puede incluir "mapViewBox" para ajustar el zoom manualmente por piso.
+   * Si no existe, se usa el viewBox calculado automáticamente desde los espacios.
+   */
+  const activeViewBox = useMemo(() => {
+    return floorMap?.mapViewBox ?? tightViewBox
+  }, [floorMap, tightViewBox])
+
+  /**
+   * Posición y tamaño exactos de la imagen de fondo, calculados con ResizeObserver
+   * para replicar la geometría xMidYMid meet del SVG principal.
+   * Evita depender de object-view-box (CSS no reconocido por React inline styles).
+   */
+  const [bgTransform, setBgTransform] = useState(null)
+
+  useLayoutEffect(() => {
+    const svg = svgRef.current
+    if (!svg || !mapBackground || !activeViewBox) { setBgTransform(null); return }
+    const compute = () => {
+      const { width: CW, height: CH } = svg.getBoundingClientRect()
+      if (CW <= 0 || CH <= 0) return
+      const [vbX, vbY, vbW, vbH] = activeViewBox.split(' ').map(Number)
+      const scale = Math.min(CW / vbW, CH / vbH)
+      setBgTransform({
+        left: Math.round((CW - vbW * scale) / 2 - vbX * scale),
+        top:  Math.round((CH - vbH * scale) / 2 - vbY * scale),
+        width:  Math.round(1440 * scale),
+        height: Math.round(810 * scale),
+      })
+    }
+    compute()
+    const obs = new ResizeObserver(compute)
+    obs.observe(svg)
+    return () => obs.disconnect()
+  }, [mapBackground, activeViewBox])
   const isExpiredBlocking = expired && !editMode
   const hasSharedRoomSelection = data.selectedSpaces.some((s) => s.sharedForAll)
   const effectiveSelectedCount = hasSharedRoomSelection ? (1 + data.coworkers.length) : data.selectedSpaces.length
@@ -613,13 +658,33 @@ export default function Step2SeatMap({
             {!loading && floorMap && (
               <>
                 <div className="step2__map-viewport">
+                    {mapBackground && bgTransform && (
+                      <img
+                        src={mapBackground}
+                        alt=""
+                        aria-hidden="true"
+                        className="step2__map-bg"
+                        style={{
+                          position: 'absolute',
+                          left: bgTransform.left,
+                          top: bgTransform.top,
+                          width: bgTransform.width,
+                          height: bgTransform.height,
+                          pointerEvents: 'none',
+                          userSelect: 'none',
+                        }}
+                      />
+                    )}
                     <svg
                       ref={svgRef}
                       className="seat-map"
-                      viewBox={tightViewBox}
+                      viewBox={activeViewBox}
                       preserveAspectRatio="xMidYMid meet"
                       onMouseLeave={clearTooltip}
                     >
+<<<<<<< HEAD
+                      {effectiveSpaces.map((space) => {
+=======
                       <image
                         href={floorMap.background}
                         width="1440"
@@ -628,6 +693,7 @@ export default function Step2SeatMap({
                       />
                       {/* --- MAPEO CON FILTROS (filteredSpaces) --- */}
                       {filteredSpaces.map((space) => {
+>>>>>>> 52cddcbf88b5fe038c21f3c2e7e028623a8c3148
                         const state = availability[space.id_espacio] || 'DISPONIBLE'
                         const sel = selectedById.get(space.id_espacio)
                         const isHovered = hovered === space.id_espacio
