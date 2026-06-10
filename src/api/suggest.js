@@ -20,7 +20,7 @@ export async function suggest(promptData) {
     }
     promptData = {
       ...promptData, query: hasPending
-        ? `Primer tipo de sugerencia: Que posibles inconvenientes habria en mi ruta hacia 
+        ? `Dame solo dos respuestas. El primer tipo de sugerencia: Que posibles inconvenientes habria en mi ruta hacia 
        la oficina (Por el momento digamos que partes del tec de monterrey 
        campus monterrey a la oficina de accenture monterrey), 
        Segundo tipo de sugerencia: ¿Que recomendaciones me darias para antes de salir 
@@ -39,7 +39,9 @@ export async function suggest(promptData) {
     let mensaje = {};
     if (respuesta) {
       mensaje = JSON.parse(respuesta);
+      mensaje = {...mensaje, pending: hasPending}
     }
+    console.log(mensaje);
     return mensaje;
   } catch {
     return { message: 'Hubo un error al obtener la sugerencia' };

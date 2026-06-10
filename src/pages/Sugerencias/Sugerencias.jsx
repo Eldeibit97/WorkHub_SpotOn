@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { suggest } from '../../api/suggest';
 import { useAuth } from '../../context/AuthContext';
+import MapBox from './components/MapBox';
 import './Sugerencias.css';
 
 const Sugerencias = () => {
@@ -9,6 +10,7 @@ const Sugerencias = () => {
   const [suggestion, setSuggestion] = useState({suggestions : []});
   const [suggestionError, setSuggestionError] = useState(null);
   const [loadingSuggestion, setLoadingSuggestion] = useState(true);
+  const [hasPending, setHasPending] = useState(false);
   const hasFetched = useRef(false);
 
   const getCurrentDate = () => {
@@ -51,6 +53,7 @@ const Sugerencias = () => {
         return;
       }
       setSuggestion(parsedResult);
+      setHasPending(true);
       setLoadingSuggestion(false);
     };
 
@@ -84,6 +87,7 @@ const Sugerencias = () => {
 
     return (
       <div className="suggestions-container">
+        {hasPending ? <MapBox></MapBox> : <></>}
         {jsonData.suggestions.map((suggestion, index) => 
           renderSuggestionBox(suggestion)
         )}
