@@ -15,20 +15,33 @@ const Sugerencias = () => {
 
   const getCurrentDate = () => {
     const today = new Date();
-    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
     const dayName = days[today.getDay()];
     const monthName = months[today.getMonth()];
     const day = today.getDate();
     const year = today.getFullYear();
 
-    return `${dayName}, ${monthName} ${String(day).padStart(2, '0')} of ${year}`;
+    return `${dayName}, ${monthName} ${String(day).padStart(2, '0')} de ${year}`;
   };
+
+  const CACHE_KEY = `suggestions_cache_${userId}`;
 
   useEffect(() => {
     if (!userId || hasFetched.current) return;
     hasFetched.current = true;
+
+    const cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        setSuggestion(JSON.parse(cached));
+        setLoadingSuggestion(false);
+        return;
+      } catch {
+        sessionStorage.removeItem(CACHE_KEY);
+      }
+    }
 
     const rangoFecha = new Date();
     rangoFecha.setDate(rangoFecha.getDate() + 7);
@@ -52,13 +65,31 @@ const Sugerencias = () => {
         setLoadingSuggestion(false);
         return;
       }
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(parsedResult));
       setSuggestion(parsedResult);
       setHasPending(true);
       setLoadingSuggestion(false);
     };
 
     fetchSuggestion();
-  }, [userId]);
+  }, [userId, CACHE_KEY]);
+
+  const renderSkeletonCards = () => (
+    <div className="suggestions-container">
+      {[0, 1, 2].map((i) => (
+        <div className="skeleton-card" key={i}>
+          <div className="skeleton-line skeleton-title" />
+          {[0, 1, 2].map((j) => (
+            <div key={j}>
+              <div className="skeleton-line skeleton-item-title" />
+              <div className="skeleton-line skeleton-item-text" />
+              <div className="skeleton-line skeleton-item-text-short" />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 
   const renderSuggestionBox = (suggestion) => {
     return (
@@ -101,9 +132,11 @@ const Sugerencias = () => {
         <p className='greeting'>Buenos dias ...</p>
         <p className='date'>{getCurrentDate()}</p>
       </div>
-      {suggestionError
-        ? <div className='no-suggestions'><p>{suggestionError}</p></div>
-        : renderAllSuggestions(suggestion)
+      {loadingSuggestion
+        ? renderSkeletonCards()
+        : suggestionError
+          ? <div className='no-suggestions'><p>{suggestionError}</p></div>
+          : renderAllSuggestions(suggestion)
       }
     </div>
   )

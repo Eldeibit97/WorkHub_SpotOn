@@ -182,7 +182,7 @@ export default function UsersTable({
 
       <footer className="admin-pagination">
         <span className="admin-pagination__info">
-          Showing <strong>{showingFrom}-{showingTo}</strong> of {totalLabel} usuarios
+          Mostrando <strong>{showingFrom}-{showingTo}</strong> de {totalLabel} usuarios
         </span>
         <div className="admin-pagination__controls">
           <button

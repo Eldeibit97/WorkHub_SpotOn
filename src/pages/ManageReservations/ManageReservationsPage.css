@@ -422,3 +422,84 @@ button:disabled,
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* =========================================
+   SKELETON LOADING CARDS
+   ========================================= */
+@keyframes res-shimmer {
+  0%   { background-position: -800px 0; }
+  100% { background-position:  800px 0; }
+}
+
+.skeleton-res-line {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--border-color) 25%,
+    color-mix(in srgb, var(--border-color) 40%, var(--bg-card)) 50%,
+    var(--border-color) 75%
+  );
+  background-size: 800px 100%;
+  animation: res-shimmer 1.6s infinite linear;
+}
+
+.skeleton-res-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.skeleton-res-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(59, 29, 92, 0.5);
+  margin-bottom: 16px;
+}
+
+.skeleton-res-badge {
+  height: 22px;
+  width: 72px;
+  border-radius: 20px;
+}
+
+.skeleton-res-type {
+  height: 14px;
+  width: 90px;
+}
+
+.skeleton-res-row {
+  height: 15px;
+  margin-bottom: 10px;
+}
+
+.skeleton-res-row-short {
+  width: 55%;
+}
+
+.skeleton-res-row-medium {
+  width: 75%;
+}
+
+.skeleton-res-row-long {
+  width: 90%;
+}
+
+.skeleton-res-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.skeleton-res-btn {
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
+}
