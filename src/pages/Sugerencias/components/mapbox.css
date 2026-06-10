@@ -1,9 +1,8 @@
-.info-box{
+.map-card{
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   padding: 0.5rem;
-  margin: 0px;
 }
 
 .map{

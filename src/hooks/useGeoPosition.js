@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 
-const useGeoPosition = () => {
+const useGeoPosition = (enabled = true) => {
   const [state, setState] = useState({
-    loading: true,
+    loading: !!enabled,
     error: null,
     data: null
   });
@@ -30,13 +30,20 @@ const useGeoPosition = () => {
   }, []);
 
   useEffect(() => {
+    if (!enabled) {
+      setState({ loading: false, error: null, data: null });
+      return;
+    }
+
+    setState({ loading: true, error: null, data: null });
+
     if (!("geolocation" in navigator)) {
       onError(new Error("Geolocalización no soportada en este navegador"));
       return;
     }
 
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
-  }, []);
+  }, [enabled, onSuccess, onError]);
 
   return state;
 }
