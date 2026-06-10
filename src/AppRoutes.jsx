@@ -30,7 +30,7 @@ const AppRoutes = () => {
       {/* Rutas públicas sin layout de usuario */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<SignInPage />} />
-      <Route path='/login/reservationCheck/:reservaId' element={<SignInPage/>}/>
+      <Route path='/login/detalles/:reservaId' element={<SignInPage/>}/>
       <Route path="/error" element={<Error />} />
 
       {/* Rutas de usuario con UserTopBar compartido */}
