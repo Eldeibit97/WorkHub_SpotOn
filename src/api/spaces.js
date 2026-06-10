@@ -289,7 +289,6 @@ export function mapApiSpaceToEditor(sp) {
 function buildFloorMapFromSources(zonaId, zonaRow, apiSpaces) {
   const meta = normalizeZonaRow(zonaRow)
   let spaces
-  console.log("API SPACES", apiSpaces)
  
   const fromApi = apiSpaces.map(mapApiSpaceToEditor)
   const apiHasGeometry = fromApi.some(spaceHasGeometry)
@@ -359,7 +358,6 @@ export async function getFloorMap(zonaId) {
     const res = await apiFetch(`/api/spaces?zonaId=${zonaId}`, { headers: authHeaders() })
     if (res.ok) {
       const data = await safeJson(res)
-      console.log("DATA",data)
       apiSpaces = extractSpacesArray(data)
     }
   } catch {
