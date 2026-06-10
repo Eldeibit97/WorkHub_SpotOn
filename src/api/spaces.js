@@ -394,4 +394,5 @@ export async function getAvailability({ zonaId, fecha, horaInicio, horaFin }) {
   } catch {
     console.error('Error fetching space availability')
   }
+  return {}
 }

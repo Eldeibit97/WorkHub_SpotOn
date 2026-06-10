@@ -5,9 +5,9 @@ import './mapbox.css'
 const MapContent = ({officeData, geoPosData, routeData}) => {
   const map = useMap();
 
-  console.log('office data', officeData);
-  console.log('geopos data', geoPosData);
-  console.log('route data', routeData);
+  // console.log('office data', officeData);
+  // console.log('geopos data', geoPosData);
+  // console.log('route data', routeData);
 
   useEffect(() => {
     if (!map || !routeData) return;

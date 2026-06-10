@@ -54,8 +54,8 @@
   border-radius: 20px;
   min-height: 400px;
   width: 450px;
-  align-items: center;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
 }
 
