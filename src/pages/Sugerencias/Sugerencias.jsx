@@ -13,15 +13,15 @@ const Sugerencias = () => {
 
   const getCurrentDate = () => {
     const today = new Date();
-    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
     const dayName = days[today.getDay()];
     const monthName = months[today.getMonth()];
     const day = today.getDate();
     const year = today.getFullYear();
 
-    return `${dayName}, ${monthName} ${String(day).padStart(2, '0')} of ${year}`;
+    return `${dayName}, ${monthName} ${String(day).padStart(2, '0')} de ${year}`;
   };
 
   useEffect(() => {
