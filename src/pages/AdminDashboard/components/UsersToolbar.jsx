@@ -50,7 +50,7 @@ export default function UsersToolbar({
         >
           {pageSizeOptions.map((size) => (
             <option key={size} value={size}>
-              Mostrar {size} rows
+              Mostrar {size} filas
             </option>
           ))}
         </select>
