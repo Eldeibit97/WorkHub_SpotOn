@@ -118,7 +118,7 @@ export function useParkingCapacidad({ fecha, horaInicio, horaFin }) {
         return { ok: false, error: data?.error || 'Error al reservar' }
       }
 
-      return { ok: true, data }
+      return { ok: true, data: data[0] }
     } catch (err) {
       return { ok: false, error: 'Error de conexión' }
     } finally {
