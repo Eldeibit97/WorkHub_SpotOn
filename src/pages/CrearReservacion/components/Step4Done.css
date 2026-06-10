@@ -12,8 +12,8 @@
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
-  background: #22c55e;
-  color: #fff;
+  background: var(--success);
+  color: var(--on-accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -88,7 +88,7 @@
 
 .step4__id-pill {
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   padding: 0.18rem 0.6rem;
   border-radius: 999px;
   font-weight: 700;

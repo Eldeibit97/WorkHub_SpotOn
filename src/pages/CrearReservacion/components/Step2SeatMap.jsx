@@ -534,7 +534,7 @@ export default function Step2SeatMap({
               <div className="assignees__row">
                 {attendees.map((a) => (
                   <span key={a.key} className="assignee-chip" title={a.label}>
-                    <span className="assignee-chip__avatar" style={{ background: a.isMe ? '#a855f7' : '#ec4899' }}>
+                    <span className="assignee-chip__avatar" style={{ background: a.isMe ? 'var(--res-purple)' : 'var(--res-magenta)' }}>
                       {a.isMe ? 'TÚ' : getInitialsFromEmail(a.label)}
                     </span>
                     <span className="assignee-chip__label">{a.label}</span>

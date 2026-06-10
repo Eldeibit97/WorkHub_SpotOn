@@ -44,7 +44,7 @@
   border-radius: 50%;
   border: 3px solid var(--white);
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -292,7 +292,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--on-accent);
   font-size: 1.1rem;
   font-weight: 700;
 }
@@ -307,10 +307,10 @@
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--on-accent);
 }
 
-.perfil-icard__badge--equipped { background: #22c55e; }
+.perfil-icard__badge--equipped { background: var(--success); }
 .perfil-icard__badge--locked { background: var(--text-muted); }
 
 .perfil-icard__body {
@@ -350,9 +350,9 @@
 }
 
 .perfil-icard__btn--equipped {
-  background: #22c55e22;
-  color: #22c55e;
-  border: 1px solid #22c55e44;
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success-border);
   cursor: default;
 }
 
@@ -374,8 +374,8 @@
 }
 
 .perfil-icard__btn--unequip:hover {
-  color: #ef4444;
-  border-color: #ef444444;
+  color: var(--danger);
+  border-color: var(--danger-border);
 }
 
 /* ─── Go-to-mercado CTA ──────────────────────────────────────── */
@@ -392,7 +392,7 @@
   border-radius: 12px;
   border: none;
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
@@ -402,7 +402,7 @@
 
 .perfil__mercado-btn:hover {
   opacity: 0.88;
-  color: #fff;
+  color: var(--on-accent);
 }
 
 @media (max-width: 600px) {

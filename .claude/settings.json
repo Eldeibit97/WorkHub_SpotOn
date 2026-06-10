@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la public/mapas/)",
+      "Bash(find . -path ./node_modules -prune -o -name \"piso_*.svg\" -print)",
+      "Bash(ls node_modules/.bin/ 2>/dev/null | grep -iE \"resvg|sharp|svg|puppet|playwright\" ; echo \"--- sharp? ---\"; ls node_modules/sharp 2>/dev/null && echo \"sharp present\"; echo \"--- check global chrome ---\"; ls \"/c/Program Files/Google/Chrome/Application/chrome.exe\" 2>/dev/null && echo \"chrome present\")",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Bash(node -e \"const m=require\\('./src/data/floor-maps/mz.json'\\); const xs=[...new Set\\(m.spaces.map\\(s=>s.x\\)\\)].sort\\(\\(a,b\\)=>a-b\\); const ys=[...new Set\\(m.spaces.map\\(s=>s.y\\)\\)].sort\\(\\(a,b\\)=>a-b\\); console.log\\('distinct X \\('+xs.length+'\\):',xs.slice\\(0,20\\).join\\(','\\)\\); console.log\\('distinct Y \\('+ys.length+'\\):',ys.join\\(','\\)\\); console.log\\('shapes:',[...new Set\\(m.spaces.map\\(s=>s.shape\\)\\)]\\); console.log\\('sample codes:',m.spaces.slice\\(0,6\\).map\\(s=>s.codigo+'/'+\\(s.nombre||''\\)\\).join\\(' | '\\)\\);\")",
+      "Bash(node -e \"const m=require\\('./src/data/floor-maps/p9.json'\\); const xs=[...new Set\\(m.spaces.map\\(s=>s.x\\)\\)].sort\\(\\(a,b\\)=>a-b\\); const ys=[...new Set\\(m.spaces.map\\(s=>s.y\\)\\)].sort\\(\\(a,b\\)=>a-b\\); console.log\\('distinct X \\('+xs.length+'\\):',xs.slice\\(0,30\\).join\\(','\\)\\); console.log\\('distinct Y \\('+ys.length+'\\):',ys.join\\(','\\)\\); console.log\\('sample codes:',m.spaces.slice\\(0,6\\).map\\(s=>s.codigo+'/'+\\(s.nombre||''\\)\\).join\\(' | '\\)\\);\")",
+      "Bash(node -e \"const m=require\\('./src/data/floor-maps/pb.json'\\); const xs=[...new Set\\(m.spaces.map\\(s=>s.x\\)\\)].sort\\(\\(a,b\\)=>a-b\\); console.log\\('distinct X \\('+xs.length+'\\):',xs.slice\\(0,25\\).join\\(','\\)\\); console.log\\('shapes:',m.spaces.reduce\\(\\(o,s\\)=>{o[s.shape]=\\(o[s.shape]||0\\)+1;return o},{}\\)\\);\")",
+      "Bash(node -e \"const m=require\\('./src/data/floor-maps/p3.json'\\); const xs=[...new Set\\(m.spaces.map\\(s=>s.x\\)\\)].sort\\(\\(a,b\\)=>a-b\\); console.log\\('distinct X \\('+xs.length+'\\):',xs.join\\(','\\)\\); console.log\\('shapes:',m.spaces.reduce\\(\\(o,s\\)=>{o[s.shape]=\\(o[s.shape]||0\\)+1;return o},{}\\)\\); console.log\\('codes:',m.spaces.slice\\(0,8\\).map\\(s=>s.codigo\\).join\\(','\\)\\);\")",
+      "Bash(rm -f tmp_diag*.cjs tmp_diag_*.html tmp_shot_*.png && echo \"limpiado\")",
+      "Bash(node -e \"['mz','p9'].forEach\\(k=>{const m=require\\('./src/data/floor-maps/'+k+'.json'\\); console.log\\(k,'OK mapViewBox=',m.mapViewBox\\)}\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(curl -s -m 5 \"http://localhost:5500/api/zonas\")",
+      "Bash(curl -s -m 5 \"http://localhost:5500/api/spaces?zonaId=2\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const a=JSON.parse\\(d\\);const withGeo=a.filter\\(s=>s.x!=null&&s.y!=null\\);console.log\\('total',a.length,'con x/y:',withGeo.length\\);console.log\\('coords con geo:',withGeo.slice\\(0,8\\).map\\(s=>s.codigoEspacio+'\\('+s.x+','+s.y+'\\)'\\).join\\(' '\\)\\);}\\)\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\ramir\\Documents\\workhub-mty"
+    ]
+  }
+}

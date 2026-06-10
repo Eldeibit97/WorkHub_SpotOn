@@ -21,7 +21,7 @@
   border: none;
   border-radius: 25px;
   padding: 12px 30px;
-  color: white;
+  color: var(--on-accent);
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s;
@@ -69,21 +69,21 @@
   font-weight: 600;
   margin: 0 0 2rem;
   text-align: center;
-  color: white;
+  color: var(--text-primary);
 }
 
 .success-icon {
   width: 100px;
   height: 100px;
   margin: 0 auto 20px;
-  background: #a855f7;
+  background: var(--res-purple);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 50px;
   position: relative;
-  color: white;
+  color: var(--on-accent);
 }
 
 .success-icon::after {
@@ -92,7 +92,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: #a855f7;
+  background: var(--res-purple);
   opacity: 0.35;
   animation: pulse 2s infinite;
 }
@@ -105,19 +105,19 @@
 .confirmation-message {
   font-size: 18px;
   margin: 20px 0;
-  color: #ccc;
+  color: var(--text-secondary);
 }
 
 .confirmation-date {
   font-size: 20px;
   font-weight: 600;
   margin: 20px 0;
-  color: white;
+  color: var(--text-primary);
 }
 
 .details-card {
-  background: rgba(20, 10, 40, 0.5);
-  border: 2px solid rgba(168, 85, 247, 0.4);
+  background: var(--res-card-bg);
+  border: 2px solid var(--res-border);
   border-radius: 20px;
   padding: 30px;
   margin: 30px 0;
@@ -131,13 +131,13 @@
 }
 
 .detail-label {
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 14px;
   margin-bottom: 5px;
 }
 
 .detail-value {
-  color: white;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 500;
 }
@@ -147,11 +147,11 @@
 }
 
 .open-maps-btn {
-  background: #a855f7;
+  background: var(--res-purple);
   border: none;
   border-radius: 8px;
   padding: 8px 20px;
-  color: white;
+  color: var(--on-accent);
   font-size: 14px;
   cursor: pointer;
   transition: transform 0.2s;
@@ -173,7 +173,7 @@
   border: 1px solid rgba(168, 85, 247, 0.5);
   border-radius: 12px;
   padding: 15px 40px;
-  color: white;
+  color: var(--res-purple);
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s;

@@ -7,7 +7,7 @@
   border: 1px solid rgba(168, 85, 247, 0.3);
   border-radius: 12px;
   padding: 15px;
-  color: white;
+  color: var(--text-primary);
   width: 100%;
   margin-bottom: 20px;
   display: flex;
@@ -26,8 +26,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: rgba(20, 10, 40, 0.98);
-  border: 2px solid rgba(168, 85, 247, 0.4);
+  background: var(--white);
+  border: 2px solid var(--res-border);
   border-radius: 16px;
   padding: 20px;
   z-index: 1000;
@@ -47,7 +47,7 @@
 }
 
 .calendar-header h4 {
-  color: #a855f7;
+  color: var(--res-purple);
   margin: 0;
   font-size: 18px;
 }
@@ -55,7 +55,7 @@
 .close-btn {
   background: transparent;
   border: none;
-  color: white;
+  color: var(--text-primary);
   font-size: 28px;
   cursor: pointer;
   width: 30px;
@@ -78,7 +78,7 @@
 }
 
 .calendar-day {
-  background: rgba(30, 20, 50, 0.5);
+  background: var(--surface);
   border: 1px solid rgba(168, 85, 247, 0.2);
   border-radius: 10px;
   padding: 12px 8px;
@@ -94,17 +94,17 @@
 }
 
 .calendar-day.selected {
-  background: #a855f7;
-  border-color: #a855f7;
+  background: var(--res-purple);
+  border-color: var(--res-purple);
 }
 
 .calendar-day.today {
-  border-color: #22c55e;
+  border-color: var(--success);
 }
 
 .day-name {
   font-size: 11px;
-  color: #999;
+  color: var(--text-muted);
   text-transform: uppercase;
   margin-bottom: 5px;
 }
@@ -112,16 +112,16 @@
 .day-number {
   font-size: 20px;
   font-weight: 600;
-  color: white;
+  color: var(--text-primary);
   margin-bottom: 3px;
 }
 
 .day-month {
   font-size: 11px;
-  color: #aaa;
+  color: var(--text-muted);
 }
 
 .calendar-day.selected .day-name,
 .calendar-day.selected .day-month {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--on-accent);
 }

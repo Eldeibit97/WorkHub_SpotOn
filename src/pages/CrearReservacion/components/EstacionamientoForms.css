@@ -7,8 +7,8 @@
 }
 
 .parking-map-container {
-  background: rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(168, 85, 247, 0.4);
+  background: var(--surface);
+  border: 2px solid var(--res-border);
   border-radius: 20px;
   min-height: 400px;
   width: 100%;
@@ -29,30 +29,30 @@
 }
 
 .placeholder-text {
-  color: #666;
+  color: var(--text-muted);
   font-size: 18px;
   text-align: center;
 }
 
 .reservation-panel {
-  background: rgba(20, 10, 40, 0.5);
-  border: 2px solid rgba(168, 85, 247, 0.4);
+  background: var(--res-card-bg);
+  border: 2px solid var(--res-border);
   border-radius: 20px;
   padding: 30px;
 }
 
 .reservation-panel h3 {
-  color: #a855f7;
+  color: var(--res-purple);
   margin-bottom: 25px;
   font-size: 20px;
 }
 
 .level-dropdown {
-  background: rgba(30, 20, 50, 0.8);
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: var(--surface);
+  border: 1px solid var(--res-border-soft);
   border-radius: 8px;
   padding: 12px 20px;
-  color: white;
+  color: var(--text-primary);
   width: 100%;
   margin-bottom: 20px;
   cursor: pointer;
@@ -67,7 +67,7 @@
 .location-display {
   background: transparent;
   border: none;
-  color: white;
+  color: var(--text-primary);
   text-align: center;
   padding: 10px;
   margin-bottom: 15px;
@@ -75,11 +75,11 @@
 }
 
 .confirm-btn {
-  background: #a855f7;
+  background: var(--res-purple);
   border: none;
   border-radius: 12px;
   padding: 15px;
-  color: white;
+  color: var(--on-accent);
   width: 100%;
   font-size: 18px;
   font-weight: 600;

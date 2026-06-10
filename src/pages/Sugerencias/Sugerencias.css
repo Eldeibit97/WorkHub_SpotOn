@@ -8,7 +8,7 @@
 }
 
 .greeting{
-  color: white;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: xx-large;
   text-align: center;
@@ -17,7 +17,7 @@
 }
 
 .date{
-  color: gray;
+  color: var(--text-secondary);
   opacity: 75%;
   font-size: larger;
   text-align: center;
@@ -34,7 +34,7 @@
 }
 
 .info-box-title{
-  color: rgba(168, 85, 247);
+  color: var(--res-purple);
   font-weight: bold;
   font-size: 22px;
   text-align: center;
@@ -49,8 +49,8 @@
 }
 
 .info-box{
-  background: rgba(41, 42, 43, 0.375);
-  border: 2px solid rgba(168, 85, 247, 0.4);
+  background: var(--res-card-bg);
+  border: 2px solid var(--res-border);
   border-radius: 20px;
   min-height: 400px;
   width: 450px;
@@ -61,24 +61,24 @@
 
 .reserve-button{
   align-self: center;
-  background: #a855f7;
+  background: var(--res-purple);
   border: none;
   border-radius: 0.40rem;
   width: 250px;
-  color: white;
+  color: var(--on-accent);
   font-size: larger;
   padding: 0.25rem;
 }
 
 .info-box-bullet-title{
-  color: rgba(168, 85, 247);
+  color: var(--res-purple);
   font-weight: bold;
   font-size: 18px;
   margin: 0.6rem 0 0.1rem 0;
 }
 
 .info-box-bullet-text{
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 16px;
   margin: 0 0 0.4rem 0;
   line-height: 1.4;

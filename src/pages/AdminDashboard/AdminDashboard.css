@@ -282,7 +282,7 @@
 
 .admin-btn--primary {
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .admin-btn--secondary {
@@ -292,14 +292,14 @@
 }
 
 .admin-btn--danger {
-  background: #dc2626;
-  color: #fff;
+  background: var(--danger);
+  color: var(--on-accent);
 }
 
 .admin-btn--danger-ghost {
-  background: rgba(220, 38, 38, 0.15);
-  color: #fecaca;
-  border: 1px solid rgba(220, 38, 38, 0.4);
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
 }
 
 .admin-btn--row {
@@ -391,7 +391,7 @@
   height: 34px;
   border-radius: 50%;
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 700;
   font-size: 0.78rem;
   display: inline-flex;
@@ -455,7 +455,7 @@
 
 .admin-pagination__page--active {
   background: var(--acn-gradient);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .admin-pagination__ellipsis {
@@ -487,14 +487,9 @@
 
 .admin-feedback--error,
 .admin-error {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.35);
-  color: #fecaca;
-}
-
-[data-theme='light'] .admin-feedback--error,
-[data-theme='light'] .admin-error {
-  color: #b91c1c;
+  background: var(--danger-bg);
+  border-color: var(--danger-border);
+  color: var(--danger);
 }
 
 /* ==========================================================================
@@ -579,11 +574,7 @@
 }
 
 .admin-warning-text {
-  color: #fecaca;
-}
-
-[data-theme='light'] .admin-warning-text {
-  color: #b91c1c;
+  color: var(--warning);
 }
 
 .admin-helper-text {
@@ -774,7 +765,7 @@
 .fnsh-label {
   font-size: 8px;
   font-weight: 700;
-  fill: #fff;
+  fill: var(--on-accent);
   pointer-events: none;
 }
 
