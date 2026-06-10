@@ -1,0 +1,14 @@
+{
+  "zonaId": 4,
+  "codigoZona": "P9",
+  "nombre": "Piso 9",
+  "edificio": "ATC Monterrey",
+  "viewBox": "0 0 1440 810",
+  "mapViewBox": "429 264 562 361",
+  "background": "/mapas/piso_9.svg",
+  "tipoLabels": {
+    "1": "Estacion de trabajo",
+    "2": "Sala de juntas",
+    "5": "Area especial"
+  }
+}

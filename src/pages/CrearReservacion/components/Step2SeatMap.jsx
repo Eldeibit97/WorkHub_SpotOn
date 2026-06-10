@@ -10,13 +10,13 @@ import DateStrip from './DateStrip'
 import SeatMapExportModal from './SeatMapExportModal'
 import SeatMapSpaceDetailModal from './SeatMapSpaceDetailModal'
 import SeatMapExpiredModal from './SeatMapExpiredModal'
+import SpaceTypeFilter from './SpaceTypeFilter' // Ruta corregida
 import { labelForTipo, normalizeTipoEspacio } from '../../../lib/spaceTipo'
 import { toYyyyMmDd } from '../../../lib/dateFormat'
 import { formatCountdown, isSharedRoomType } from './seatMapHelpers'
 import { getInitialsFromEmail } from '../../../lib/userDisplay'
 import './Step2SeatMap.css'
 import { bloquearEspaciosTemporal, liberarEspaciosTemporal } from '../../../api/reserve'
-
 export default function Step2SeatMap({
   data,
   update,
@@ -46,6 +46,9 @@ export default function Step2SeatMap({
   const [syncStatus, setSyncStatus] = useState('synced')
   const [lastUpdate, setLastUpdate] = useState(new Date())
 
+  // --- INTEGRACIÓN FILTRO: Estado ---
+  const [activeTypeFilters, setActiveTypeFilters] = useState([])
+
   const COUNTDOWN_START = 300
   const [countdown, setCountdown] = useState(COUNTDOWN_START)
   const [expired, setExpired] = useState(false)
@@ -58,6 +61,7 @@ export default function Step2SeatMap({
     setCountdown(COUNTDOWN_START)
     setExpired(false)
     setExpiredDialogOpen(false)
+    setActiveTypeFilters([]) // Resetear filtros al cambiar zona
   }, [data.zonaId])
 
   useEffect(() => {
@@ -79,8 +83,6 @@ export default function Step2SeatMap({
   useEffect(() => {
     if (!editMode && expired) setExpiredDialogOpen(true)
   }, [editMode, expired])
-
-
 
   // WebSocket para actualizaciones en tiempo real
   useEffect(() => {
@@ -266,6 +268,14 @@ export default function Step2SeatMap({
       return override ? { ...s, ...override } : s
     })
   }, [floorMap, draftPositions])
+
+  // --- FILTRADO (Lógica) ---
+  const filteredSpaces = useMemo(() => {
+    if (activeTypeFilters.length === 0) return effectiveSpaces
+    return effectiveSpaces.filter((s) => 
+      activeTypeFilters.includes(normalizeTipoEspacio(s.tipo))
+    )
+  }, [effectiveSpaces, activeTypeFilters])
 
   const tightViewBox = useMemo(() => {
     const spaces = floorMap?.spaces
@@ -526,7 +536,6 @@ export default function Step2SeatMap({
               <i className="seat-dot seat-dot--selected" />Tu selección
             </div>
           </div>
-
         </aside>
 
         <div className="cinema-card__main">
@@ -636,6 +645,16 @@ export default function Step2SeatMap({
           <div className="cinema-card__map" ref={mapWrapperRef}>
             {loading && <div className="step2__loader">Cargando plano…</div>}
 
+            {/* --- COMPONENTE FILTRO INSERTADO --- */}
+            {!loading && floorMap && floorMap.spaces.length > 0 && (
+              <SpaceTypeFilter
+                spaces={floorMap.spaces}
+                availability={availability}
+                activeTypes={activeTypeFilters}
+                onChange={setActiveTypeFilters}
+              />
+            )}
+
             {!loading && floorMap && (
               <>
                 <div className="step2__map-viewport">
@@ -663,7 +682,18 @@ export default function Step2SeatMap({
                       preserveAspectRatio="xMidYMid meet"
                       onMouseLeave={clearTooltip}
                     >
+<<<<<<< HEAD
                       {effectiveSpaces.map((space) => {
+=======
+                      <image
+                        href={floorMap.background}
+                        width="1440"
+                        height="810"
+                        preserveAspectRatio="xMidYMid meet"
+                      />
+                      {/* --- MAPEO CON FILTROS (filteredSpaces) --- */}
+                      {filteredSpaces.map((space) => {
+>>>>>>> 52cddcbf88b5fe038c21f3c2e7e028623a8c3148
                         const state = availability[space.id_espacio] || 'DISPONIBLE'
                         const sel = selectedById.get(space.id_espacio)
                         const isHovered = hovered === space.id_espacio
@@ -717,10 +747,9 @@ export default function Step2SeatMap({
               </div>
             )}
           </div>
-
         </div>
       </div>
-
+      
       <div className="wiz-actions">
         <button type="button" className="wiz-btn wiz-btn--ghost" onClick={handleAtras}>← Atrás</button>
         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
