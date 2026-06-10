@@ -36,12 +36,12 @@ function SugerenciasContent() {
   };
 
   // Geo position hook — only activated when needed (pending reservation detected)
-  const { loading: geoLoading, data: hookGeoPos } = useGeoPosition(geoEnabled);
+  const { loading: geoLoading, data: hookGeoPos, settled: geoSettled } = useGeoPosition(geoEnabled);
   const geoPosData = cachedGeoPos ?? (geoEnabled ? hookGeoPos : null);
 
   // Route hook — only runs when pending=true and geo position is ready
   const routeOrigin = hasPending && geoPosData ? geoPosData.coords : null;
-  const { loading: routeLoading, data: routeData } = useRoute(routeOrigin, OFFICE_COORDS);
+  const { data: routeData, settled: routeSettled } = useRoute(routeOrigin, OFFICE_COORDS);
 
   const doSuggest = useCallback(async (body, pending, geoPos) => {
     setLoadingSuggestion(true);
@@ -69,68 +69,78 @@ function SugerenciasContent() {
     if (!userId || initDone.current) return;
     initDone.current = true;
 
-    const cached = sessionStorage.getItem(CACHE_KEY);
-    if (cached) {
-      try {
-        const c = JSON.parse(cached);
-        setSuggestion(c.suggestions);
-        setHasPending(c.pending ?? false);
-        if (c.pending && c.geoPosData) setCachedGeoPos(c.geoPosData); // triggers route re-fetch for map
-        pendingSuggestDone.current = true;
-        setLoadingSuggestion(false);
-        return;
-      } catch {
-        sessionStorage.removeItem(CACHE_KEY);
-      }
-    }
+    const today = new Date().toISOString().slice(0, 10);
 
-    // No cache — check for pending reservation then call LLM
     (async () => {
-      const today = new Date().toISOString().slice(0, 10);
-      const rDate = new Date();
-      rDate.setDate(rDate.getDate() + 7);
-      const rango = rDate.toISOString().slice(0, 10);
-
-      const pending = await checkPendingReservation(parseInt(userId, 10), today, rango);
+      // Always check live pending status so the map reflects current state
+      const pending = await checkPendingReservation(parseInt(userId, 10), today);
       setHasPending(pending);
+      if (pending) setGeoEnabled(true);
 
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        try {
+          const c = JSON.parse(cached);
+          setSuggestion(c.suggestions);
+          pendingSuggestDone.current = true;
+          setLoadingSuggestion(false);
+          return;
+        } catch {
+          sessionStorage.removeItem(CACHE_KEY);
+        }
+      }
+
+      // No cache — call LLM
       if (!pending) {
         pendingSuggestDone.current = true;
         await doSuggest(
-          { query: '¿Qué días debo ir a la oficina esta semana?', user_id: parseInt(userId, 10) },
+          { query: `Primer tipo de sugerencia: ¿Que me sugieres reservar en la proxima semana 
+       basado en mis preferencias? Da opciones variadas, segundo tipo de sugerencia: 
+       ¿Como esta en disponibilidad espacios que he utilizado en reservas previas?, 
+       tercera ¿Qué oportunidades de reserva debería aprovechar?`, user_id: parseInt(userId, 10) },
           false,
           null
         );
-      } else {
-        setGeoEnabled(true); // activates geo hook → route hook → effect ② below
       }
+      // If pending, effect ② below will fire once geo+route are ready
     })();
   }, [userId, CACHE_KEY, doSuggest]);
 
-  // ② When pending: wait for geo+route, then call LLM with traffic data
+  // When pending: wait for geo+route, then call LLM with traffic data
   useEffect(() => {
     if (!hasPending || pendingSuggestDone.current) return;
-    if (geoLoading) return;
+    if (!geoSettled) return;
+
+    const queryRegular = `Primer tipo de sugerencia: ¿Que me sugieres reservar en la proxima semana 
+       basado en mis preferencias? Da opciones variadas, segundo tipo de sugerencia: 
+       ¿Como esta en disponibilidad espacios que he utilizado en reservas previas?, 
+       tercera ¿Qué oportunidades de reserva debería aprovechar?`
+
+    const queryTraffic = `Primer tipo de sugerencia: Que posibles inconvenientes habria en mi ruta hacia  
+       la oficina toma en cuenta los datos de mi posicion y la ruta que debo tomar para llegar al punto final, 
+       Segundo tipo de sugerencia: ¿Que recomendaciones me darias para antes de salir 
+       hacia la oficina? (ej. con cuanto tiempo deberia salir, que deberia tomar en 
+       cuenta, etc.)`
 
     if (!geoPosData) {
       // Geo failed — fall back to normal suggest
       pendingSuggestDone.current = true;
       doSuggest(
-        { query: '¿Qué días debo ir a la oficina esta semana?', user_id: parseInt(userId, 10) },
+        { query: queryRegular, user_id: parseInt(userId, 10) },
         false,
         null
       );
       return;
     }
 
-    if (routeLoading) return;
+    if (!routeSettled) return;
 
     pendingSuggestDone.current = true;
 
     if (routeData) {
       doSuggest(
         {
-          query: '¿Cómo está el tráfico para ir a la oficina?',
+          query: queryTraffic,
           user_id: parseInt(userId, 10),
           origin: geoPosData.coords,
           destination: OFFICE_COORDS,
@@ -146,12 +156,12 @@ function SugerenciasContent() {
     } else {
       // Route failed — fall back to normal suggest
       doSuggest(
-        { query: '¿Qué días debo ir a la oficina esta semana?', user_id: parseInt(userId, 10) },
+        { query: queryRegular, user_id: parseInt(userId, 10) },
         false,
         null
       );
     }
-  }, [hasPending, geoLoading, geoPosData, routeLoading, routeData, userId, doSuggest]);
+  }, [hasPending, geoSettled, geoPosData, routeSettled, routeData, userId, doSuggest]);
 
   const renderSkeletonCards = () => (
     <div className="suggestions-container">

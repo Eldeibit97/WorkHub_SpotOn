@@ -113,7 +113,8 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
     return data.zonaId != null && Number.isFinite(Number(data.zonaId))
   }, [data.zonaId])
 
-  const canGoToStep3 = data.selectedSpaces.length > 0
+  const validTimeRange = !data.horaInicio || !data.horaFin || data.horaInicio < data.horaFin
+  const canGoToStep3 = data.selectedSpaces.length > 0 && validTimeRange
 
   // Persist edit-mode draft so refreshes keep zona/fecha/horario.
   useEffect(() => {
@@ -308,6 +309,8 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
         })
         // Limpiar espacios bloqueados tras confirmación exitosa
         setBlockedSpaces(null)
+        // Invalidar caché de sugerencias para que se regeneren con la nueva reserva
+        sessionStorage.removeItem(`suggestions_cache_${user?.sub}`)
         // Refrescar saldo de PP (el backend otorga +50 PP / reserva workplace o +30 PP / estacionamiento)
         refreshBalance().catch(() => {})
         goNext()
@@ -379,6 +382,7 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
             onBack={goBack}
             onNext={() => canGoToStep3 && goNext()}
             canContinue={canGoToStep3}
+            validTimeRange={validTimeRange}
             bookerMail={user?.correo_institucional || user?.correo || ''}
             bookerName={`${user?.nombre || ''} ${user?.apellido || ''}`.trim() || 'Tú'}
             onBlockSpaces={setBlockedSpaces}

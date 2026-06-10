@@ -27,6 +27,7 @@ export default function Step2SeatMap({
   bookerMail,
   bookerName,
   onBlockSpaces,
+  validTimeRange = true,
 }) {
   const [floorMap, setFloorMap] = useState(null)
   const [availability, setAvailability] = useState({})
@@ -185,7 +186,10 @@ export default function Step2SeatMap({
         const map = await getReservationFloorMap(data.zonaId)
         if (cancelled) return
         const fechaStr = toYyyyMmDd(data.fecha)
-        const av = await getAvailability({ zonaId: data.zonaId, fecha: fechaStr, horaInicio: data.horaInicio, horaFin: data.horaFin })
+        let av = {}
+        if (data.horaInicio && data.horaFin && data.horaInicio < data.horaFin) {
+          av = await getAvailability({ zonaId: data.zonaId, fecha: fechaStr, horaInicio: data.horaInicio, horaFin: data.horaFin })
+        }
         if (cancelled) return
         setFloorMap(map)
         setAvailability(av)
@@ -569,6 +573,9 @@ export default function Step2SeatMap({
                   horaSalida={data.horaFin}
                   onTimeChange={(start, end) => update({ horaInicio: start, horaFin: end })}
                 />
+                {!validTimeRange && (
+                  <p className="step2__time-error">La hora de salida debe ser posterior a la hora de entrada.</p>
+                )}
               </div>
             </div>
           </div>

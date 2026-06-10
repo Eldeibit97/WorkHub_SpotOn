@@ -4,11 +4,10 @@ import { apiFetch } from './client'
  * Checks whether the user has a pending reservation for today.
  * @returns {Promise<boolean>}
  */
-export async function checkPendingReservation(userId, today, rango) {
+export async function checkPendingReservation(userId, fecha) {
   try {
-    const res = await apiFetch('/api/reservas/tiene-reserva', {
-      method: 'POST',
-      body: { user_id: userId, today, rango },
+    const res = await apiFetch(`/api/reservas/tiene-reserva?userId=${userId}&fecha=${fecha}`, {
+      method: 'GET',
     });
     if (res.ok) {
       const text = await res.text();
