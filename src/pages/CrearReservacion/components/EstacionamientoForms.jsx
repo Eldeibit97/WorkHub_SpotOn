@@ -1,99 +1,171 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { toMinutes } from '../../../lib/dateFormat';
 import './EstacionamientoForms.css';
-import DateSelector from '../../ManageReservations/components/DateSelector';
+import { useParkingCapacidad } from '../../../hooks/useParkingCapacity';
+import DateStrip from './DateStrip';
 import TimeSelector from './TimeSelector';
 
-const EstacionamientoForms = ({ dateData, onConfirm }) => {
-  const [reservationData, setReservationData] = useState({
-    mail: '',
-    idEspacio: 163,
-    fechaReserva: dateData.dateObj,
-    horaInicio: '08:00',
-    horaSalida: '13:00',
-    fechaCreacion: new Date(),
-    //parkingLot: 'South Parking Lot',
-    //level: '2nd Level',
-    tipoReserva: 'ESTACIONAMIENTO',
-    //reservationID: 'PK9021'
+// Configuración de estilos para las zonas
+const ZONE_STYLES = {
+  9: { colorClass: "dotZona1", badgeClass: "badgeZona1" },
+  10: { colorClass: "dotZona2", badgeClass: "badgeZona2" },
+  8: { colorClass: "dotZona3", badgeClass: "badgeZona3" },
+};
+
+const startData = {
+  mail: '',
+  fechaReserva: new Date(),
+  horaInicio: '00:00',
+  horaSalida: '00:00',
+  fechaCreacion: new Date(),
+  tipoReserva: 'ESTACIONAMIENTO'
+};
+
+const EstacionamientoForms = ({ onConfirm }) => {
+  const [reservationData, setReservationData] = useState(startData);
+  const [allowConfirm, setAllowConfirm] = useState(false);
+  const [timesError, setTimesError] = useState(false);
+  const [reservaError, setReservaError] = useState(null);
+
+  // Hook para obtener capacidad de zonas en tiempo real y función de reservación
+  const {
+    zonas,
+    loading: loadingCapacity,
+    error: errorCapacity,
+    reservar,
+    reservando
+  } = useParkingCapacidad({
+    fecha: reservationData.fechaReserva.toISOString().split('T')[0],
+    horaInicio: reservationData.horaInicio,
+    horaFin: reservationData.horaSalida
   });
 
-  const handleDateChange = (newDate) => {
-    setReservationData({ ...reservationData, fechaReserva: newDate });
+  const handleChange = (patch) => {
+    setReservationData(prev => ({ ...prev, ...patch }));
   };
 
-  const handleTimeChange = (start, end) => {
-    setReservationData({
-      ...reservationData,
-      horaInicio: start,
-      horaSalida: end
-    });
+  // Manejo de la confirmación: primero reserva via API, luego notifica al componente padre
+  const handleConfirm = async () => {
+    try {
+      setReservaError(null);
+      
+      // Usar la función reservar del hook
+      const resultado = await reservar(reservationData);
+      console.log('Resultado API:', resultado);
+
+      // Si hubo error en la reservación
+      if (!resultado.ok) {
+        setReservaError(resultado.error || 'Error al realizar la reservación');
+        return;
+      }
+      onConfirm(resultado.data);
+    } catch (error) {
+      setReservaError(error.message || 'Error inesperado al realizar la reservación');
+    }
   };
 
-  const handleChange = (e) => {
-    setReservationData({ ...reservationData, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    if (toMinutes(reservationData.horaInicio) >= toMinutes(reservationData.horaSalida) && !(reservationData.horaInicio === '00:00' && reservationData.horaSalida === '00:00')) {
+      setTimesError(true);
+      return;
+    }
+    setTimesError(false);
+  }, [reservationData.horaInicio, reservationData.horaSalida]);
 
-  const handleConfirm = () =>{
-    const finalData = {
-      ...reservationData,
-      fechaReserva: reservationData.fechaReserva.toISOString(),
-      fechaCreacion: reservationData.fechaCreacion.toISOString(),
+  const emailRegex = /^[a-z0-9._]+@[a-z]+\.[a-z]{3,6}$/i;
+  useEffect(() => {
+    if (emailRegex.test(reservationData.mail) && (reservationData.horaInicio !== '00:00' && reservationData.horaSalida !== '00:00')) {
+      setAllowConfirm(true);
+    } else {
+      setAllowConfirm(false);
     };
-    onConfirm(finalData);
-  }
+  }, [reservationData.mail, reservationData.horaInicio, reservationData.horaSalida]);
 
   return (
-    <>
-      <div className="main-grid">
-        <div className="parking-map-container parking-map-container--carousel">
-          <div className="parking-map-placeholder">
-            <h3>Mapa de estacionamiento</h3>
-            <p>El selector visual estará disponible próximamente.</p>
+    <div className="main-layout">
+      <div className="panel panelLeft">
+        <p className="panelTitle">Nueva reserva de estacionamiento</p>
+
+        <div className="fieldGroup">
+          <label className="fieldLabel" htmlFor="fecha">
+            Fecha de reserva
+          </label>
+          <p className="fieldSublabel">Selecciona el dia ha reservar</p>
+          <div className="inputWrapper">
+            <DateStrip value={reservationData.fechaReserva} onChange={(date) => handleChange({ fechaReserva: date })}></DateStrip>
+          </div>
+        </div>
+        <div className="fieldGroup">
+          <label className="fieldLabel" htmlFor="hora">
+            Tiempo de reserva
+          </label>
+          {timesError ? <p className='error-text'> La hora de llegada a la reserva no puede ser antes o igual a la hora de salida</p> : ''}
+          <p className="fieldSublabel">Hora estimada de llegada y salida</p>
+          <div className="inputWrapper">
+            <TimeSelector horaInicio={reservationData.horaInicio} horaSalida={reservationData.horaSalida} onTimeChange={(inicio, fin) => handleChange({ horaInicio: inicio, horaSalida: fin })}></TimeSelector>
           </div>
         </div>
 
-        <div className="reservation-panel">
-          <h3>New Reservation</h3>
-
-          <DateSelector
-            selectedDate={reservationData.fechaReserva}
-            onDateChange={handleDateChange}
-          />
-
-          <TimeSelector
-            horaInicio={reservationData.horaInicio}
-            horaSalida={reservationData.horaSalida}
-            onTimeChange={handleTimeChange}
-          />
-          {/*
-          <div className="location-display">
-            {reservationData.parkingLot}
-          </div>
-          */}
-          <select className="level-dropdown" name='level' value={reservationData.level} onChange={handleChange}>
-            <option>1st Level</option>
-            <option>2nd Level</option>
-            <option>3rd Level</option>
-            <option>4th Level</option>
-          </select>
-          <div className="email-container">
+        <div className="fieldGroup">
+          <label className="fieldLabel" htmlFor="correo">
+            Correo del responsable
+          </label>
+          <div className="inputWrapper">
             <input
+              id="correo"
               type="email"
-              name='mail'
-              className="email-input"
+              placeholder="ejemplo@correo.com"
+              className="input"
               value={reservationData.mail}
-              onChange={handleChange}
-              placeholder="Email address"
+              onChange={(e) => handleChange({ mail: e.target.value })}
             />
-            <button className="add-guest-btn" title="Add guest">+</button>
           </div>
-          <button className="confirm-btn" onClick={handleConfirm}>
-            Confirm Reservation
-          </button>
         </div>
+
+        {reservaError && <p className='error-text'>{reservaError}</p>}
+
+        <button
+          className='confirm-btn'
+          onClick={handleConfirm}
+          disabled={reservando || !allowConfirm || loadingCapacity}
+        >
+          {reservando ? (<p>Confirmando reserva...</p>) : (<p>Confirmar</p>)}
+        </button>
       </div>
-    </>
+
+      <div className="panel panelRight">
+        <div>
+          <p className="availabilityTitle">Disponibilidad de zonas</p>
+          <p className="availabilitySubtitle">Actualizado en tiempo real</p>
+        </div>
+
+        {errorCapacity && <p className='error-text'>{errorCapacity}</p>}
+        {loadingCapacity && <p>Cargando disponibilidad...</p>}
+
+        <div className="zonesCard">
+          {zonas.map((zona, idx) => {
+            const styles = ZONE_STYLES[zona.id_zona] || { colorClass: '', badgeClass: '' };
+            return (
+              <div key={zona.id_zona}>
+                <div className="zoneRow">
+                  <div className="zoneName">
+                    <span className={`zoneDot ${styles.colorClass}`} />
+                    {zona.nombre_zona}
+                  </div>
+                  <span className={`zoneBadge ${styles.badgeClass}`}>
+                    {zona.disponibles} / {zona.total}
+                  </span>
+                </div>
+                {idx < zonas.length - 1 && <div className="zoneDivider" style={{ marginTop: 12 }} />}
+              </div>
+            );
+          })}
+        </div>
+        <p className="legendNote">ℹ️ Disponibles / Total por zona</p>
+      </div>
+    </div>
   );
 }
 

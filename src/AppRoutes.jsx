@@ -18,6 +18,8 @@ import FloorEditorOffices from './pages/FloorEditor/FloorEditorOffices'
 import FloorEditorFloors from './pages/FloorEditor/FloorEditorFloors'
 import RequireRole from './components/RequireRole'
 import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
+import Verificacion from './pages/GuardView/Verificacion'
+import GuardOverView from './pages/GuardView/GuardOverView'
 import NoShowsPage from './pages/AdminDashboard/NoShowsPage'
 
 import EditarReservaWorkplace from "./pages/ManageReservations/components/EditarReservaWorkplace";
@@ -28,6 +30,7 @@ const AppRoutes = () => {
       {/* Rutas públicas sin layout de usuario */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<SignInPage />} />
+      <Route path='/login/reservationCheck/:reservaId' element={<SignInPage/>}/>
       <Route path="/error" element={<Error />} />
 
       {/* Rutas de usuario con UserTopBar compartido */}
@@ -49,6 +52,15 @@ const AppRoutes = () => {
       </Route>
 
       {/* Rutas exclusivas para admins (layout con top bar de pestañas) */}
+      <Route
+        element={
+          <RequireRole allowedRoles={['guard']} >
+            <GuardOverView/>
+          </RequireRole>
+        }>
+          <Route path='/verificacion/:reservaId' element={<Verificacion></Verificacion>}></Route>
+      </Route>
+
       <Route
         path="/admin"
         element={

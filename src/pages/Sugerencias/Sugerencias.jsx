@@ -207,10 +207,10 @@ function SugerenciasContent() {
   };
 
   return (
-    <div className="page-container">
-      <div className="today-info-container">
-        <p className="greeting">Buenos dias ...</p>
-        <p className="date">{getCurrentDate()}</p>
+    <div className='page-container'>
+      <div className='today-info-container'>
+        <p className='greeting'>Buenos dias {`${user?.nombre || ''}`.trim() || 'Usuario'}</p>
+        <p className='date'>{getCurrentDate()}</p>
       </div>
       {loadingSuggestion
         ? renderSkeletonCards()

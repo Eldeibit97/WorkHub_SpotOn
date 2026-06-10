@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './CrearReservacion.css';
 import ReservationWizard from './components/ReservationWizard';
-import EstacionamientoForms from './components/EstacionamientoForms';
+import EstacionamientoWizard from './components/EstacionamientoWizard';
 import workplaceImg from '../../assets/floors/workplace-view.png';
 import parkingImg from '../../assets/floors/parking-view.png';
 import { liberarEspaciosTemporal } from '../../api/reserve';
@@ -55,10 +55,6 @@ const CrearReservacion = () => {
     };
   };
 
-  const handleParkingConfirm = (data) => {
-    console.log('Parking reservation:', data);
-  };
-
   return (
     <div className="reservation-container">
       {view === 'selector' && (
@@ -79,10 +75,7 @@ const CrearReservacion = () => {
           <button className="res-back-btn" onClick={() => setView('selector')}>
             ← Volver
           </button>
-          <EstacionamientoForms
-            dateData={getCurrentDate()}
-            onConfirm={handleParkingConfirm}
-          />
+          <EstacionamientoWizard/>
         </>
       )}
     </div>
