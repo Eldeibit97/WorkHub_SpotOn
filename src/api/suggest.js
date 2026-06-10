@@ -38,7 +38,9 @@ export async function suggest(promptData) {
     let mensaje = {};
     if (respuesta) {
       mensaje = JSON.parse(respuesta);
+      mensaje = {...mensaje, pending: hasPending}
     }
+    console.log(mensaje);
     return mensaje;
   } catch {
     return { message: 'Hubo un error al obtener la sugerencia' };

@@ -1,0 +1,15 @@
+.info-box{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding: 0.5rem;
+  margin: 0px;
+}
+
+.map{
+  height: 475px;
+  width: 450px;
+  border: 1px solid rgba(109, 32, 181, 0.786);
+  border-radius: 6px;
+  overflow: hidden;
+}
