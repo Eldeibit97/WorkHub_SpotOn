@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { toYyyyMmDd } from '../../lib/dateFormat'
+import { getReservaDetails } from '../../api/reserve'
 import './Verificacion.css'
 
 const Verificacion = () => {
@@ -12,23 +14,18 @@ const Verificacion = () => {
     const fetchReserva = async () => {
       try {
         setLoading(true)
-        // TODO: Reemplazar con tu endpoint real
-        // const response = await fetch(`/api/reservas/${reservaId}`)
-        // const data = await response.json()
-        // setReserva(data)
-        
-        // Datos de ejemplo para desarrollo
+        const data = await getReservaDetails(reservaId);
+        console.log(data);
         setReserva({
-          id: reservaId,
-          mail: 'usuario@example.com',
-          placa: 'ABC-123-D',
-          fechaReserva: '2025-06-15',
-          horaInicio: '08:00',
-          horaSalida: '17:00',
-          edificio: 'Edificio A',
-          lugarAsignado: 'A-S2-045',
-          estado: 'CONFIRMADA',
-          fechaCreacion: new Date().toLocaleDateString()
+          id: data.id_reserva,
+          mail: data.correo_institucional,
+          fechaReserva: data.fecha_reserva,
+          horaInicio: data.hora_inicio,
+          horaSalida: data.hora_fin,
+          edificio: data.descripcion,
+          lugarAsignado: data.codigo_espacio,
+          estado: 'PENDIENTE',
+          fechaCreacion: data.fecha_creacion
         })
       } catch (err) {
         setError('Error al cargar la reserva')
@@ -76,13 +73,12 @@ const Verificacion = () => {
           <p className="verificacion-subtitle">ID: {reserva.id}</p>
         </div>
 
-        {/* Datos principales */}
         <div className="section">
           <h2 className="section-title">Información de la Reserva</h2>
           <div className="fields-grid">
             <div className="field">
               <label className="field-label">Fecha de Reserva</label>
-              <p className="field-value">{reserva.fechaReserva}</p>
+              <p className="field-value">{toYyyyMmDd(reserva.fechaReserva)}</p>
             </div>
             <div className="field">
               <label className="field-label">Horario</label>
@@ -91,7 +87,6 @@ const Verificacion = () => {
           </div>
         </div>
 
-        {/* Detalles de estacionamiento */}
         <div className="section">
           <h2 className="section-title">Asignación de Estacionamiento</h2>
           <div className="fields-grid">
@@ -106,7 +101,6 @@ const Verificacion = () => {
           </div>
         </div>
 
-        {/* Datos del titular */}
         <div className="section">
           <h2 className="section-title">Titular de la Reserva</h2>
           <div className="fields-grid">
@@ -117,15 +111,12 @@ const Verificacion = () => {
           </div>
         </div>
 
-        {/* Metadata */}
         <div className="section metadata">
-          <p className="metadata-text">Creada: {reserva.fechaCreacion}</p>
+          <p className="metadata-text">Creada: {toYyyyMmDd(reserva.fechaCreacion)}</p>
         </div>
 
-        {/* Acciones */}
         <div className="actions">
-          <button className="btn btn-primary">Confirmar Entrada</button>
-          <button className="btn btn-secondary">Volver</button>
+          <button className="btn btn-primary">Confirmar entrada</button>
         </div>
       </div>
     </div>

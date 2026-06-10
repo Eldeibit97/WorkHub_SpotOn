@@ -134,6 +134,20 @@ export async function reservarBatch(items) {
 }
 
 export async function getReservaDetails(id_reserva){
+  try{
+    const res = await apiFetch(`/api/reservas/detalles/${id_reserva}`, { method: 'GET' });
+    const response = await res.text();
+    let data = null;
+    if(response){
+      data = JSON.parse(response);
+    }
+    return data;
+  }catch(error){
+    console.log('Ocurrio un error', error);
+    return { success: false, error: error };
+  };
+}
 
+export async function confirmarEntrada(id_reserva) {
   
 }

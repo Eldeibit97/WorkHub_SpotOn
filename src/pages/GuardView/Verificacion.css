@@ -37,6 +37,9 @@
 
 .status-icon {
   color: #10b981;
+  background-color: white;
+  border-radius: 20px;
+  padding: 2px;
   animation: pulse 2s infinite;
 }
 
@@ -71,7 +74,7 @@
 }
 
 .verificacion-subtitle {
-  font-size: 12px;
+  font-size: 16px;
   opacity: 0.9;
   margin: 6px 0 0;
   letter-spacing: 0.02em;
@@ -164,7 +167,7 @@
 }
 
 .metadata-text {
-  font-size: 11px;
+  font-size: 14px;
   color: #888780;
   margin: 0;
   text-align: center;
@@ -224,21 +227,6 @@
 
 .btn-primary:active {
   transform: translateY(0);
-}
-
-.btn-secondary {
-  background: #f8f8f6;
-  color: #5f5e5a;
-  border: 1px solid #e0dfd8;
-}
-
-.btn-secondary:hover {
-  background: #f0ebe0;
-  border-color: #888780;
-}
-
-.btn-secondary:active {
-  background: #e8e3d8;
 }
 
 /* Responsive para tablets */
