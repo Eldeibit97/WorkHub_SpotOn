@@ -1,44 +1,40 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState, useCallback } from 'react'
-import { reservarEstacionamiento } from '../../../api/reserve'
 import EstacionamientoForms from './EstacionamientoForms'
 import EstacionamientoConfirm from './EstacionamientoConfirm'
 
 const EstacionamientoWizard = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [confirmed, setConfirmed] = useState(false);
-  const [data, setData] = useState(null);
+  const [reservationData, setReservationData] = useState(null);
 
-  const handleConfirm = useCallback(async (datosReserva) => {
-    setLoading(true);
-    setError('');
-    try {
-      const response = await reservarEstacionamiento(datosReserva);
-      if (response.success) {
-        setData(response.data);
-      }
-    } catch (error) {
-      console.log(error);
-      setError('Ocurrio un error al intentar realizar la reserva, vuelva a intentarlo porfavor');
-      setConfirmed(false);
-      setLoading(false);
+  // Recibe datos ya reservados desde EstacionamientoForms
+  // La reservación ya se hizo en el hook useParkingCapacidad
+  const handleConfirm = useCallback((datosReserva) => {
+    // datosReserva contiene: mail, fechaReserva, horaInicio, horaSalida, id_reserva, etc.
+    console.log('✅ Datos recibidos en Wizard:', datosReserva);
+    // Nota: setReservationData es asincrónico, el estado se actualiza en el siguiente render
+    // Por eso primero guardamos los datos y luego cambiamos de vista
+    setReservationData(datosReserva);
+  });
+
+  useEffect(() => {
+    if (reservationData === null){
       return;
     }
     setConfirmed(true);
-    setLoading(false);
-  });
+  }, [reservationData])
 
   const onBack = useCallback(() => {
-    setData(null);
+    setReservationData(null);
     setConfirmed(false);
   });
 
   return (
     <div>
-      {loading ?
-        <div> Realizando la reserva </div>
-        : ( confirmed ? <EstacionamientoConfirm onHome={onBack} data={data}/> : <EstacionamientoForms onConfirm={handleConfirm}/>)
+      {confirmed ? 
+        <EstacionamientoConfirm onHome={onBack} data={reservationData} /> 
+        : 
+        <EstacionamientoForms onConfirm={handleConfirm} />
       }
     </div>
   )

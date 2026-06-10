@@ -3,18 +3,19 @@ import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { toMinutes } from '../../../lib/dateFormat';
 import './EstacionamientoForms.css';
+import { useParkingCapacidad } from '../../../hooks/useParkingCapacity';
 import DateStrip from './DateStrip';
 import TimeSelector from './TimeSelector';
 
-const ZONES = [
-  { id: 1, nombre: "Zona 1", disponibles: 0, total: 0, colorClass: "dotZona1", badgeClass: "badgeZona1" },
-  { id: 2, nombre: "Zona 2", disponibles: 0, total: 0, colorClass: "dotZona2", badgeClass: "badgeZona2" },
-  { id: 3, nombre: "Zona 3", disponibles: 0, total: 0, colorClass: "dotZona3", badgeClass: "badgeZona3" },
-];
+// Configuración de estilos para las zonas
+const ZONE_STYLES = {
+  9: { colorClass: "dotZona1", badgeClass: "badgeZona1" },
+  10: { colorClass: "dotZona2", badgeClass: "badgeZona2" },
+  8: { colorClass: "dotZona3", badgeClass: "badgeZona3" },
+};
 
 const startData = {
   mail: '',
-  idEspacio: 498,
   fechaReserva: new Date(),
   horaInicio: '00:00',
   horaSalida: '00:00',
@@ -26,10 +27,43 @@ const EstacionamientoForms = ({ onConfirm }) => {
   const [reservationData, setReservationData] = useState(startData);
   const [allowConfirm, setAllowConfirm] = useState(false);
   const [timesError, setTimesError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [reservaError, setReservaError] = useState(null);
+
+  // Hook para obtener capacidad de zonas en tiempo real y función de reservación
+  const {
+    zonas,
+    loading: loadingCapacity,
+    error: errorCapacity,
+    reservar,
+    reservando
+  } = useParkingCapacidad({
+    fecha: reservationData.fechaReserva.toISOString().split('T')[0],
+    horaInicio: reservationData.horaInicio,
+    horaFin: reservationData.horaSalida
+  });
 
   const handleChange = (patch) => {
     setReservationData(prev => ({ ...prev, ...patch }));
+  };
+
+  // Manejo de la confirmación: primero reserva via API, luego notifica al componente padre
+  const handleConfirm = async () => {
+    try {
+      setReservaError(null);
+      
+      // Usar la función reservar del hook
+      const resultado = await reservar(reservationData);
+      console.log('Resultado API:', resultado);
+
+      // Si hubo error en la reservación
+      if (!resultado.ok) {
+        setReservaError(resultado.error || 'Error al realizar la reservación');
+        return;
+      }
+      onConfirm(resultado.data);
+    } catch (error) {
+      setReservaError(error.message || 'Error inesperado al realizar la reservación');
+    }
   };
 
   useEffect(() => {
@@ -90,12 +124,14 @@ const EstacionamientoForms = ({ onConfirm }) => {
           </div>
         </div>
 
+        {reservaError && <p className='error-text'>{reservaError}</p>}
+
         <button
           className='confirm-btn'
-          onClick={() => onConfirm(reservationData)}
-          disabled={loading || !allowConfirm}
+          onClick={handleConfirm}
+          disabled={reservando || !allowConfirm || loadingCapacity}
         >
-          {loading ? (<p> Confirmando reserva... </p>) : (<p> Confirmar </p>)}
+          {reservando ? (<p>Confirmando reserva...</p>) : (<p>Confirmar</p>)}
         </button>
       </div>
 
@@ -105,21 +141,27 @@ const EstacionamientoForms = ({ onConfirm }) => {
           <p className="availabilitySubtitle">Actualizado en tiempo real</p>
         </div>
 
+        {errorCapacity && <p className='error-text'>{errorCapacity}</p>}
+        {loadingCapacity && <p>Cargando disponibilidad...</p>}
+
         <div className="zonesCard">
-          {ZONES.map((zona, idx) => (
-            <div key={zona.id}>
-              <div className="zoneRow">
-                <div className="zoneName">
-                  <span className={`$"zoneDot} ${zona.colorClass}`} />
-                  {zona.nombre}
+          {zonas.map((zona, idx) => {
+            const styles = ZONE_STYLES[zona.id_zona] || { colorClass: '', badgeClass: '' };
+            return (
+              <div key={zona.id_zona}>
+                <div className="zoneRow">
+                  <div className="zoneName">
+                    <span className={`zoneDot ${styles.colorClass}`} />
+                    {zona.nombre_zona}
+                  </div>
+                  <span className={`zoneBadge ${styles.badgeClass}`}>
+                    {zona.disponibles} / {zona.total}
+                  </span>
                 </div>
-                <span className={`$"zoneBadge} ${zona.badgeClass}`}>
-                  {zona.disponibles} / {zona.total}
-                </span>
+                {idx < zonas.length - 1 && <div className="zoneDivider" style={{ marginTop: 12 }} />}
               </div>
-              {idx < ZONES.length - 1 && <div className="zoneDivider" style={{ marginTop: 12 }} />}
-            </div>
-          ))}
+            );
+          })}
         </div>
         <p className="legendNote">ℹ️ Disponibles / Total por zona</p>
       </div>
