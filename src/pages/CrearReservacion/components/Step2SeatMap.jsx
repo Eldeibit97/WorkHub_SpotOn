@@ -1,19 +1,22 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { getFloorMap, getAvailability } from '../../../api/spaces'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { getAvailability } from '../../../api/spaces'
+import { getReservationFloorMap } from '../../../api/reservationFloorMap'
 import { apiFetch } from '../../../api/client'
 import { getStoredToken } from '../../../api/auth'
+import { connectWebSocket, subscribeToZona, unsubscribeFromZona, disconnectWebSocket } from '../../../api/websocket'
 import FLOOR_INTERIOR_IMAGES from '../../../assets/floors/index.js'
 import TimeSelector from './TimeSelector'
 import DateStrip from './DateStrip'
 import SeatMapExportModal from './SeatMapExportModal'
 import SeatMapSpaceDetailModal from './SeatMapSpaceDetailModal'
 import SeatMapExpiredModal from './SeatMapExpiredModal'
-import { labelForTipo } from '../../../lib/spaceTipo'
+import SpaceTypeFilter from './SpaceTypeFilter' // Ruta corregida
+import { labelForTipo, normalizeTipoEspacio } from '../../../lib/spaceTipo'
 import { toYyyyMmDd } from '../../../lib/dateFormat'
 import { formatCountdown, isSharedRoomType } from './seatMapHelpers'
 import { getInitialsFromEmail } from '../../../lib/userDisplay'
 import './Step2SeatMap.css'
-
+import { bloquearEspaciosTemporal, liberarEspaciosTemporal } from '../../../api/reserve'
 export default function Step2SeatMap({
   data,
   update,
@@ -23,6 +26,8 @@ export default function Step2SeatMap({
   editMode,
   bookerMail,
   bookerName,
+  onBlockSpaces,
+  validTimeRange = true,
 }) {
   const [floorMap, setFloorMap] = useState(null)
   const [availability, setAvailability] = useState({})
@@ -39,6 +44,11 @@ export default function Step2SeatMap({
   const [scheduleLoading, setScheduleLoading] = useState(false)
   const [expiredDialogOpen, setExpiredDialogOpen] = useState(false)
   const [showAvailabilityTooltip, setShowAvailabilityTooltip] = useState(false)
+  const [syncStatus, setSyncStatus] = useState('synced')
+  const [lastUpdate, setLastUpdate] = useState(new Date())
+
+  // --- INTEGRACIÓN FILTRO: Estado ---
+  const [activeTypeFilters, setActiveTypeFilters] = useState([])
 
   const COUNTDOWN_START = 300
   const [countdown, setCountdown] = useState(COUNTDOWN_START)
@@ -52,6 +62,7 @@ export default function Step2SeatMap({
     setCountdown(COUNTDOWN_START)
     setExpired(false)
     setExpiredDialogOpen(false)
+    setActiveTypeFilters([]) // Resetear filtros al cambiar zona
   }, [data.zonaId])
 
   useEffect(() => {
@@ -74,13 +85,57 @@ export default function Step2SeatMap({
     if (!editMode && expired) setExpiredDialogOpen(true)
   }, [editMode, expired])
 
+  // WebSocket para actualizaciones en tiempo real
+  useEffect(() => {
+    if (!data.zonaId) return
+
+    function handleAvailabilityChange(wsData) {
+      console.log('[Step2SeatMap] availability:changed recibido:', wsData)
+      
+      if (wsData.zonaId === data.zonaId) {
+        setSyncStatus('syncing')
+        
+        // Actualizar solo los espacios que cambiaron
+        setAvailability((prev) => {
+          const updated = { ...prev }
+          if (wsData.espacios && Array.isArray(wsData.espacios)) {
+            for (const esp of wsData.espacios) {
+              if (esp.estado === 'OCUPADO' || esp.estado === 'CHECKED_IN') {
+                updated[esp.idEspacio] = 'OCUPADO'
+              } else if (esp.estado === 'BLOQUEADO_TEMPORAL') {
+                updated[esp.idEspacio] = 'BLOQUEADO_TEMPORAL'
+              } else {
+                updated[esp.idEspacio] = 'DISPONIBLE'
+              }
+            }
+          }
+          return updated
+        })
+        
+        setLastUpdate(new Date())
+        
+        // Animación: mostrar "syncing" 500ms luego volver a "synced"
+        setTimeout(() => setSyncStatus('synced'), 500)
+      }
+    }
+
+    // Conectar WebSocket y suscribirse a la zona
+    connectWebSocket(handleAvailabilityChange)
+    subscribeToZona(data.zonaId)
+
+    // Cleanup: desuscribirse al desmontar o cambiar zona
+    return () => {
+      unsubscribeFromZona(data.zonaId)
+    }
+  }, [data.zonaId])
+
   const stats = useMemo(() => {
     if (!floorMap) return { disponibles: 0, ocupados: 0, total: 0 }
     let disponibles = 0
     let ocupados = 0
     for (const s of floorMap.spaces) {
       const av = availability[s.id_espacio]
-      if (av === 'OCUPADO' || av === 'BLOQUEADO') ocupados++
+      if (av === 'OCUPADO' || av === 'BLOQUEADO' || av === 'BLOQUEADO_TEMPORAL' || av === 'CHECKED_IN') ocupados++
       else disponibles++
     }
     return { disponibles, ocupados, total: floorMap.spaces.length }
@@ -127,18 +182,31 @@ export default function Step2SeatMap({
     let cancelled = false
     setLoading(true)
     async function load() {
-      const map = await getFloorMap(data.zonaId)
-      if (cancelled) return
-      const fechaStr = toYyyyMmDd(data.fecha)
-      const av = await getAvailability({ zonaId: data.zonaId, fecha: fechaStr, horaInicio: data.horaInicio, horaFin: data.horaFin })
-      if (cancelled) return
-      setFloorMap(map)
-      setAvailability(av)
-      setDraftPositions(null)
-      setLoading(false)
+      try {
+        const map = await getReservationFloorMap(data.zonaId)
+        if (cancelled) return
+        const fechaStr = toYyyyMmDd(data.fecha)
+        let av = {}
+        if (data.horaInicio && data.horaFin && data.horaInicio < data.horaFin) {
+          av = await getAvailability({ zonaId: data.zonaId, fecha: fechaStr, horaInicio: data.horaInicio, horaFin: data.horaFin })
+        }
+        if (cancelled) return
+        setFloorMap(map)
+        setAvailability(av)
+        setDraftPositions(null)
+      } catch (err) {
+        if (cancelled) return
+        console.error('[Step2SeatMap] No se pudo cargar el plano de la zona', data.zonaId, err)
+        setFloorMap(null)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
     load()
-    return () => { cancelled = true }
+    return () => { 
+      cancelled = true
+      disconnectWebSocket()
+    }
   }, [data.zonaId, data.fecha, data.horaInicio, data.horaFin])
 
   const screenToSvg = useCallback((clientX, clientY) => {
@@ -205,6 +273,14 @@ export default function Step2SeatMap({
     })
   }, [floorMap, draftPositions])
 
+  // --- FILTRADO (Lógica) ---
+  const filteredSpaces = useMemo(() => {
+    if (activeTypeFilters.length === 0) return effectiveSpaces
+    return effectiveSpaces.filter((s) => 
+      activeTypeFilters.includes(normalizeTipoEspacio(s.tipo))
+    )
+  }, [effectiveSpaces, activeTypeFilters])
+
   const tightViewBox = useMemo(() => {
     const spaces = floorMap?.spaces
     if (!spaces?.length) return floorMap?.viewBox ?? '0 0 1440 810'
@@ -230,11 +306,7 @@ export default function Step2SeatMap({
   function toggleSelect(space) {
     if (editMode) return
     const state = availability[space.id_espacio]
-    if (state === 'OCUPADO' || state === 'BLOQUEADO') return
-    if (selectedById.has(space.id_espacio)) {
-      update({ selectedSpaces: data.selectedSpaces.filter((s) => s.id_espacio !== space.id_espacio) })
-      return
-    }
+    if (state === 'OCUPADO' || state === 'BLOQUEADO' || state === 'BLOQUEADO_TEMPORAL' || state === 'CHECKED_IN') return
 
     const sharedRoom = isSharedRoomType(space.tipo)
     const newEntry = {
@@ -302,12 +374,23 @@ export default function Step2SeatMap({
   function showTooltipFor(e, space) {
     const rect = mapWrapperRef.current?.getBoundingClientRect()
     if (!rect) return
-    const state = availability[space.id_espacio] || 'DISPONIBLE'
+    let state = availability[space.id_espacio] || 'DISPONIBLE'
+    
+    // Convertir nombres técnicos a legibles
+    const stateLabels = {
+      'DISPONIBLE': 'Disponible',
+      'OCUPADO': 'Ocupado',
+      'BLOQUEADO_TEMPORAL': 'Bloqueado temporal',
+      'BLOQUEADO': 'Bloqueado',
+      'CHECKED_IN': 'En uso',
+    }
+    const displayState = stateLabels[state] || state
+    
     setTooltip({
       x: e.clientX - rect.left, y: e.clientY - rect.top,
       title: space.codigo, subtitle: space.nombre,
       tipo: labelForTipo(space.tipo),
-      state,
+      state: displayState,
     })
     setHovered(space.id_espacio)
   }
@@ -315,6 +398,43 @@ export default function Step2SeatMap({
   function clearTooltip() { setTooltip(null); setHovered(null) }
 
   const floorImage = FLOOR_INTERIOR_IMAGES[data.zonaId]
+  const mapBackground = floorMap?.background ?? null
+
+  /**
+   * JSON puede incluir "mapViewBox" para ajustar el zoom manualmente por piso.
+   * Si no existe, se usa el viewBox calculado automáticamente desde los espacios.
+   */
+  const activeViewBox = useMemo(() => {
+    return floorMap?.mapViewBox ?? tightViewBox
+  }, [floorMap, tightViewBox])
+
+  /**
+   * Posición y tamaño exactos de la imagen de fondo, calculados con ResizeObserver
+   * para replicar la geometría xMidYMid meet del SVG principal.
+   * Evita depender de object-view-box (CSS no reconocido por React inline styles).
+   */
+  const [bgTransform, setBgTransform] = useState(null)
+
+  useLayoutEffect(() => {
+    const svg = svgRef.current
+    if (!svg || !mapBackground || !activeViewBox) { setBgTransform(null); return }
+    const compute = () => {
+      const { width: CW, height: CH } = svg.getBoundingClientRect()
+      if (CW <= 0 || CH <= 0) return
+      const [vbX, vbY, vbW, vbH] = activeViewBox.split(' ').map(Number)
+      const scale = Math.min(CW / vbW, CH / vbH)
+      setBgTransform({
+        left: Math.round((CW - vbW * scale) / 2 - vbX * scale),
+        top:  Math.round((CH - vbH * scale) / 2 - vbY * scale),
+        width:  Math.round(1440 * scale),
+        height: Math.round(810 * scale),
+      })
+    }
+    compute()
+    const obs = new ResizeObserver(compute)
+    obs.observe(svg)
+    return () => obs.disconnect()
+  }, [mapBackground, activeViewBox])
   const isExpiredBlocking = expired && !editMode
   const hasSharedRoomSelection = data.selectedSpaces.some((s) => s.sharedForAll)
   const effectiveSelectedCount = hasSharedRoomSelection ? (1 + data.coworkers.length) : data.selectedSpaces.length
@@ -322,6 +442,45 @@ export default function Step2SeatMap({
   const detailTipoLabel = detailSpace
     ? (detailSpace.nombre || labelForTipo(detailSpace.tipo))
     : ''
+
+  function getTimeDiff(date) {
+    const now = new Date()
+    const diff = Math.floor((now - date) / 1000)
+    if (diff < 60) return 'hace pocos segundos'
+    if (diff < 3600) return `hace ${Math.floor(diff / 60)}m`
+    return `hace ${Math.floor(diff / 3600)}h`
+  }
+
+  async function handleContinuar() {
+    // Bloquear espacios antes de ir a Step 3
+    const idEspacios = data.selectedSpaces.map(s => s.id_espacio)
+    if (idEspacios.length > 0 && data.zonaId) {
+      // Obtener socketId del WebSocket
+      const socketId = localStorage.getItem('websocket_socket_id')
+      
+      const bloqueado = await bloquearEspaciosTemporal(idEspacios, data.zonaId, socketId)
+      if (bloqueado) {
+        if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+          console.log('[Step2SeatMap] Espacios bloqueados temporalmente:', idEspacios)
+        }
+        // Notificar al padre que estos espacios están bloqueados
+        if (onBlockSpaces) {
+          onBlockSpaces(idEspacios)
+        }
+      } else {
+        console.warn('[Step2SeatMap] Advertencia: Fallo al bloquear espacios, continuando igual')
+      }
+    }
+
+    // Ir a Step 3
+    onNext()
+  }
+
+  async function handleAtras() {
+    // NO liberar espacios aquí - dejar que el padre maneje eso
+    // Ir atrás
+    onBack()
+  }
 
   return (
     <div className="step2">
@@ -375,10 +534,12 @@ export default function Step2SeatMap({
               <i className="seat-dot seat-dot--ocupado" />Ocupado
             </div>
             <div className="step2__sidebar-legend-item">
+              <i className="seat-dot seat-dot--bloqueado_temporal" />En selección
+            </div>
+            <div className="step2__sidebar-legend-item">
               <i className="seat-dot seat-dot--selected" />Tu selección
             </div>
           </div>
-
         </aside>
 
         <div className="cinema-card__main">
@@ -387,6 +548,12 @@ export default function Step2SeatMap({
               <h2 className="step2__floor-title">
                 {floorMap ? `${floorMap.codigoZona} · ${floorMap.nombre}` : 'Cargando…'}
               </h2>
+              <div className="step2__sync-indicator">
+                {syncStatus === 'syncing' && <span className="step2__sync-spinner" />}
+                <span className="step2__last-update">
+                  {syncStatus === 'syncing' ? 'Sincronizando...' : `Actualizado hace ${getTimeDiff(lastUpdate)}`}
+                </span>
+              </div>
               {!editMode && (
                 <div className={`step2__countdown${isExpiredBlocking ? ' step2__countdown--expired' : ''}`}>
                   <h3 className="step2__countdown-label">Tiempo para reservar</h3>
@@ -406,6 +573,9 @@ export default function Step2SeatMap({
                   horaSalida={data.horaFin}
                   onTimeChange={(start, end) => update({ horaInicio: start, horaFin: end })}
                 />
+                {!validTimeRange && (
+                  <p className="step2__time-error">La hora de salida debe ser posterior a la hora de entrada.</p>
+                )}
               </div>
             </div>
           </div>
@@ -416,7 +586,7 @@ export default function Step2SeatMap({
               <div className="assignees__row">
                 {attendees.map((a) => (
                   <span key={a.key} className="assignee-chip" title={a.label}>
-                    <span className="assignee-chip__avatar" style={{ background: a.isMe ? '#a855f7' : '#ec4899' }}>
+                    <span className="assignee-chip__avatar" style={{ background: a.isMe ? 'var(--res-purple)' : 'var(--res-magenta)' }}>
                       {a.isMe ? 'TÚ' : getInitialsFromEmail(a.label)}
                     </span>
                     <span className="assignee-chip__label">{a.label}</span>
@@ -482,13 +652,40 @@ export default function Step2SeatMap({
           <div className="cinema-card__map" ref={mapWrapperRef}>
             {loading && <div className="step2__loader">Cargando plano…</div>}
 
+            {/* --- COMPONENTE FILTRO INSERTADO --- */}
+            {!loading && floorMap && floorMap.spaces.length > 0 && (
+              <SpaceTypeFilter
+                spaces={floorMap.spaces}
+                availability={availability}
+                activeTypes={activeTypeFilters}
+                onChange={setActiveTypeFilters}
+              />
+            )}
+
             {!loading && floorMap && (
               <>
                 <div className="step2__map-viewport">
+                    {mapBackground && bgTransform && (
+                      <img
+                        src={mapBackground}
+                        alt=""
+                        aria-hidden="true"
+                        className="step2__map-bg"
+                        style={{
+                          position: 'absolute',
+                          left: bgTransform.left,
+                          top: bgTransform.top,
+                          width: bgTransform.width,
+                          height: bgTransform.height,
+                          pointerEvents: 'none',
+                          userSelect: 'none',
+                        }}
+                      />
+                    )}
                     <svg
                       ref={svgRef}
                       className="seat-map"
-                      viewBox={tightViewBox}
+                      viewBox={activeViewBox}
                       preserveAspectRatio="xMidYMid meet"
                       onMouseLeave={clearTooltip}
                     >
@@ -498,7 +695,8 @@ export default function Step2SeatMap({
                         height="810"
                         preserveAspectRatio="xMidYMid meet"
                       />
-                      {effectiveSpaces.map((space) => {
+                      {/* --- MAPEO CON FILTROS (filteredSpaces) --- */}
+                      {filteredSpaces.map((space) => {
                         const state = availability[space.id_espacio] || 'DISPONIBLE'
                         const sel = selectedById.get(space.id_espacio)
                         const isHovered = hovered === space.id_espacio
@@ -508,7 +706,7 @@ export default function Step2SeatMap({
                           sel ? 'seat-marker--selected' : '',
                           isHovered ? 'seat-marker--hover' : '',
                           editMode ? 'seat-marker--edit' : '',
-                          `seat-marker--tipo-${space.tipo}`,
+                          `seat-marker--tipo-${normalizeTipoEspacio(space.tipo)}`,
                         ].filter(Boolean).join(' ')
 
                         const commonProps = {
@@ -552,18 +750,17 @@ export default function Step2SeatMap({
               </div>
             )}
           </div>
-
         </div>
       </div>
-
+      
       <div className="wiz-actions">
-        <button type="button" className="wiz-btn wiz-btn--ghost" onClick={onBack}>← Atrás</button>
+        <button type="button" className="wiz-btn wiz-btn--ghost" onClick={handleAtras}>← Atrás</button>
         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
           <span className="step2__count">{effectiveSelectedCount} espacio(s) seleccionado(s)</span>
           <button
             type="button"
             className="wiz-btn wiz-btn--primary"
-            onClick={onNext}
+            onClick={handleContinuar}
             disabled={!canContinue || isExpiredBlocking}
           >
             Continuar

@@ -11,7 +11,7 @@ export default function AccentureLogo({ className = '', size = 'default' }) {
       <span style={{
         fontSize: s.fontSize,
         fontWeight: 700,
-        color: '#FFFFFF',
+        color: 'var(--text-primary)',
         letterSpacing: '-0.02em',
         lineHeight: 1,
         position: 'relative',
@@ -20,7 +20,7 @@ export default function AccentureLogo({ className = '', size = 'default' }) {
           position: 'absolute',
           top: '-0.55em',
           left: '5.1em',
-          color: '#A100FF',
+          color: 'var(--acn-purple)',
           fontSize: '0.75em',
           fontWeight: 900,
         }}>{'>'}</span>

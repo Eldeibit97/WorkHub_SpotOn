@@ -1,0 +1,327 @@
+/* =========================================
+   EditarReservaWorkplace — Page Styles
+   ========================================= */
+
+/* ─── Header row with back button ─── */
+.erw-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.erw-back-btn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  font-family: inherit;
+}
+
+.erw-back-btn:hover {
+  color: var(--text-primary);
+  border-color: rgba(168, 85, 247, 0.55);
+  background: rgba(168, 85, 247, 0.1);
+}
+
+/* ─── Main panel ─── */
+.erw-panel {
+  background: var(--res-card-bg);
+  border: 1px solid var(--res-border);
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(168, 85, 247, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Panel header ─── */
+.erw-panel-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+.erw-id-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(168, 85, 247, 0.65);
+  margin-bottom: 6px;
+}
+
+.erw-panel-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--res-purple);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+/* ─── Success banner ─── */
+.erw-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(46, 213, 115, 0.08);
+  border: 1px solid rgba(46, 213, 115, 0.28);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* ─── Error banner ─── */
+.erw-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(226, 75, 74, 0.08);
+  border: 1px solid rgba(226, 75, 74, 0.28);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* ─── Loading state ─── */
+.erw-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 48px 0;
+  color: rgba(168, 85, 247, 0.65);
+  font-size: 14px;
+}
+
+.erw-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(168, 85, 247, 0.15);
+  border-top-color: var(--res-purple);
+  border-radius: 50%;
+  animation: erw-spin 0.8s linear infinite;
+}
+
+@keyframes erw-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Section wrappers ─── */
+.erw-section {
+  margin-bottom: 22px;
+}
+
+.erw-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(168, 85, 247, 0.7);
+  margin: 0 0 8px;
+}
+
+/* Inline row for floor + location */
+.erw-section-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.erw-field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.erw-field-grow {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── DateSelector: remove bottom margin inside section ─── */
+.erw-section .date-selector {
+  margin-bottom: 0;
+}
+
+/* ─── Time selector wrapper ─── */
+.erw-time-wrapper {
+  background: var(--surface);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+/* ─── Floor dropdown ─── */
+.erw-dropdown {
+  appearance: none;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
+  padding: 11px 36px 11px 14px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 130px;
+  transition: border-color 0.2s, background 0.2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 12px) center;
+}
+
+.erw-dropdown:hover,
+.erw-dropdown:focus {
+  border-color: rgba(168, 85, 247, 0.6);
+  background-color: rgba(168, 85, 247, 0.14);
+  outline: none;
+}
+
+.erw-dropdown option {
+  background: var(--white);
+  color: var(--text-primary);
+}
+
+/* ─── Location display box ─── */
+.erw-location-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(168, 85, 247, 0.06);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  min-height: 42px;
+}
+
+.erw-location-box svg {
+  color: rgba(168, 85, 247, 0.55);
+  flex-shrink: 0;
+}
+
+/* ─── Email / attendees row ─── */
+.erw-email-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.erw-email-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.erw-email-input::placeholder {
+  color: var(--text-muted);
+}
+
+.erw-email-input:focus {
+  outline: none;
+  border-color: rgba(168, 85, 247, 0.6);
+  background: rgba(168, 85, 247, 0.06);
+}
+
+.erw-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 10px;
+  color: var(--res-purple);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.erw-add-btn:hover {
+  background: rgba(168, 85, 247, 0.22);
+  border-color: rgba(168, 85, 247, 0.65);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.3);
+}
+
+/* ─── Save button ─── */
+.erw-save-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: var(--res-purple);
+  color: var(--on-accent);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+  margin-top: 8px;
+}
+
+.erw-save-btn:hover {
+  background: #9333ea;
+  box-shadow: 0 6px 28px rgba(168, 85, 247, 0.55);
+  transform: translateY(-1px);
+}
+
+.erw-save-btn:active {
+  transform: translateY(0);
+}
+
+.erw-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 560px) {
+  .erw-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .erw-panel {
+    padding: 24px 20px;
+  }
+
+  .erw-section-row {
+    flex-direction: column;
+  }
+
+  .erw-field-group,
+  .erw-dropdown {
+    width: 100%;
+  }
+}

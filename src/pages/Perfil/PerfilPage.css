@@ -1,0 +1,420 @@
+@import '../../styles/reservation-theme.css';
+
+.perfil {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  min-height: calc(100dvh - 66px);
+}
+
+/* ─── User card ──────────────────────────────────────────────── */
+.perfil__card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  background: var(--white);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.perfil__banner {
+  height: 100px;
+  background: var(--acn-gradient);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.perfil__avatar-wrap {
+  position: absolute;
+  bottom: -28px;
+  left: 1.5rem;
+}
+
+.perfil__avatar-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+  object-fit: cover;
+}
+
+.perfil__avatar-initials {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+  background: var(--acn-gradient);
+  color: var(--on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.perfil__info {
+  padding: 2.5rem 1.5rem 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.perfil__name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.15rem;
+}
+
+.perfil__email {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin: 0 0 0.5rem;
+}
+
+/* ─── PP balance (en la card) ────────────────────────────────── */
+.perfil__balance {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  flex-shrink: 0;
+}
+
+.perfil__balance-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--acn-gradient);
+  flex-shrink: 0;
+}
+
+.perfil__balance-amount {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.perfil__balance-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--res-purple);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── Equipped summary ───────────────────────────────────────── */
+.perfil__equipped {
+  padding: 0 1.5rem 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 0;
+}
+
+.perfil__equipped-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  padding-top: 1rem;
+  margin: 0 0 0.85rem;
+}
+
+.perfil__equipped-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.perfil__equipped-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.perfil__equipped-preview {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-subtle);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+}
+
+.perfil__equipped-preview--theme {
+  border-radius: 10px;
+}
+
+.perfil__equipped-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil__equipped-preview-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.perfil__equipped-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 70px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.perfil__equipped-none {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ─── Category tabs ──────────────────────────────────────────── */
+.perfil__tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1.5rem;
+}
+
+.perfil__tab {
+  padding: 0.65rem 1.25rem;
+  border: none;
+  background: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  position: relative;
+  bottom: -1px;
+}
+
+.perfil__tab--active {
+  color: var(--res-purple);
+  border-bottom-color: var(--res-purple);
+}
+
+/* ─── Item grid ──────────────────────────────────────────────── */
+.perfil__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ─── Inventory card ─────────────────────────────────────────── */
+.perfil-icard {
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--white);
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.12s;
+}
+
+.perfil-icard--equipped {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--white), var(--white)) padding-box,
+    var(--acn-gradient) border-box;
+  border: 2px solid transparent;
+}
+
+.perfil-icard--not-owned {
+  opacity: 0.45;
+}
+
+.perfil-icard__preview {
+  height: 90px;
+  position: relative;
+  overflow: hidden;
+}
+
+.perfil-icard__preview-bg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perfil-icard__swatches {
+  display: flex;
+  gap: 5px;
+}
+
+.perfil-icard__swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.perfil-icard__img-wrap {
+  height: 90px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perfil-icard__avatar-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.perfil-icard__banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-icard__avatar-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--acn-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.perfil-icard__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 0.18rem 0.45rem;
+  border-radius: 7px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--on-accent);
+}
+
+.perfil-icard__badge--equipped { background: var(--success); }
+.perfil-icard__badge--locked { background: var(--text-muted); }
+
+.perfil-icard__body {
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.perfil-icard__name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.perfil-icard__btn {
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.perfil-icard__btn--equip {
+  background: var(--surface);
+  color: var(--res-purple);
+  border: 1px solid var(--border-subtle);
+}
+
+.perfil-icard__btn--equipped {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success-border);
+  cursor: default;
+}
+
+.perfil-icard__btn--buy {
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.perfil-icard__btn--unequip {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.65rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.perfil-icard__btn--unequip:hover {
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+
+/* ─── Go-to-mercado CTA ──────────────────────────────────────── */
+.perfil__mercado-cta {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.perfil__mercado-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.75rem;
+  border-radius: 12px;
+  border: none;
+  background: var(--acn-gradient);
+  color: var(--on-accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.perfil__mercado-btn:hover {
+  opacity: 0.88;
+  color: var(--on-accent);
+}
+
+@media (max-width: 600px) {
+  .perfil {
+    padding: 1rem 1rem 3rem;
+  }
+  .perfil__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .perfil__info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

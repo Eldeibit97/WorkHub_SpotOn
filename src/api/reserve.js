@@ -93,20 +93,23 @@ export function parseBatchCreateResponse(data, fallbackItems = []) {
 }
 
 /**
- * @param {Object} datosReserva - Datos de la reserva (legacy /api/reservando)
+ * POST /api/reservarEstacionamiento — cuerpo `{ datosReserva: [ ... ] }` (array no vacío).
+ *
+ * @param {Array<object>} items - Objetos con campos camelCase o snake_case.
+ * @returns {Promise<{ success :boolean, message:text, data:any }>}
  */
-export async function reservar(datosReserva) {
+export async function reservarEstacionamiento(datosReserva) {
   try {
-    const res = await apiFetch('/api/reservando', { method: 'POST', body: datosReserva });
+    const res = await apiFetch('/api/reservarEstacionamiento', { method: 'POST', headers: authHeaders(), body: datosReserva });
     const respuesta = await res.text();
-    let mensaje = {};
-    if (respuesta) {
-      mensaje = JSON.parse(respuesta);
+    let data = null;
+    if(respuesta){
+      data = JSON.parse(respuesta);
     }
-    console.log('Mensaje', mensaje);
-    return mensaje;
-  } catch {
-    return { message: 'Hubo un error al completar' };
+    return data;
+  } catch(error){
+    console.log(error);
+    return {success: false, error: error};
   }
 }
 
@@ -128,4 +131,83 @@ export async function reservarBatch(items) {
     try { data = JSON.parse(text); } catch { data = { message: text }; }
   }
   return { ok: res.ok, status: res.status, data };
+}
+
+export async function getReservaDetails(id_reserva){
+  try{
+    const res = await apiFetch(`/api/reservas/detalles/${id_reserva}`, { method: 'GET' });
+    const response = await res.text();
+    let data = null;
+    if(response){
+      data = JSON.parse(response);
+    }
+    return data;
+  }catch(error){
+    console.log('Ocurrio un error', error);
+    return { success: false, error: error };
+  };
+}
+
+export async function confirmarEntrada(id_reserva) {
+}
+/**
+ * POST /api/reservas/bloquear-temporal — bloquea espacios mientras el usuario está en Step 3
+ * @param {Array<number>} idEspacios - IDs de espacios a bloquear
+ * @param {number} idZona - ID de la zona
+ * @returns {Promise<boolean>}
+ */
+export async function bloquearEspaciosTemporal(idEspacios, idZona, socketId = null) {
+  try {
+    const res = await apiFetch('/api/reservas/bloquear-temporal', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: {
+        id_espacios: idEspacios,
+        id_zona: idZona,
+        socketId: socketId  // AGREGAR
+      }
+    });
+    
+    if (res.ok) {
+      console.log(`[bloquearEspaciosTemporal] Espacios ${idEspacios.join(',')} bloqueados en zona ${idZona}`);
+      return true;
+    }
+    
+    console.warn(`[bloquearEspaciosTemporal] Error: ${res.status}`);
+    return false;
+  } catch (error) {
+    console.error('[bloquearEspaciosTemporal] Error:', error);
+    return false;
+  }
+}
+
+/**
+ * POST /api/reservas/liberar-temporal — libera espacios si el usuario cancela
+ * @param {Array<number>} idEspacios - IDs de espacios a liberar
+ * @param {number} idZona - ID de la zona
+ * @returns {Promise<boolean>}
+ */
+export async function liberarEspaciosTemporal(idEspacios, idZona, socketId = null) {
+  try {
+    const res = await apiFetch('/api/reservas/liberar-temporal', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: {
+        id_espacios: idEspacios,
+        id_zona: idZona,
+        socketId: socketId  // AGREGAR
+      }
+    });
+    
+    if (res.ok) {
+      console.log(`[liberarEspaciosTemporal] Espacios ${idEspacios.join(',')} liberados en zona ${idZona}`);
+      return true;
+    }
+    
+    console.warn(`[liberarEspaciosTemporal] Error: ${res.status}`);
+    return false;
+  } catch (error) {
+    console.error('[liberarEspaciosTemporal] Error:', error);
+    return false;
+  }
 }

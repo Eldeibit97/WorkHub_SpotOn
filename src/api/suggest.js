@@ -1,46 +1,38 @@
 import { apiFetch } from './client'
 
 /**
- * @param {Object} promptData - Datos de la reserva
- * @param {number} datosReserva.user_id - ID del usuario (Mientras no se manejan sesiones)
- * @param {string} datosReserva.today - Fecha actual (formato timestamp)
- * @returns {Promise<object>} 
+ * Checks whether the user has a pending reservation for today.
+ * @returns {Promise<boolean>}
  */
-export async function suggest(promptData) {
+export async function checkPendingReservation(userId, fecha) {
   try {
-    let hasPending = false;
-    try {
-      const pendiente = await apiFetch('/api/reservas/tieneReserva', { method: 'POST', body: promptData });
-      if (pendiente.ok) {
-        const marcador = await pendiente.text();
-        hasPending = JSON.parse(marcador).pendiente ?? false;
-      }
-    } catch {
-      // endpoint not available; default to no pending reservation
+    const res = await apiFetch(`/api/reservas/tiene-reserva?userId=${userId}&fecha=${fecha}`, {
+      method: 'GET',
+    });
+    if (res.ok) {
+      const text = await res.text();
+      return JSON.parse(text).pendiente ?? false;
     }
-    promptData = {
-      ...promptData, query: hasPending
-        ? `Primer tipo de sugerencia: Que posibles inconvenientes habria en mi ruta hacia 
-       la oficina (Por el momento digamos que partes del tec de monterrey 
-       campus monterrey a la oficina de accenture monterrey), 
-       Segundo tipo de sugerencia: ¿Que recomendaciones me darias para antes de salir 
-       hacia la oficina? (ej. con cuanto tiempo deberia salir, que deberia tomar en 
-       cuenta, etc.)`
-       : `Primer tipo de sugerencia: ¿Que me sugieres reservar en la proxima semana 
-       basado en mis preferencias? Da opciones variadas, segundo tipo de sugerencia: 
-       ¿Como esta en disponibilidad espacios que he utilizado en reservas previas?, 
-       tercera`
-    };
-    const res = await apiFetch('/suggest', { method: 'POST', body: promptData }, true);
+  } catch {
+    // endpoint not available; default to no pending reservation
+  }
+  return false;
+}
+
+/**
+ * Sends a suggestion request to the LLM endpoint.
+ * For normal requests: { query, user_id }
+ * For traffic requests: { query, user_id, origin, destination, route }
+ * @returns {Promise<object>}
+ */
+export async function suggest(body) {
+  try {
+    const res = await apiFetch('/suggest', { method: 'POST', body }, true);
     if (!res.ok) {
       return { message: `Error ${res.status} al obtener la sugerencia` };
     }
-    const respuesta = await res.text();
-    let mensaje = {};
-    if (respuesta) {
-      mensaje = JSON.parse(respuesta);
-    }
-    return mensaje;
+    const text = await res.text();
+    return text ? JSON.parse(text) : {};
   } catch {
     return { message: 'Hubo un error al obtener la sugerencia' };
   }

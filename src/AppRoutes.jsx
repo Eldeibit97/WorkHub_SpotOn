@@ -7,13 +7,20 @@ import Error from './pages/Error/Error'
 import LandingPage from './pages/LandingPage/LandingPage'
 import SignInPage from './pages/SignInPage/SignInPage'
 import ManageReservationsPage from './pages/ManageReservations/ManageReservationsPage'
+import MercadoPage from './pages/Mercado/MercadoPage'
+import PerfilPage from './pages/Perfil/PerfilPage'
 import AdminLayout from './pages/AdminDashboard/AdminLayout'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 import DashboardOverview from './pages/AdminDashboard/DashboardOverview'
 import UserLayout from './pages/UserLayout/UserLayout'
 import FloorEditor from './pages/FloorEditor/FloorEditor'
+import FloorEditorOffices from './pages/FloorEditor/FloorEditorOffices'
+import FloorEditorFloors from './pages/FloorEditor/FloorEditorFloors'
 import RequireRole from './components/RequireRole'
 import AdminUserReservations from './pages/AdminDashboard/AdminUserReservations'
+import Verificacion from './pages/GuardView/Verificacion'
+import GuardOverView from './pages/GuardView/GuardOverView'
+import NoShowsPage from './pages/AdminDashboard/NoShowsPage'
 
 import EditarReservaWorkplace from "./pages/ManageReservations/components/EditarReservaWorkplace";
 
@@ -23,6 +30,7 @@ const AppRoutes = () => {
       {/* Rutas públicas sin layout de usuario */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<SignInPage />} />
+      <Route path='/login/reservationCheck/:reservaId' element={<SignInPage/>}/>
       <Route path="/error" element={<Error />} />
 
       {/* Rutas de usuario con UserTopBar compartido */}
@@ -37,12 +45,22 @@ const AppRoutes = () => {
         <Route path="/reservar" element={<CrearReservacion />} />
         <Route path="/confirmacion" element={<Confirmacion />} />
         <Route path="/cancelar" element={<ManageReservationsPage />} />
-        
+        <Route path="/mercado" element={<MercadoPage />} />
+        <Route path="/perfil" element={<PerfilPage />} />
         {/* RUTA ÚNICA PARA MODIFICAR WORKPLACE */}
         <Route path="/edit-workplace/:id" element={<EditarReservaWorkplace />} />
       </Route>
 
       {/* Rutas exclusivas para admins (layout con top bar de pestañas) */}
+      <Route
+        element={
+          <RequireRole allowedRoles={['guard']} >
+            <GuardOverView/>
+          </RequireRole>
+        }>
+          <Route path='/verificacion/:reservaId' element={<Verificacion></Verificacion>}></Route>
+      </Route>
+
       <Route
         path="/admin"
         element={
@@ -54,11 +72,16 @@ const AppRoutes = () => {
         <Route index element={<DashboardOverview />} />
         <Route path="usuarios" element={<AdminDashboard />} />
         <Route path="usuarios/:id/reservaciones" element={<AdminUserReservations />} />
+        <Route path="no-shows" element={<NoShowsPage />} />
+        <Route path="floor-editor">
+          <Route index element={<FloorEditorOffices />} />
+          <Route path="edificios/:edificioSlug" element={<FloorEditorFloors />} />
+          <Route path="edificios/:edificioSlug/pisos/:zonaId" element={<FloorEditor />} />
+        </Route>
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
 
-      {/* Editor visual de planos – herramienta de desarrollo */}
-      <Route path="/floor-editor" element={<FloorEditor />} />
+      <Route path="/floor-editor" element={<Navigate to="/admin/floor-editor" replace />} />
 
       {/* Ruta catch-all */}
       <Route path="/*" element={<LandingPage />} />

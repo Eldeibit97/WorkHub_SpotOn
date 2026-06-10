@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
+import { usePurplePoints } from '../../../context/PurplePointsContext'
 import {
   reservarBatch,
   toBatchReservaItem,
   parseBatchCreateResponse,
   isPlausibleDbEspacioId,
+  liberarEspaciosTemporal,
 } from '../../../api/reserve'
 import { toYyyyMmDd } from '../../../lib/dateFormat'
 import StepIndicator from './StepIndicator'
@@ -97,6 +99,7 @@ function makeInitialStep(editMode) {
 
 export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
   const { user } = useAuth()
+  const { refreshBalance } = usePurplePoints()
   const navigate = useNavigate()
 
   const [editMode] = useState(readEditModeFromUrlOrStorage)
@@ -104,12 +107,14 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
   const [data, setData] = useState(() => makeInitialData(editMode))
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [blockedSpaces, setBlockedSpaces] = useState(null) // Rastrear espacios bloqueados
 
   const canGoToStep2 = useMemo(() => {
     return data.zonaId != null && Number.isFinite(Number(data.zonaId))
   }, [data.zonaId])
 
-  const canGoToStep3 = data.selectedSpaces.length > 0
+  const validTimeRange = !data.horaInicio || !data.horaFin || data.horaInicio < data.horaFin
+  const canGoToStep3 = data.selectedSpaces.length > 0 && validTimeRange
 
   // Persist edit-mode draft so refreshes keep zona/fecha/horario.
   useEffect(() => {
@@ -136,6 +141,84 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
       // ignore storage errors
     }
   }, [editMode, step])
+
+  // Liberar espacios SOLO cuando vuelve de Step 3 (atrás)
+  useEffect(() => {
+    // Si el usuario está en Step 3, el bloqueo debe mantenerse
+    // Si vuelve atrás FROM Step 3, liberar
+    if (step < 3 && blockedSpaces && blockedSpaces.length > 0 && data.zonaId) {
+      const handleRelease = async () => {
+        try {
+          const socketId = localStorage.getItem('websocket_socket_id')
+          await liberarEspaciosTemporal(blockedSpaces, data.zonaId, socketId)
+          // Limpiar local también para que UI se actualice
+          setBlockedSpaces(null)
+          if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+            console.log('[ReservationWizard] Espacios liberados al volver de Step 3')
+          }
+        } catch (err) {
+          console.error('[ReservationWizard] Error liberando espacios:', err)
+        }
+      }
+      handleRelease()
+    }
+  }, [step, blockedSpaces, data.zonaId])
+
+  // Auto-release on unmount (navegación a otra página) y cierre de pestaña
+  useEffect(() => {
+    // Handler para beforeunload (cierre de pestaña/navegador)
+    const handleBeforeUnload = () => {
+      if (blockedSpaces && blockedSpaces.length > 0 && data.zonaId) {
+        const socketId = localStorage.getItem('websocket_socket_id')
+        const token = sessionStorage.getItem('token') || localStorage.getItem('token')
+        
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5500'
+        const endpoint = `${apiUrl}/api/reservas/liberar-temporal`
+        
+        // Usar Blob para sendBeacon (más confiable que FormData)
+        const payload = {
+          espacios: blockedSpaces,
+          zonaId: data.zonaId,
+          socketId: socketId || '',
+          token: token || ''
+        }
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
+        
+        try {
+          const sent = navigator.sendBeacon(endpoint, blob)
+          if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+            console.log('[ReservationWizard] beforeunload: beacon enviado', sent)
+          }
+        } catch (err) {
+          if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+            console.error('[ReservationWizard] Error en sendBeacon:', err)
+          }
+        }
+      }
+    }
+
+    // Agregar listener para beforeunload (cierre tab/navegador)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    // Cleanup: remover listener y liberar si se desmonta sin cerrar pestaña
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+      
+      // Liberar al desmontar (navegación a otra página del sitio)
+      if (blockedSpaces && blockedSpaces.length > 0 && data.zonaId) {
+        const socketId = localStorage.getItem('websocket_socket_id')
+        liberarEspaciosTemporal(blockedSpaces, data.zonaId, socketId)
+          .then(() => {
+            if (import.meta.env.DEV && sessionStorage.getItem('DEBUG_RESERVATION')) {
+              console.log('[ReservationWizard] Espacios liberados al navegar a otra página')
+            }
+          })
+          .catch((err) => {
+            console.error('[ReservationWizard] Error liberando espacios al desmontar:', err)
+          })
+      }
+    }
+  }, [blockedSpaces, data.zonaId])
 
   const update = useCallback((patch) => {
     setData((prev) => ({ ...prev, ...patch }))
@@ -224,6 +307,12 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
                   estado: 'PENDIENTE',
                 })),
         })
+        // Limpiar espacios bloqueados tras confirmación exitosa
+        setBlockedSpaces(null)
+        // Invalidar caché de sugerencias para que se regeneren con la nueva reserva
+        sessionStorage.removeItem(`suggestions_cache_${user?.sub}`)
+        // Refrescar saldo de PP (el backend otorga +50 PP / reserva workplace o +30 PP / estacionamiento)
+        refreshBalance().catch(() => {})
         goNext()
       } else {
         setSubmitError(
@@ -241,6 +330,7 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
   }, [data, user, tipoReserva, goNext, update])
 
   const handleStartOver = useCallback(() => {
+    setBlockedSpaces(null) // Limpiar espacios bloqueados
     setData(makeInitialData(editMode))
     setStep(editMode ? 2 : 1)
   }, [editMode])
@@ -292,8 +382,10 @@ export default function ReservationWizard({ tipoReserva = 'OFICINA' }) {
             onBack={goBack}
             onNext={() => canGoToStep3 && goNext()}
             canContinue={canGoToStep3}
+            validTimeRange={validTimeRange}
             bookerMail={user?.correo_institucional || user?.correo || ''}
             bookerName={`${user?.nombre || ''} ${user?.apellido || ''}`.trim() || 'Tú'}
+            onBlockSpaces={setBlockedSpaces}
           />
         )}
         {step === 3 && (

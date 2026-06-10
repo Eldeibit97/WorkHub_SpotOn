@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { formatDateWeekdayDayMonthEs, isSameLocalDay } from '../../../lib/dateFormat'
+import { formatDateWeekdayDayMonthEs, isSameLocalDay, MONTHS_ES } from '../../../lib/dateFormat'
 import './DateStrip.css'
 
-const DAYS_ES = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb']
-
+const DAYS_ES = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
 /** Cabeceras lun → dom (misma convención que la tira semanal). */
-const WEEKDAY_LABELS_MON = [...DAYS_ES.slice(1), DAYS_ES[0]]
+const WEEKDAY_LABELS_MON = [...DAYS_ES.slice(1), DAYS_ES[0]];
 
 export default function DateStrip({ value, onChange }) {
   const today = useMemo(() => {

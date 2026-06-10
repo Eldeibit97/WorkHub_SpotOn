@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import accGtLogo from '../../assets/Acc_GT_Solid_P1_RGB.png'
 import { loginRequest } from '../../api/auth'
 import { useAuth } from '../../context/AuthContext'
@@ -81,6 +81,7 @@ function SignInCircuitBg() {
 
 export default function SignInPage() {
   const navigate = useNavigate()
+   const { reservaId } = useParams()
   const { signIn } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -96,6 +97,13 @@ export default function SignInPage() {
       signIn(data)
       if (data.user.rol === 'admin') {
         navigate('/admin')
+      } else if (data.user.rol === 'guard'){
+        // Si viene con reservaId, redirigir a la verificación de esa reserva
+        if (reservaId) {
+          navigate(`/verificacion/${reservaId}`)
+        } else {
+          navigate('/verificacion')
+        }
       } else {
         navigate('/sugerencias')
       }
@@ -162,9 +170,6 @@ export default function SignInPage() {
             </span>
           </label>
 
-          <a href="#" className="signin-forgot" onClick={(e) => e.preventDefault()}>
-            Forgot Password?
-          </a>
 
           <button type="submit" className="signin-submit" disabled={submitting}>
             {submitting ? 'Signing in…' : 'Sign In'}

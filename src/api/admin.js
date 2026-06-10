@@ -63,3 +63,42 @@ export async function cancelAdminUserReservation(userId, reservationId) {
   })
   return parseResponse(res)
 }
+
+export async function getNoShowHeatmap({ from, to } = {}) {
+  const params = new URLSearchParams()
+  if (from) params.set('from', from)
+  if (to)   params.set('to', to)
+
+  const query = params.toString()
+  const path  = query
+    ? `/api/admin/no-shows/heatmap?${query}`
+    : '/api/admin/no-shows/heatmap'
+
+  const res = await apiFetch(path, { headers: authHeaders() })
+  return parseResponse(res)
+}
+
+export async function getNoShowFloorHeatmap({ zonaId, from, to } = {}) {
+  const params = new URLSearchParams()
+  if (zonaId) params.set('zonaId', String(zonaId))
+  if (from)   params.set('from',   from)
+  if (to)     params.set('to',     to)
+
+  const res = await apiFetch(
+    `/api/admin/no-shows/floor-heatmap?${params.toString()}`,
+    { headers: authHeaders() }
+  )
+  return parseResponse(res)
+}
+
+export async function getNoShowByUser({ from, to } = {}) {
+  const params = new URLSearchParams()
+  if (from) params.set('from', from)
+  if (to)   params.set('to',   to)
+
+  const res = await apiFetch(
+    `/api/admin/no-shows/by-user?${params.toString()}`,
+    { headers: authHeaders() }
+  )
+  return parseResponse(res)
+}

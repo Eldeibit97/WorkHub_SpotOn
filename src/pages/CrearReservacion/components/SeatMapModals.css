@@ -145,12 +145,12 @@
 
 .space-detail-modal__block--libre {
   background: rgba(74, 222, 128, 0.12);
-  color: #4ade80;
+  color: var(--seat-available);
 }
 
 .space-detail-modal__block--ocupado {
   background: rgba(248, 113, 113, 0.12);
-  color: #f87171;
+  color: var(--seat-occupied);
 }
 
 .space-detail-modal__block-time {
@@ -188,11 +188,11 @@
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
-  background: rgba(239, 68, 68, 0.12);
+  background: var(--danger-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ef4444;
+  color: var(--danger);
   flex-shrink: 0;
 }
 
@@ -213,7 +213,7 @@
 .expired-modal__reload {
   width: 100%;
   justify-content: center;
-  background: #dc2626;
+  background: var(--danger);
   border-color: transparent;
 }
 

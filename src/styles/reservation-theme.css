@@ -1,3 +1,8 @@
+@import './themes/dracula.css';
+@import './themes/neon.css';
+@import './themes/abyssal.css';
+@import './themes/amethyst.css';
+
 /* Shared tokens: reservation flow, cancelación, shell compartido */
 :root {
   --acn-purple: #a100ff;
@@ -43,6 +48,27 @@
   --info: #38bdf8;
   --available: #34c759;
   --claimable: #ff9500;
+
+  /* Tokens semánticos de estado (mismo tono en ambos temas; bg/borde se ajustan por tema) */
+  --success: #22c55e;
+  --success-bg: rgba(34, 197, 94, 0.16);
+  --success-border: rgba(34, 197, 94, 0.42);
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.16);
+  --danger-border: rgba(239, 68, 68, 0.42);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.16);
+  --warning-border: rgba(245, 158, 11, 0.42);
+  --neutral: #9ca3af;
+  --neutral-bg: rgba(156, 163, 175, 0.16);
+  --on-accent: #ffffff;
+
+  /* Estados del seat-map (tonos vivos, legibles sobre fondo claro u oscuro) */
+  --seat-available: #4ade80;
+  --seat-occupied: #f87171;
+  --seat-selected: #a855f7;
+  --seat-blocked: #fbbf24;
+
   --accent-purple-05: rgba(161, 0, 255, 0.18);
   --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 4px 22px rgba(0, 0, 0, 0.42);
@@ -68,4 +94,36 @@
   --page-bg-image:
     radial-gradient(circle at 90% 10%, rgba(161, 0, 255, 0.08) 0%, transparent 30%),
     radial-gradient(circle at 10% 90%, rgba(217, 70, 239, 0.08) 0%, transparent 35%);
+
+  /* Fondos / superficies que en oscuro eran negros (antes se quedaban oscuros en claro) */
+  --bg-dark: #f4f4fb;
+  --bg-card: #ffffff;
+  --border-color: rgba(15, 23, 42, 0.12);
+  --res-gradient-page: linear-gradient(135deg, #f6f4fc 0%, #efe8fb 50%, #e7defb 100%);
+  --res-border: rgba(168, 85, 247, 0.35);
+  --res-border-soft: rgba(168, 85, 247, 0.18);
+
+  /* Texto / grises */
+  --text-main: #17171b;
+  --medium-gray: #4b5563;
+  --dark-gray: #6b7280;
+  --light-gray: rgba(15, 23, 42, 0.1);
+
+  /* Sombras suaves para fondo claro */
+  --shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 22px rgba(15, 23, 42, 0.10);
+  --shadow-lg: 0 8px 36px rgba(15, 23, 42, 0.14);
+
+  /* Estado: tono más oscuro para contraste sobre claro; fondos algo más suaves */
+  --success: #16a34a;
+  --success-bg: rgba(34, 197, 94, 0.14);
+  --success-border: rgba(22, 163, 74, 0.4);
+  --danger: #dc2626;
+  --danger-bg: rgba(239, 68, 68, 0.12);
+  --danger-border: rgba(220, 38, 38, 0.4);
+  --warning: #d97706;
+  --warning-bg: rgba(245, 158, 11, 0.14);
+  --warning-border: rgba(217, 119, 6, 0.4);
+  --neutral: #6b7280;
+  --neutral-bg: rgba(107, 114, 128, 0.12);
 }

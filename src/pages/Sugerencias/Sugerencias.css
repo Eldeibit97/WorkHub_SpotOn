@@ -8,7 +8,7 @@
 }
 
 .greeting{
-  color: white;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: xx-large;
   text-align: center;
@@ -17,7 +17,7 @@
 }
 
 .date{
-  color: gray;
+  color: var(--text-secondary);
   opacity: 75%;
   font-size: larger;
   text-align: center;
@@ -34,7 +34,7 @@
 }
 
 .info-box-title{
-  color: rgba(168, 85, 247);
+  color: var(--res-purple);
   font-weight: bold;
   font-size: 22px;
   text-align: center;
@@ -49,37 +49,88 @@
 }
 
 .info-box{
-  background: rgba(41, 42, 43, 0.375);
-  border: 2px solid rgba(168, 85, 247, 0.4);
+  background: var(--res-card-bg);
+  border: 2px solid var(--res-border);
   border-radius: 20px;
   min-height: 400px;
   width: 450px;
-  align-items: center;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
 }
 
 .reserve-button{
   align-self: center;
-  background: #a855f7;
+  background: var(--res-purple);
   border: none;
   border-radius: 0.40rem;
   width: 250px;
-  color: white;
+  color: var(--on-accent);
   font-size: larger;
   padding: 0.25rem;
 }
 
 .info-box-bullet-title{
-  color: rgba(168, 85, 247);
+  color: var(--res-purple);
   font-weight: bold;
   font-size: 18px;
   margin: 0.6rem 0 0.1rem 0;
 }
 
 .info-box-bullet-text{
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 16px;
   margin: 0 0 0.4rem 0;
   line-height: 1.4;
+}
+
+/* Skeleton loading cards */
+@keyframes shimmer {
+  0%   { background-position: -800px 0; }
+  100% { background-position:  800px 0; }
+}
+
+.skeleton-card {
+  background: var(--res-card-bg);
+  border: 2px solid var(--res-border);
+  border-radius: 20px;
+  min-height: 400px;
+  width: 450px;
+  padding: 1rem;
+}
+
+.skeleton-line {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--res-border) 25%,
+    color-mix(in srgb, var(--res-border) 40%, var(--res-card-bg)) 50%,
+    var(--res-border) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+.skeleton-title {
+  height: 22px;
+  width: 55%;
+  margin: 0.5rem auto 1.5rem;
+}
+
+.skeleton-item-title {
+  height: 16px;
+  width: 42%;
+  margin: 1rem 0 0.4rem;
+}
+
+.skeleton-item-text {
+  height: 13px;
+  width: 90%;
+  margin: 0.25rem 0;
+}
+
+.skeleton-item-text-short {
+  height: 13px;
+  width: 65%;
+  margin: 0.25rem 0 0.75rem;
 }

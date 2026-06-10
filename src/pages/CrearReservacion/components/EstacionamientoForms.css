@@ -1,98 +1,369 @@
-.main-grid {
+.form-container{
+  border: 2px solid #a855f7;
+  border-radius: 15px;
+  padding: 1rem;
+  background-color:#752fb66e;
+}
+
+.parking-zone-container{
+  display: flex;
+  padding: 1rem;
+  border: 2px solid #7837b5;
+  border-radius: 15px;
+  background-color: #36313aab;
+}
+
+.main-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  max-width: 1400px;
-  margin: 0 auto;
+  border: 0.5px solid #e0dfd8;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 420px;
+  margin: 0px 10%;
 }
 
-.parking-map-container {
-  background: rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(168, 85, 247, 0.4);
-  border-radius: 20px;
-  min-height: 400px;
+.panel {
+  padding: 2rem 1.75rem;
+}
+
+.panelLeft {
+  border-right: 0.5px solid #e0dfd8;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.panelRight {
+  background: #f8f8f6;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+
+.panelTitle {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #888780;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #5f5e5a;
+  margin: 0;
+}
+
+.fieldSublabel {
+  font-size: 12px;
+  color: #888780;
+  margin: 0 0 6px;
+}
+
+.input {
+  height: 36px;
   width: 100%;
+  border-radius: 8px;
+  border: 0.5px solid #d3d1c7;
+  background: #ffffff;
+  padding: 0 12px;
+  font-size: 13px;
+  color: #2c2c2a;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #b4b2a9;
+}
+
+.input:hover {
+  border-color: #b4b2a9;
+}
+
+.input:focus {
+  border-color: #888780;
+  box-shadow: 0 0 0 3px rgba(136, 135, 128, 0.12);
+}
+
+.inputWrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  overflow: hidden;
-}
-
-.parking-map-container--carousel {
-  min-height: 420px;
-}
-
-.parking-map-container--carousel .mapa-carusel {
-  flex: 1;
-  align-self: stretch;
-}
-
-.placeholder-text {
-  color: #666;
-  font-size: 18px;
-  text-align: center;
-}
-
-.reservation-panel {
-  background: rgba(20, 10, 40, 0.5);
-  border: 2px solid rgba(168, 85, 247, 0.4);
-  border-radius: 20px;
-  padding: 30px;
-}
-
-.reservation-panel h3 {
-  color: #a855f7;
-  margin-bottom: 25px;
-  font-size: 20px;
-}
-
-.level-dropdown {
-  background: rgba(30, 20, 50, 0.8);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  border-radius: 8px;
-  padding: 12px 20px;
-  color: white;
-  width: 100%;
-  margin-bottom: 20px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.level-dropdown:focus {
-  outline: none;
-  border-color: rgba(168, 85, 247, 0.6);
-}
-
-.location-display {
-  background: transparent;
-  border: none;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  margin-bottom: 15px;
-  font-size: 16px;
 }
 
 .confirm-btn {
-  background: #a855f7;
+  margin-top: auto;
+  height: 40px;
+  border-radius: 8px;
   border: none;
-  border-radius: 12px;
-  padding: 15px;
-  color: white;
-  width: 100%;
-  font-size: 18px;
-  font-weight: 600;
+  background: var(--acn-gradient);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.25);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
-  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.15s, transform 0.1s;
+  width: 100%;
 }
 
 .confirm-btn:hover {
-  transform: scale(1.02);
+  opacity: 0.85;
 }
 
-@media (max-width: 768px) {
-  .main-grid {
+.confirm-btn:active {
+  transform: scale(0.98);
+}
+
+.confirm-btn:disabled {
+  opacity: 0.4;
+  background: #2c2c2a;
+  box-shadow: none;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.availabilityTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #5f5e5a;
+  margin: 0;
+}
+
+.availabilitySubtitle {
+  font-size: 12px;
+  color: #888780;
+  margin: 2px 0 0;
+}
+
+.zonesCard {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 0.5px solid #e0dfd8;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zoneRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zoneName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2c2c2a;
+}
+
+.zoneDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotZona1 { background: #1d9e75; }
+.dotZona2 { background: #378add; }
+.dotZona3 { background: #d85a30; }
+
+.zoneBadge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 99px;
+}
+
+.badgeZona1 {
+  background: #e1f5ee;
+  color: #0f6e56;
+}
+
+.badgeZona2 {
+  background: #e6f1fb;
+  color: #185fa5;
+}
+
+.badgeZona3 {
+  background: #faece7;
+  color: #993c1d;
+}
+
+.zoneDivider {
+  height: 0.5px;
+  background: #e0dfd8;
+}
+
+.legendNote {
+  font-size: 11px;
+  color: #888780;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 0.5px solid #fecaca;
+  margin-top: 6px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .parkingWrapper {
+    background: #1a1a18;
+    border-color: #444441;
+  }
+
+  .panelLeft {
+    border-color: #444441;
+  }
+
+  .panelRight {
+    background: #222220;
+  }
+
+  .panelTitle {
+    color: #5f5e5a;
+  }
+
+  .fieldLabel {
+    color: #b4b2a9;
+  }
+
+  .fieldSublabel {
+    color: #5f5e5a;
+  }
+
+  .input {
+    background: #2c2c2a;
+    border-color: #444441;
+    color: #f1efe8;
+  }
+
+  .input::placeholder {
+    color: #5f5e5a;
+  }
+
+  .input:hover {
+    border-color: #5f5e5a;
+  }
+
+  .input:focus {
+    border-color: #888780;
+    box-shadow: 0 0 0 3px rgba(136, 135, 128, 0.15);
+  }
+
+  .inputIcon {
+    color: #5f5e5a;
+  }
+
+  .confirmBtn {
+    background: #f1efe8;
+    color: #2c2c2a;
+  }
+
+  .availabilityTitle {
+    color: #b4b2a9;
+  }
+
+  .availabilitySubtitle {
+    color: #5f5e5a;
+  }
+
+  .zonesCard {
+    background: #2c2c2a;
+    border-color: #444441;
+  }
+
+  .zoneName {
+    color: #f1efe8;
+  }
+
+  .zoneDivider {
+    background: #444441;
+  }
+
+  .badgeZona1 {
+    background: #085041;
+    color: #9fe1cb;
+  }
+
+  .badgeZona2 {
+    background: #0c447c;
+    color: #b5d4f4;
+  }
+
+  .badgeZona3 {
+    background: #712b13;
+    color: #f5c4b3;
+  }
+
+  .legendNote {
+    color: #5f5e5a;
+  }
+}
+
+@media (max-width: 640px) {
+  .parkingWrapper {
     grid-template-columns: 1fr;
+  }
+
+  .panelLeft {
+    border-right: none;
+    border-bottom: 0.5px solid #e0dfd8;
+  }
+}
+
+@media screen and (max-width: 450px){
+  .main-layout{
+    margin: 0px 5%;;
+  }
+  .panel{
+    padding: 2rem 1rem;
+  }
+  .zonesCard{
+    padding: 1rem 0.5rem;
   }
 }
