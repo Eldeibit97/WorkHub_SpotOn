@@ -49,7 +49,7 @@ Browser (Employee / Admin / Guard)
       │
       ▼
 ┌─────────────────────────────────────┐
-│  src/api  (axios instances)          │
+│  src/api  (fetch wrapper instances)  │
 │  reservationsApi · authApi ·         │
 │  suggestionsApi · marketApi          │
 └──────┬─────────────┬────────────────┘
