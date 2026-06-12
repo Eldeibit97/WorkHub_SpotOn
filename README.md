@@ -17,7 +17,50 @@ Plataforma de reservas de espacios de oficina y estacionamiento para empresas. C
 ---
  
 ## Arquitectura
- 
+```
+Browser (Employee / Admin / Guard)
+      │
+      │  Renders index.html → mounts React app
+      ▼
+┌─────────────────────────────────────┐
+│  React + Vite                        │   src/main.jsx
+│  Context global                      │
+│  AuthContext · ThemeContext ·        │
+│  UserContext                         │
+└────────────────┬────────────────────┘
+                 │  React Router DOM
+        ┌────────┼─────────┐
+        ▼        ▼         ▼
+┌────────────┐ ┌──────────────┐ ┌──────────────┐
+│  Employee  │ │    Admin     │ │    Guard     │
+│  routes    │ │   routes     │ │   routes     │
+│ PrivateRoute│ │ PrivateRoute │ │ PrivateRoute │
+└─────┬──────┘ └──────┬───────┘ └──────┬───────┘
+      │               │                │
+      ▼               ▼                ▼
+┌──────────┐  ┌──────────────┐  ┌────────────┐
+│Sugerencias│  │AdminDashboard│  │ Guard View │
+│Crear      │  │FloorEditor   │  │ (QR scan)  │
+│Reservación│  │Gestión       │  └────────────┘
+│Mis Reservas│ │Usuarios      │
+│Mercado    │  │Perfil        │
+│Perfil     │  └──────────────┘
+└─────┬─────┘
+      │
+      ▼
+┌─────────────────────────────────────┐
+│  src/api  (axios instances)          │
+│  reservationsApi · authApi ·         │
+│  suggestionsApi · marketApi          │
+└──────┬─────────────┬────────────────┘
+       │             │
+       ▼             ▼
+WorkHub Backend   WorkHub AI
+(port 5500)       (port 8001)
+REST API          FastAPI /suggest
+
+```
+## Estructura del proyecto
 ```
 docs/
 public/
